@@ -1,0 +1,12 @@
+{
+    "guestnetwork": {
+        "title": "Get access to the UCLL Guest Network",
+        "description": "The UCLL Guest Network is a free Wi-Fi network for guests of UCLL. You can use this network to access the internet during your visit.",
+        "smallMessage": "Scan QR code to get access to the UCLL Guest Network",
+        "footerMessage": "This QR code is valid for 7 days. After that, you will need to scan the QR code again to get access to the UCLL Guest Network.",
+        "qrCode": "QR code",
+        "ssid": "SSID",
+        "password": "Password",
+        "connect": "Connect"
+    }
+}
