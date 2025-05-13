@@ -9,7 +9,7 @@ export function HeaderComponent() {
 
     const logoSrc = language === 'NL' ? '/Images/Logo_UCLL_NL.png' : '/Images/Logo_UCLL_EN.png';
     return (
-        <header className="flex flex-col md:flex-row items-center md:justify-around bg-white mt-10">
+        <header className="flex flex-col md:flex-row items-center md:justify-around mt-10 mb-4">
             <div className="flex items-center">
                 <Image
                     src={logoSrc}
