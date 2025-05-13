@@ -21,5 +21,4 @@ export default function Home() {
         <QRCodeSVG value="https://reactjs.org/" />
       </div>
     </div>
-  );
-}
+)}

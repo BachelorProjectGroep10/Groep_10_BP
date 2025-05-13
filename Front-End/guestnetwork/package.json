@@ -13,6 +13,12 @@
     "qrcode.react": "^4.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
+    "i18next": "^25.1.2",
+    "next": "15.3.2",
+    "next-i18next": "^15.4.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-i18next": "^15.5.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
