@@ -1,0 +1,12 @@
+{
+    "guestnetwork": {
+        "title": "Toegang tot het UCLL-gastnetwerk",
+        "description": "Het UCLL-gastnetwerk is een gratis Wi-Fi-netwerk voor gasten van UCLL. Je kunt dit netwerk gebruiken om toegang tot het internet te krijgen tijdens je bezoek.",
+        "smallMessage": "Scan de QR-code om toegang te krijgen tot het UCLL-gastnetwerk",
+        "footerMessage": "Deze QR-code is 7 dagen geldig. Daarna moet je opnieuw een QR-code scannen om toegang te krijgen tot het UCLL-gastnetwerk.",
+        "qrCode": "QR-code",
+        "ssid": "SSID",
+        "password": "Wachtwoord",
+        "connect": "Verbinden"
+    }
+}
