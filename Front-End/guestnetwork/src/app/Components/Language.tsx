@@ -17,7 +17,7 @@ export function LanguageComponent({language, setLanguage}: LanguageComponentProp
     }`;
 
   return (
-    <div className="flex items-center justify-end p-4 bg-white">
+    <div className="flex items-center justify-end mt-2 bg-white">
       <div className="flex items-center space-x-2 font-semibold">
         <button
           onClick={() => handleLanguageChange("NL")}
