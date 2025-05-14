@@ -3,12 +3,21 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+        "start": "nodemon -L app.ts --delay 3",
+        "test": "jest"
+    },
+    "nodemonConfig": {
+        "ext": "ts",
+        "delay": "3",
+        "execMap": {
+            "ts": "ts-node"
+        }
+    },
   "author": "",
   "license": "ISC",
   "description": "This is the back-end for our bachelor project 2025.",
   "devDependencies": {
+    "@types/cors": "^2.8.18",
     "@types/express": "^5.0.1",
     "@types/node": "^22.15.17",
     "dotenv": "^16.5.0",
@@ -20,5 +29,10 @@
     "prettier": "^3.5.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express-jwt": "^8.5.1",
+    "node-cron": "^4.0.5"
   }
 }
