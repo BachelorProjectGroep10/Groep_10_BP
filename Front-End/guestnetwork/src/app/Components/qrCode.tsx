@@ -27,11 +27,11 @@ export function QRCodeComponent() {
     : '';
 
   return (
-    <div className="flex flex-col items-center justify-start h-screen mt-10">
-      <div className="flex flex-col items-center mb-6">
+    <div className="flex flex-col items-center justify-start min-h-screen p-4 md:mt-6">
+      <div className="flex flex-col items-center mb-6 text-center">
         <h1 className="text-2xl font-bold">Get access to</h1>
         <h1 className="text-2xl font-bold mb-2">UCLL Guest Network</h1>
-        <FaWifi size={40} />
+        <FaWifi size={40} className="md:flex hidden" />
         <h2 className="font-semibold mt-2 text-sm text-accent">Scan QR code for access</h2>
       </div>
 
@@ -48,10 +48,11 @@ export function QRCodeComponent() {
           </div>
         </div>
 
-        <h2 className="font-semibold mt-4 text-sm text-accent text-center">
+        <h2 className="hidden md:flex font-semibold mt-4 text-sm text-accent text-center">
           This QR code is valid for 7 days. After that,<br />
           you will need to scan the QR code again to get access to the UCLL Guest Network.
         </h2>
+        <h2 className="md:hidden flex font-semibold mt-4 text-sm text-accent text-center">This QR code is valid for 7 days.</h2>
       </div>
     </div>
   );
