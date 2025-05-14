@@ -33,7 +33,7 @@ export default class AutoPasswordCron {
 
     try {
       await insertPassword(password);
-      console.log(`[auto-password] Password saved to database: ${password}`);
+      console.log(`[auto-password] Password saved to database`);
     } catch (err) {
       console.error('[auto-password] Failed to insert password into DB:', err);
     }
