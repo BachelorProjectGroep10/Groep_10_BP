@@ -1,6 +1,7 @@
 import cron from 'node-cron';
 import fs from 'fs';
 import path from 'path';
+import { insertPassword } from '../../domain/data-access/password.db';
 
 const SCHEDULE_EVERY_5_MIN = '*/5 * * * *'; // every 5 minutes
 const EXECUTE_IMMEDIATELY = false;
@@ -29,15 +30,12 @@ export default class AutoPasswordCron {
 
   generateAndStorePassword = async () => {
     const password = generateAsciiPassword();
-    const data = {
-      password,
-      updatedAt: new Date().toISOString(),
-    };
 
-    const outputPath = path.join(process.cwd(), 'data', 'wifiPassword.json');
-    fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-    fs.writeFileSync(outputPath, JSON.stringify(data, null, 2));
-
-    console.log(`[auto-password] New password generated: ${password}`);
+    try {
+      await insertPassword(password);
+      console.log(`[auto-password] Password saved to database: ${password}`);
+    } catch (err) {
+      console.error('[auto-password] Failed to insert password into DB:', err);
+    }
   };
 }

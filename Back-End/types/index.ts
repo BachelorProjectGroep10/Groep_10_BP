@@ -1,3 +1,4 @@
 export type Password = {
-    readonly password: string;
+    readonly password: string, 
+    readonly valid: number
 };

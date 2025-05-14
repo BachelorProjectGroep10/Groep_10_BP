@@ -1,9 +1,15 @@
 export class Password {
-    readonly password: string;
+  readonly id?: number;          
+  readonly password: string;
+  readonly valid: boolean;
 
-    constructor(customer: { 
-        password: string;
-    }) {
-        this.password = customer.password;
-    }
+  constructor(data: {
+    password: string;
+    valid?: boolean;             
+    id?: number;
+  }) {
+    this.id = data.id;
+    this.password = data.password;
+    this.valid = data.valid ?? false;
+  }
 }
