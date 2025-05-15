@@ -1,8 +1,14 @@
 'use client';
 
-import { QRCodeSVG } from "qrcode.react";
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import { QRCodeSVG } from 'qrcode.react';
+import React from 'react';
 import { useEffect, useState } from "react";
-import { FaWifi } from "react-icons/fa";
+import { FaWifi } from 'react-icons/fa';
+import QRCodePdfLayout from './qrCodePdfLayout';
+import { RiFileDownloadLine } from "react-icons/ri";
+import { QRCode } from 'react-qrcode-logo';
 import { IoPersonSharp } from "react-icons/io5";
 import { HiMiniUserGroup } from "react-icons/hi2";
 import PasswordService from "../Services/PasswordService";
@@ -10,6 +16,8 @@ import useSWR, { mutate } from "swr";
 import useInterval from "use-interval";
 
 export function QRCodeComponent() {
+  const pdfRef = React.useRef<HTMLDivElement | null>(null);
+
   const [activeView, setActiveView] = useState<'qr' | 'single' | 'group'>('qr');
   const ssid = 'UCLL_GUEST';
 
@@ -26,20 +34,48 @@ export function QRCodeComponent() {
   }, 2000);
 
   const qrValue = password
-    ? `WIFI:T:WPA;S:${ssid};P:${password};;`
+    ? `WIFI:S:${ssid};H:true;T:WPA;P:${password};;`
     : '';
+
+  const handleDownloadPdf = async () => {
+    const element = pdfRef.current;
+    if (!element) return;
+
+    const canvas = await html2canvas(element, {
+      scale: 2,
+      useCORS: true 
+    });
+
+    const data = canvas.toDataURL('image/png');
+
+    const pdf = new jsPDF('p', 'px', 'a4'); 
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
+
+    pdf.addImage(data, 'PNG', 0, 0, pdfWidth, pdfHeight);
+    pdf.save('qr_code.pdf');
+  };
 
   return (
     <div className="flex flex-col items-center justify-start min-h-screen p-4 md:mt-6">
       <div className="flex flex-col items-center mb-6 text-center">
-        <h1 className="text-2xl font-bold">Get access to</h1>
-        <h1 className="text-2xl font-bold mb-2">UCLL Guest Network</h1>
+        <h1 className="text-xl md:text-2xl font-bold">Get access to</h1>
+        <h1 className="text-xl md:text-2xl font-bold mb-2">{ssid} Network</h1>
         <FaWifi size={40} className="md:flex hidden" />
-        <h2 className="font-semibold mt-2 text-sm text-accent">Scan QR code for access</h2>
+        <h2 className="font-semibold mt-2 text-sm text-accent">
+          Scan QR code for access
+        </h2>
       </div>
-
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center w-60 h-80 md:w-80 md:h-96">
         <div className="relative">
+          {activeView === "qr" && (<button
+            onClick={() => handleDownloadPdf()}
+            type="button"
+            className="absolute top-1 right-1 text-black hover:bg-[#e6f4fb] rounded-full p-1 transition duration-200"
+            aria-label="Download as PDF"
+          >
+            <RiFileDownloadLine size={16} />
+          </button>)}
           {/* QR / Forms Card */}
           <div className="bg-[#9FDAF9] p-6 rounded-lg shadow-lg h-80 w-60 flex flex-col items-center justify-around">
             {activeView === 'single' && (
@@ -94,7 +130,19 @@ export function QRCodeComponent() {
             {activeView === 'qr' && (
               <>
                 {password ? (
-                  <QRCodeSVG value={qrValue} size={140} />
+                  <QRCode value={qrValue} 
+                    size={160} 
+                    logoImage='/Images/Logo_UCLL_ROUND.png'
+                    logoWidth={40}
+                    logoHeight={40}
+                    logoOpacity={1}
+                    logoPadding={0.5}
+                    logoPaddingStyle='circle'
+                    quietZone={10}
+                    style={{ borderRadius: '0.75rem' }}
+                    qrStyle="dots"
+                    eyeRadius={10}
+                  />
                 ) : (
                   <p>Loading QR...</p>
                 )}
@@ -130,14 +178,30 @@ export function QRCodeComponent() {
             </button>
           </div>
         </div>
-
-
-        <h2 className="hidden md:flex font-semibold mt-4 text-sm text-accent text-center">
-          This QR code is valid for 7 days. After that,<br />
-          you will need to scan the QR code again to get access to the UCLL Guest Network.
-        </h2>
-        <h2 className="md:hidden flex font-semibold mt-4 text-sm text-accent text-center">This QR code is valid for 7 days.</h2>
       </div>
-    </div>
+      <div>
+        <div
+          style={{ position: 'absolute', top: '-10000px', left: '-10000px' }}
+        >
+          <div
+            ref={pdfRef}
+            style={{ width: '794px', height: '1123px' }}
+            className="flex flex-col items-center justify-around"
+          >
+            <QRCodePdfLayout ssid={ssid} password={password} />
+          </div>
+        </div>
+        <h2 className="hidden md:flex font-semibold mt-4 text-sm text-center">
+          This QR code is valid for 7 days. After that,
+          <br />
+          you will need to scan the QR code again.
+        </h2>
+        <h2 className="md:hidden flex font-semibold mt-4 text-sm text-center">
+          This QR code is valid for 7 days.
+        </h2>
+      </div>
+  </div>
   );
 }
+
+export default QRCodeComponent;
