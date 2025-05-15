@@ -1,37 +1,55 @@
 'use client';
 
 import React from 'react';
-import { QRCodeSVG } from 'qrcode.react';
-import Image from "next/image";
-
+import Background from './background';
+import { QRCode } from 'react-qrcode-logo';
 
 interface QRCodePdfLayoutProps {
   ssid?: string;
   password?: string;
 }
 
-export function QRCodePdfLayout( { ssid, password }: QRCodePdfLayoutProps) {
+export function QRCodePdfLayout({ ssid, password }: QRCodePdfLayoutProps) {
   return (
-    <div className="flex flex-col items-center justify-start min-h-screen p-4 md:mt-6">
-      <h1 className="font-semibold mb-2">WiFi Access Details</h1>
-      <div className='flex flex-col items-center mb-6 text-center bg-[#9FDAF9] p-6 rounded-lg shadow-lg'>
-        <QRCodeSVG
-          value={`WIFI:S:${ssid};T:WPA;P:${password};;`}
-          className="mb-1"
-          size={200}
-        />
+    <div
+      className="relative bg-white overflow-hidden"
+      style={{ width: '794px', height: '1123px', position: 'relative' }}
+    >
+      <div  
+        className="absolute top-0 left-0"
+        style={{ width: '794px', height: '1123px', zIndex: 0 }}
+      >
+        <Background />
       </div>
 
-      <div className="flex flex-col items-center w-full max-w-xs md:max-w-md">
-        <p>
-          <span className='font-semibold'>SSID:</span> {ssid}
-        </p>
-        <p>
-          <span className='font-semibold'>Password:</span> {password}
-        </p>
-        <p className='text-sm'>
-          This QR code is valid for 7 days. Please regenerate it after expiration.
-        </p>
+      <div className="relative z-10 flex flex-col items-center justify-center h-full text-center p-20">
+        <div className="bg-[#9FDAF9] p-10 rounded-xl shadow mb-6">
+          <QRCode
+            value={`WIFI:S:${ssid};H:true;T:WPA;P:${password};;`}
+            size={240}
+            logoImage="/Images/Logo_UCLL_ROUND.png"
+            logoWidth={40}
+            logoHeight={40}
+            logoOpacity={1}
+            logoPadding={3}
+            logoPaddingStyle="circle"
+            quietZone={10}
+            style={{ borderRadius: '0.75rem' }}
+            qrStyle="dots"
+            eyeRadius={10}
+          />
+        </div>
+
+        <div className="text-base space-y-1">
+          <p>
+            <span className="font-semibold">SSID:</span> {ssid}
+          </p>
+          <p>
+            <span className="font-semibold">Password:</span> {password}
+          </p>
+          <p className="text-sm pt-2">This QR code is valid for 7 days.</p>
+          <p className="text-sm">Please regenerate it after expiration.</p>
+        </div>
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 export default function Background() {
   return (
-    <div className="relative w-full h-screen overflow-hidden">
+    <div className="relative w-full h-full overflow-hidden">
       {/* Top-left circle - visible on all screens */}
       <div className="absolute bg-[#9FDAF9] w-32 h-32 sm:w-40 sm:h-40 rounded-full top-[-60px] left-[-60px]" />
 

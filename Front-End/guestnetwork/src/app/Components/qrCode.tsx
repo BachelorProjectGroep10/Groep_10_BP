@@ -7,29 +7,31 @@ import React from 'react';
 import { FaWifi } from 'react-icons/fa';
 import QRCodePdfLayout from './qrCodePdfLayout';
 import { RiFileDownloadLine } from "react-icons/ri";
+import { QRCode } from 'react-qrcode-logo';
+
 
 interface QRCodeComponentProps {
   ssid?: string;
   password?: string;
 }
 
-export function QRCodeComponent({ssid = 'UCLL_GUEST', password = 'test'}: QRCodeComponentProps) {
+export function QRCodeComponent({ssid = 'BP Groep 10 (PSK)', password = 'groep10QRCodeTest123@'}: QRCodeComponentProps) {
   const pdfRef = React.useRef<HTMLDivElement | null>(null);
 
   const handleDownloadPdf = async () => {
     const element = pdfRef.current;
-    console.log('Element:', element);
     if (!element) return;
 
     const canvas = await html2canvas(element, {
-      scale: 2,});
-    console.log('Canvas:', canvas);
+      scale: 2,
+      useCORS: true 
+    });
+
     const data = canvas.toDataURL('image/png');
 
-    const pdf = new jsPDF('p', 'px', 'a4');
-    const imgProperties = pdf.getImageProperties(data);
+    const pdf = new jsPDF('p', 'px', 'a4'); 
     const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width;
+    const pdfHeight = pdf.internal.pageSize.getHeight();
 
     pdf.addImage(data, 'PNG', 0, 0, pdfWidth, pdfHeight);
     pdf.save('qr_code.pdf');
@@ -38,15 +40,15 @@ export function QRCodeComponent({ssid = 'UCLL_GUEST', password = 'test'}: QRCode
   return (
     <div className="flex flex-col items-center justify-start min-h-screen p-4 md:mt-6">
       <div className="flex flex-col items-center mb-6 text-center">
-        <h1 className="text-2xl font-bold">Get access to</h1>
-        <h1 className="text-2xl font-bold mb-2">{ssid} Network</h1>
+        <h1 className="text-xl md:text-2xl font-bold">Get access to</h1>
+        <h1 className="text-xl md:text-2xl font-bold mb-2">{ssid} Network</h1>
         <FaWifi size={40} className="md:flex hidden" />
         <h2 className="font-semibold mt-2 text-sm text-accent">
           Scan QR code for access
         </h2>
       </div>
 
-      <div className="flex flex-col items-center w-full max-w-xs md:max-w-md">
+      <div className="flex flex-col items-center w-60 h-80 md:w-80 md:h-96">
         <div
           className="bg-[#9FDAF9] p-6 rounded-lg shadow-lg w-full flex flex-col items-center justify-around relative "
         >
@@ -58,12 +60,18 @@ export function QRCodeComponent({ssid = 'UCLL_GUEST', password = 'test'}: QRCode
           >
             <RiFileDownloadLine size={18} />
           </button>
-
-          <QRCodeSVG
-            aria-label={`QR code for ${ssid} WiFi`}
-            value={`WIFI:S:${ssid};T:WPA;P:${password};;`}
-            size={160}
-            className="mb-1"
+          <QRCode value={`WIFI:S:${ssid};H:true;T:WPA;P:${password};;`} 
+            size={160} 
+            logoImage='/Images/Logo_UCLL_ROUND.png'
+            logoWidth={40}
+            logoHeight={40}
+            logoOpacity={1}
+            logoPadding={0.5}
+            logoPaddingStyle='circle'
+            quietZone={10}
+            style={{ borderRadius: '0.75rem' }}
+            qrStyle="dots"
+            eyeRadius={10}
           />
           <div className="mt-4 text-left w-full">
             <p className="text-sm font-semibold">
@@ -79,7 +87,8 @@ export function QRCodeComponent({ssid = 'UCLL_GUEST', password = 'test'}: QRCode
         >
           <div
             ref={pdfRef}
-            className="p-3 w-full flex flex-col items-center justify-around"
+            style={{ width: '794px', height: '1123px' }}
+            className="flex flex-col items-center justify-around"
           >
             <QRCodePdfLayout ssid={ssid} password={password} />
           </div>
