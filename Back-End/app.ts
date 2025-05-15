@@ -9,7 +9,22 @@ const app = express();
 dotenv.config();
 const port = process.env.APP_PORT || 3000;
 
-app.use(cors({origin: process.env.FRONTEND_URL || 'http://localhost:8080'}));
+const allowedOrigins = (process.env.FRONTEND_URLS || '')
+  .split(',')
+  .map(origin => origin.trim());
+
+console.log('Allowed Origins:', allowedOrigins);
+
+app.use(cors({
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+}));
+
 app.use(bodyParser.json());
 
 app.use('/password', passwordRouter);
