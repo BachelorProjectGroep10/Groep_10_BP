@@ -59,7 +59,7 @@ export function QRCodeComponent() {
   };
 
   return (
-<div className="flex flex-col items-center justify-between h-full w-full px-4 py-2 overflow-hidden">
+    <div className="flex flex-col items-center justify-between h-full w-full px-4 py-2 overflow-hidden">
       <div className="relative w-full max-w-[90%] md:max-w-[700px]">
         <button
           onClick={handleDownloadPdf}
@@ -69,8 +69,12 @@ export function QRCodeComponent() {
         </button>
         <div className="bg-[#9FDAF9] p-4 rounded-lg shadow-lg w-full flex flex-col md:flex-row items-center justify-around gap-4">
           <div className="flex flex-col items-center">
-            <FaWifi size={40} className="md:flex hidden" />
-            <h2 className="font-semibold mt-2 text-sm text-accent">Scan QR code for access</h2>
+            <div className="flex flex-col items-center mb-4">
+              <h1 className="text-2xl font-bold text-center">{ssid}</h1>
+              <FaWifi size={40} className="md:flex hidden" />
+              <h2 className="font-semibold mt-2 text-sm text-accent">Scan QR code for access</h2>
+            </div>
+
             {password ? (
               <QRCode
                 value={qrValue}
@@ -120,17 +124,13 @@ export function QRCodeComponent() {
             <HiMiniUserGroup />
           </button>
         </div>
+        <div className="text-center mt-2">
+          <p className="text-sm font-semibold">
+            This QR code is valid for 7 days.
+            <span className="hidden md:inline"> After that, you will need to scan it again.</span>
+          </p>
+        </div>
       </div>
-
-      {/* Footer Info */}
-      <div className="text-center">
-        <p className="text-sm font-semibold">
-          This QR code is valid for 7 days.
-          <span className="hidden md:inline"> After that, you will need to scan it again.</span>
-        </p>
-      </div>
-
-      {/* Hidden PDF Preview */}
       <div style={{ position: 'absolute', top: '-10000px', left: '-10000px' }}>
         <div ref={pdfRef} style={{ width: '794px', height: '1123px' }} className="flex flex-col items-center justify-around">
           <QRCodePdfLayout ssid={ssid} password={password} />

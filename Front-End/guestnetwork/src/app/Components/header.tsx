@@ -20,10 +20,7 @@ export function HeaderComponent() {
                         priority
                     />
                 </div>
-            </div>
-            <h1 className="text-2xl font-bold text-center md:text-left mt-4 md:mt-0">
-                {language === 'NL' ? 'UCLL Gastennetwerk' : 'UCLL Guest Network'}
-            </h1>   
+            </div> 
             <LanguageComponent language={language} setLanguage={setLanguage} />
         </header>
     );
