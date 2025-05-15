@@ -1,9 +1,7 @@
 import cron from 'node-cron';
-import fs from 'fs';
-import path from 'path';
 import { insertPassword } from '../../domain/data-access/password.db';
 
-const SCHEDULE_EVERY_5_MIN = '*/5 * * * *'; // every 5 minutes
+const SCHEDULE_EVERY_5_MIN = '*/30 * * * *'; // every 30 minutes
 const EXECUTE_IMMEDIATELY = false;
 
 function generateAsciiPassword(length = 8): string {
