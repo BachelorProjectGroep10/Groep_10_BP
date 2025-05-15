@@ -60,13 +60,7 @@ export function QRCodeComponent() {
 
   return (
     <div className="flex flex-col items-center justify-between h-full w-full px-4 py-2 overflow-hidden">
-      <div className="relative w-full max-w-[90%] md:max-w-[700px]">
-        <button
-          onClick={handleDownloadPdf}
-          className="absolute top-1 right-1 text-black hover:bg-[#e6f4fb] rounded-full p-1 transition duration-200"
-        >
-          <RiFileDownloadLine size={16} />
-        </button>
+      <div className="w-full max-w-[90%] md:max-w-[700px]">
         <div className="bg-[#9FDAF9] p-4 rounded-lg shadow-lg w-full flex flex-col md:flex-row items-center justify-around gap-4">
           <div className="flex flex-col items-center">
             <div className="flex flex-col items-center mb-4">
@@ -97,10 +91,17 @@ export function QRCodeComponent() {
               <p className="text-sm font-semibold">
                 SSID: <span className="font-normal">{ssid}</span>
               </p>
-              <p className="text-sm font-semibold">
+              <p className="text-sm font-semibold mb-2">
                 Password: <span className="font-normal">{password ?? 'Loading...'}</span>
               </p>
+              <button
+                onClick={handleDownloadPdf}
+                className="bg-[#002757] text-white hover:bg-[#FA1651] flex items-center justify-center gap-2 text-sm rounded-lg p-1 transition duration-200"
+              >
+                <RiFileDownloadLine size={14} /> download PDF
+              </button>
             </div>
+
           </div>
 
           <div className="hidden md:flex flex-col gap-4 items-center">
