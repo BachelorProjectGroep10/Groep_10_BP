@@ -11,7 +11,7 @@ export default function Home() {
       <div className="absolute top-0 left-0 w-screen h-screen">
         <Background />
       </div>
-      <div className="relative z-2">
+      <div className="relative z-10 flex flex-col h-full">
         <HeaderComponent />
         <QRCodeComponent />
       </div>
