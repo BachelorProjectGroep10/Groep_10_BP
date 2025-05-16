@@ -12,4 +12,9 @@ export type User = {
     readonly active: number;
     readonly groupId?: number;
     readonly description?: string;
+}
+
+export type Admin = {
+    readonly username: string;
+    readonly password: string;
 };

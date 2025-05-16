@@ -3,7 +3,7 @@ import PasswordService from '../service/password.service';
 
 const passwordRouter = express.Router();
 
-passwordRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
+passwordRouter.get('/', async (req:Request, res: Response, next: NextFunction) => {
   try {
     const password = await PasswordService.getLatestWifiPassword();
     res.status(200).json(password);

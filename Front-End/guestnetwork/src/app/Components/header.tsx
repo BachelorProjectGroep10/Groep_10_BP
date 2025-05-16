@@ -1,27 +1,74 @@
 "use client";
 import Image from "next/image";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { LuLogOut, LuMenu } from "react-icons/lu";
 import { LanguageComponent } from "./Language";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export function HeaderComponent() {
     const [language, setLanguage] = useState("EN");
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+    const [isloggedIn, setIsLoggedIn] = useState(false);
 
-    const logoSrc = language === 'NL' ? '/Images/Logo_UCLL_NL.png' : '/Images/Logo_UCLL_EN.png';
+    const router = useRouter();
+    const logoSrc = language === "NL" ? "/Images/Logo_UCLL_NL.png" : "/Images/Logo_UCLL_EN.png";
+
+    const handleLogout = () => {
+        sessionStorage.removeItem("admin");
+    }
+
+    useEffect(() => {
+        const admin = sessionStorage.getItem("admin");
+        if (admin) {
+            setIsLoggedIn(true);
+        } else {
+            setIsLoggedIn(false);
+        }
+    }, [language]);
 
     return (
-        <header className="flex flex-col md:flex-row items-center md:justify-around mt-4 mb-2">
-            <div className="flex items-center">
-                <div className="relative w-[100px] h-[50px] md:w-[200px] md:h-[100px]">
-                    <Image
-                        src={logoSrc}
-                        alt="Logo"
-                        fill
-                        className="object-contain"
-                        priority
-                    />
-                </div>
-            </div> 
-            <LanguageComponent language={language} setLanguage={setLanguage} />
+        <header className="w-full flex flex-col md:flex-row items-center justify-evenly p-4">
+            <div className="relative w-[120px] h-[60px] md:w-[200px] md:h-[100px]">
+                <Image
+                    src={logoSrc}
+                    alt="UCLL Logo"
+                    fill
+                    className="object-contain"
+                    priority
+                />
+            </div>
+            {isloggedIn && (<div className="relative">
+                <button
+                    onClick={() => setDropdownOpen(!dropdownOpen)}
+                    className="text-[#002757] hover:text-[#FA1651] text-2xl focus:outline-none"
+                >
+                    <LuMenu />
+                </button>
+
+                {dropdownOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded shadow-md z-50">
+                        <ul className="flex flex-col space-y-2 p-4">
+                            <li>
+                                <Link href="/dashboard" className="text-[#002757] hover:text-[#FA1651] font-medium">
+                                    {language === "NL" ? "Dashboard" : "Dashboard"}
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/" className="flex items-center text-[#002757] hover:text-[#FA1651] font-medium" onClick={handleLogout}>
+                                    <LuLogOut className="mr-2" />
+                                    {language === "NL" ? "Afmelden" : "Logout"}
+                                </Link>
+                            </li>
+                            <li>
+                                <div className="pt-2 border-t">
+                                    <LanguageComponent language={language} setLanguage={setLanguage} />
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                )}
+            </div>)}
         </header>
     );
 }

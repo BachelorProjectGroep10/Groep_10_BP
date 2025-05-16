@@ -5,16 +5,18 @@ import * as bodyParser from 'body-parser';
 import passwordRouter from './controller/password.routes';
 import userRouter from './controller/user.routes';
 import initializeCronJobs from './util/provider/cronjobs';
-const app = express();
+import helmet from 'helmet';
+import adminRouter from './controller/admin.routes';
+import { expressjwt } from 'express-jwt';
 
+const app = express();
+app.use(helmet());
 dotenv.config();
 const port = process.env.APP_PORT || 3000;
 
 const allowedOrigins = (process.env.FRONTEND_URLS || '')
   .split(',')
   .map(origin => origin.trim());
-
-console.log('Allowed Origins:', allowedOrigins);
 
 app.use(cors({
     origin: (origin, callback) => {
@@ -28,8 +30,18 @@ app.use(cors({
 
 app.use(bodyParser.json());
 
+app.use(expressjwt({
+    secret: process.env.JWT_SECRET || '',
+    algorithms: ['HS256'],
+    }).unless({ 
+        path: ['/admin/login', '/password']
+    })
+);
+
+
 app.use('/password', passwordRouter);
 app.use('/user', userRouter);
+app.use('/admin', adminRouter );
 
 initializeCronJobs();
 
