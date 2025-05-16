@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import UserService from '../Services/UserService';
 import { User } from '../Types';
 
@@ -9,6 +9,8 @@ export default function SingleUserComponent(){
   const [studentNumber, setStudentNumber] = useState('');
   const [timeNeeded, setTimeNeeded] = useState('');
   const [description, setDescription] = useState('');
+
+  const [rows, setRows] = useState(5);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,13 +49,28 @@ export default function SingleUserComponent(){
     }
   };
 
+  useEffect(() => {
+    function handleResize() {
+      if (window.innerWidth <= 768) { // md breakpoint in Tailwind is 768px
+        setRows(3); // smaller rows on md and below
+      } else {
+        setRows(5); // default rows on larger screens
+      }
+    }
+    
+    handleResize(); // run on mount
+    window.addEventListener("resize", handleResize);
+    
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <div className="flex flex-col items-center w-full space-y-3 bg-white rounded-lg shadow-md p-6">
       <form
         onSubmit={handleSubmit}
-        className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 w-full"
+        className="grid grid-cols-2 gap-x-8 gap-y-4 w-full form-grid-collapse"
       >
-        <h3 className="text-xl font-bold pb-4 col-span-full text-center">User registration</h3>
+        <h3 className="text-xl font-bold pb-2 col-span-full text-center">User registration</h3>
 
         {/* Left Column */}
         <div className="flex flex-col space-y-3">
@@ -63,7 +80,7 @@ export default function SingleUserComponent(){
             placeholder="XX:XX:XX:XX:XX:XX"
             value={macAddress}
             onChange={(e) => setMacAddress(e.target.value)}
-            className="bg-gray-300 text-black rounded-lg px-4 py-2 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
+            className="bg-gray-300 text-black rounded-lg px-3 py-2 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
             required
           />
 
@@ -73,7 +90,7 @@ export default function SingleUserComponent(){
             placeholder="XX.XX@XX.X"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="bg-gray-300 text-black rounded-lg px-4 py-2 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
+            className="bg-gray-300 text-black rounded-lg px-3 py-2 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
           />
 
           <label className="text-sm font-medium">Student Number</label>
@@ -82,7 +99,7 @@ export default function SingleUserComponent(){
             placeholder='X0000000'
             value={studentNumber}
             onChange={(e) => setStudentNumber(e.target.value)}
-            className="bg-gray-300 text-black rounded-lg px-4 py-2 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
+            className="bg-gray-300 text-black rounded-lg px-3 py-2 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
           />
         </div>
 
@@ -95,7 +112,7 @@ export default function SingleUserComponent(){
             value={timeNeeded}
             onChange={(e) => setTimeNeeded(e.target.value)}
             min={1}
-            className="bg-gray-300 text-black rounded-lg px-4 py-2 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
+            className="bg-gray-300 text-black rounded-lg px-3 py-2 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
             required
           />
 
@@ -104,8 +121,8 @@ export default function SingleUserComponent(){
             placeholder="..."
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="bg-gray-300 text-black rounded-lg px-6 py-2 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
-            rows={5}
+            className="bg-gray-300 text-black rounded-lg px-3 py-2 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300 resize-none"
+            rows={rows}
           />
         </div>
 

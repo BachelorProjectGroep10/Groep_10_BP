@@ -59,72 +59,133 @@ export function QRCodeComponent() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-between h-full w-full px-4 py-6 overflow-hidden">
-      <div className="w-full max-w-[90%] md:max-w-[850px]">
-        <div className="bg-[#9FDAF9] p-4 rounded-lg shadow-lg w-full flex flex-col md:flex-row items-center justify-around gap-4">
-          <div className="flex flex-col items-center mx-6">
-            <div className="flex flex-col items-center mb-4">
+    <div className="flex flex-col items-center justify-between h-full w-full px-10 py-6">
+      <div className="w-full sm:max-w-[80%] md:max-w-[850px]">
+        <div className="bg-[#9FDAF9] px-2 py-4 rounded-lg shadow-lg w-full flex flex-col md:flex-row items-center justify-around gap-4">
+
+          {/* QR Code + Details or Form based on screen & activeView */}
+          <div className="flex flex-col items-center mx-6 w-full md:w-auto">
+            {/* On md+ show all side-by-side */}
+            <div className="hidden md:flex md:flex-col md:items-center">
               <h1 className="text-2xl font-bold text-center">{ssid}</h1>
-              <FaWifi size={40} className="md:flex hidden" />
-              <h2 className="font-semibold mt-4 text-sm text-accent">Scan QR code for access</h2>
+              <FaWifi size={40} />
+              <h2 className="font-semibold my-4 text-sm text-accent">Scan QR code for access</h2>
+              {password ? (
+                <QRCode
+                  value={`WIFI:S:${ssid};H:true;T:WPA;P:${password};;`}
+                  size={200}
+                  logoImage='/Images/Logo_UCLL_ROUND.png'
+                  logoWidth={40}
+                  logoHeight={40}
+                  logoOpacity={1}
+                  logoPadding={0.5}
+                  logoPaddingStyle="circle"
+                  quietZone={10}
+                  style={{ borderRadius: '0.75rem' }}
+                  qrStyle="dots"
+                  eyeRadius={10}
+                />
+              ) : (
+                <p>Loading QR...</p>
+              )}
+              <div className="mt-4 text-left w-full max-w-[300px]">
+                <p className="text-sm font-semibold">
+                  SSID: <span className="font-normal">{ssid}</span>
+                </p>
+                <p className="text-sm font-semibold mb-4">
+                  Password: <span className="font-normal">{password ?? 'Loading...'}</span>
+                </p>
+                <button
+                  onClick={handleDownloadPdf}
+                  className="bg-[#002757] text-white hover:bg-[#FA1651] flex items-center justify-center gap-2 text-sm rounded-lg p-2 transition duration-200"
+                >
+                  <RiFileDownloadLine size={14} /> download PDF
+                </button>
+              </div>
             </div>
 
-            {password ? (
-              <QRCode
-                value={qrValue}
-                size={200}
-                logoImage='/Images/Logo_UCLL_ROUND.png'
-                logoWidth={40}
-                logoHeight={40}
-                logoOpacity={1}
-                logoPadding={0.5}
-                logoPaddingStyle="circle"
-                quietZone={10}
-                style={{ borderRadius: '0.75rem' }}
-                qrStyle="dots"
-                eyeRadius={10}
-              />
-            ) : (
-              <p>Loading QR...</p>
-            )}
-            <div className="mt-4 text-left w-full">
-              <p className="text-sm font-semibold">
-                SSID: <span className="font-normal">{ssid}</span>
-              </p>
-              <p className="text-sm font-semibold mb-4">
-                Password: <span className="font-normal">{password ?? 'Loading...'}</span>
-              </p>
-              <button
-                onClick={handleDownloadPdf}
-                className="bg-[#002757] text-white hover:bg-[#FA1651] flex items-center justify-center gap-2 text-sm rounded-lg p-2 transition duration-200"
-              >
-                <RiFileDownloadLine size={14} /> download PDF
-              </button>
-            </div>
+            {/* On md and smaller show the QR or form based on activeView */}
+            <div className="md:hidden w-full flex flex-col items-center justify-center">
+            {activeView === 'qr' && (
+              <>
+                <h1 className="text-2xl font-bold text-center">{ssid}</h1>
+                <FaWifi size={40} className="mx-auto" />
+                <h2 className="font-semibold my-4 text-sm text-accent text-center">Scan QR code for access</h2>
+                  {password ? (
+                    <QRCode
+                      value={`WIFI:S:${ssid};H:true;T:WPA;P:${password};;`}
+                      size={200}
+                      logoImage='/Images/Logo_UCLL_ROUND.png'
+                      logoWidth={40}
+                      logoHeight={40}
+                      logoOpacity={1}
+                      logoPadding={0.5}
+                      logoPaddingStyle="circle"
+                      quietZone={10}
+                      style={{ borderRadius: '0.75rem' }}
+                      qrStyle="dots"
+                      eyeRadius={10}
+                    />
+                  ) : (
+                    <p>Loading QR...</p>
+                  )}
+                  <div className="mt-4 mx-auto w-full max-w-[200px] text-left">
+                    <p className="text-sm font-semibold">
+                      SSID: <span className="font-normal">{ssid}</span>
+                    </p>
+                    <p className="text-sm font-semibold mb-4">
+                      Password: <span className="font-normal">{password ?? 'Loading...'}</span>
+                    </p>
+                    <button
+                      onClick={handleDownloadPdf}
+                      className="bg-[#002757] text-white hover:bg-[#FA1651] flex items-center justify-center gap-2 text-sm rounded-lg p-2 transition duration-200 w-full mb-2"
+                    >
+                      <RiFileDownloadLine size={14} /> download PDF
+                    </button>
+                  </div>
+                </>
+              )}
 
+              {activeView === 'single' && <SingleUserComponent />}
+              {activeView === 'group' && <GroupSelectComponent />}
+            </div>
           </div>
 
-          <div className="hidden md:flex flex-col gap-6 items-center my-4">
+          {/* On md+ show the forms always next to QR code */}
+          <div className="hidden md:flex w-[60%] flex-col gap-4 p-6">
             <SingleUserComponent />
             <GroupSelectComponent />
           </div>
         </div>
 
-        {/* Toggle Buttons on Small Screens */}
-        <div className="md:hidden absolute right-[-40px] top-8 bg-[#002757] text-md font-bold py-2 px-2 rounded-r-md shadow-md flex flex-col">
+        {/* On md and smaller: buttons to toggle views */}
+        <div className="md:hidden flex justify-center gap-4 mt-4">
           <button
-            onClick={() => setActiveView((prev) => (prev === 'single' ? 'qr' : 'single'))}
-            className={`mb-2 bg-[#9FDAF9] rounded-md py-1 px-1 ${activeView === 'single' ? 'ring-2 ring-white' : ''}`}
+            onClick={() => setActiveView('single')}
+            className={`bg-[#002757] text-white px-4 py-2 rounded-lg ${
+              activeView === 'single' ? 'ring-2 ring-white' : ''
+            }`}
           >
-            <IoPersonSharp />
+            Create User
           </button>
           <button
-            onClick={() => setActiveView((prev) => (prev === 'group' ? 'qr' : 'group'))}
-            className={`bg-[#9FDAF9] rounded-md py-1 px-1 ${activeView === 'group' ? 'ring-2 ring-white' : ''}`}
+            onClick={() => setActiveView('group')}
+            className={`bg-[#002757] text-white px-4 py-2 rounded-lg ${
+              activeView === 'group' ? 'ring-2 ring-white' : ''
+            }`}
           >
-            <HiMiniUserGroup />
+            Create Group
+          </button>
+          <button
+            onClick={() => setActiveView('qr')}
+            className={`bg-[#002757] text-white px-4 py-2 rounded-lg ${
+              activeView === 'qr' ? 'ring-2 ring-white' : ''
+            }`}
+          >
+            Show QR
           </button>
         </div>
+
         <div className="text-center mt-6">
           <p className="text-sm font-semibold">
             This QR code is valid for 7 days.
@@ -132,8 +193,13 @@ export function QRCodeComponent() {
           </p>
         </div>
       </div>
+
       <div style={{ position: 'absolute', top: '-10000px', left: '-10000px' }}>
-        <div ref={pdfRef} style={{ width: '794px', height: '1123px' }} className="flex flex-col items-center justify-around">
+        <div
+          ref={pdfRef}
+          style={{ width: '794px', height: '1123px' }}
+          className="flex flex-col items-center justify-around"
+        >
           <QRCodePdfLayout ssid={ssid} password={password} />
         </div>
       </div>
