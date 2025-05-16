@@ -65,15 +65,15 @@ export default function SingleUserComponent(){
   }, []);
 
   return (
-    <div className="flex flex-col items-center w-full space-y-3 bg-white rounded-lg shadow-md p-6">
+    <div className="flex flex-col items-center w-full space-y-2 bg-white rounded-lg shadow-md p-4">
       <form
         onSubmit={handleSubmit}
-        className="grid grid-cols-2 gap-x-8 gap-y-4 w-full form-grid-collapse"
+        className="grid grid-cols-2 gap-x-8 gap-y-2 w-full form-grid-collapse"
       >
         <h3 className="text-xl font-bold pb-2 col-span-full text-center">User registration</h3>
 
         {/* Left Column */}
-        <div className="flex flex-col space-y-3">
+        <div className="flex flex-col space-y-2">
           <label className="text-sm font-medium">Mac Address *</label>
           <input
             type="text"

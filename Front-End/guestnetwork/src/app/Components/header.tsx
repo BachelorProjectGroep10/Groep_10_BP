@@ -28,8 +28,8 @@ export function HeaderComponent() {
     }, [language]);
 
     return (
-        <header className="w-full flex flex-col md:flex-row items-center justify-evenly p-4">
-            <div className="relative w-[120px] h-[60px] md:w-[200px] md:h-[100px]">
+        <header className="w-full flex flex-col md:flex-row items-center justify-around p-4">
+            <div className="relative w-[120px] h-[60px] ">
                 <Image
                     src={logoSrc}
                     alt="UCLL Logo"
@@ -47,17 +47,17 @@ export function HeaderComponent() {
                 </button>
 
                 {dropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded shadow-md z-50">
+                    <div className="absolute -left-24 mt-2 w-55 bg-gray-50 rounded shadow-md z-50">
                         <ul className="flex flex-col space-y-2 p-4">
                             <li>
                                 <Link href="/dashboard" className="text-[#002757] hover:text-[#FA1651] font-medium">
-                                    {language === "NL" ? "Dashboard" : "Dashboard"}
+                                    Dashboard
                                 </Link>
                             </li>
                             <li>
                                 <Link href="/" className="flex items-center text-[#002757] hover:text-[#FA1651] font-medium" onClick={handleLogout}>
                                     <LuLogOut className="mr-2" />
-                                    {language === "NL" ? "Afmelden" : "Logout"}
+                                    Logout
                                 </Link>
                             </li>
                             <li>

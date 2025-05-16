@@ -9,13 +9,15 @@ import { FaWifi } from 'react-icons/fa';
 import QRCodePdfLayout from './qrCodePdfLayout';
 import { RiFileDownloadLine } from "react-icons/ri";
 import { QRCode } from 'react-qrcode-logo';
-import { IoPersonSharp } from "react-icons/io5";
-import { HiMiniUserGroup } from "react-icons/hi2";
 import PasswordService from "../Services/PasswordService";
 import useSWR, { mutate } from "swr";
 import useInterval from "use-interval";
 import SingleUserComponent from './singleUser';
 import GroupSelectComponent from './groupSelect';
+import { IoQrCodeSharp } from "react-icons/io5";
+import { IoPersonAddSharp } from "react-icons/io5";
+import { MdGroups } from "react-icons/md";
+
 
 export function QRCodeComponent() {
   const pdfRef = React.useRef<HTMLDivElement | null>(null);
@@ -59,17 +61,14 @@ export function QRCodeComponent() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-between h-full w-full px-10 py-6">
-      <div className="w-full sm:max-w-[80%] md:max-w-[850px]">
-        <div className="bg-[#9FDAF9] px-2 py-4 rounded-lg shadow-lg w-full flex flex-col md:flex-row items-center justify-around gap-4">
-
-          {/* QR Code + Details or Form based on screen & activeView */}
-          <div className="flex flex-col items-center mx-6 w-full md:w-auto">
-            {/* On md+ show all side-by-side */}
+    <div className="flex flex-col items-center justify-between h-full w-full mt-2 ">
+      <div className="w-full max-w-screen-md mx-auto px-4">
+        <div className="bg-[#9FDAF9] px-2 py-2 rounded-lg shadow-lg w-full flex flex-col md:flex-row items-center justify-around gap-4 ">
+          <div className="flex flex-col items-center mx-8 w-full md:w-auto">
             <div className="hidden md:flex md:flex-col md:items-center">
               <h1 className="text-2xl font-bold text-center">{ssid}</h1>
               <FaWifi size={40} />
-              <h2 className="font-semibold my-4 text-sm text-accent">Scan QR code for access</h2>
+              <h2 className="font-semibold my-2 text-sm text-accent">Scan QR code for access</h2>
               {password ? (
                 <QRCode
                   value={`WIFI:S:${ssid};H:true;T:WPA;P:${password};;`}
@@ -88,7 +87,7 @@ export function QRCodeComponent() {
               ) : (
                 <p>Loading QR...</p>
               )}
-              <div className="mt-4 text-left w-full max-w-[300px]">
+              <div className="mt-2 text-left w-full max-w-[300px]">
                 <p className="text-sm font-semibold">
                   SSID: <span className="font-normal">{ssid}</span>
                 </p>
@@ -152,7 +151,7 @@ export function QRCodeComponent() {
           </div>
 
           {/* On md+ show the forms always next to QR code */}
-          <div className="hidden md:flex w-[60%] flex-col gap-4 p-6">
+          <div className="hidden md:flex flex-col gap-4">
             <SingleUserComponent />
             <GroupSelectComponent />
           </div>
@@ -166,7 +165,7 @@ export function QRCodeComponent() {
               activeView === 'single' ? 'ring-2 ring-white' : ''
             }`}
           >
-            Create User
+            <IoPersonAddSharp size={20} />
           </button>
           <button
             onClick={() => setActiveView('group')}
@@ -174,7 +173,8 @@ export function QRCodeComponent() {
               activeView === 'group' ? 'ring-2 ring-white' : ''
             }`}
           >
-            Create Group
+            <MdGroups size={30} />
+
           </button>
           <button
             onClick={() => setActiveView('qr')}
@@ -182,7 +182,7 @@ export function QRCodeComponent() {
               activeView === 'qr' ? 'ring-2 ring-white' : ''
             }`}
           >
-            Show QR
+            <IoQrCodeSharp size={20} />
           </button>
         </div>
 
