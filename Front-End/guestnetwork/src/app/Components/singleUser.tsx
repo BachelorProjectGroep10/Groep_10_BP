@@ -128,13 +128,13 @@ export default function SingleUserComponent(){
 
         {/* Message Display */}
         {message && (
-          <div className="mt-4 text-sm col-span-full text-center text-black px-4 rounded-md">
+          <div className="text-sm col-span-full text-center text-black px-4 rounded-md">
             {message}
           </div>
         )}
 
         {/* Submit Button - Full Width */}
-        <div className="col-span-full flex justify-center mt-2">
+        <div className="col-span-full flex justify-center">
           <button
             type="submit"
             className="bg-[#002757] text-white py-1 px-4 rounded-md text-sm"

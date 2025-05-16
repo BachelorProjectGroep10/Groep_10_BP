@@ -186,7 +186,7 @@ export function QRCodeComponent() {
           </button>
         </div>
 
-        <div className="text-center mt-6">
+        <div className="text-center mt-4">
           <p className="text-sm font-semibold">
             This QR code is valid for 7 days.
             <span className="hidden md:inline"> After that, you will need to scan it again.</span>
