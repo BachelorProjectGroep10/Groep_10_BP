@@ -59,14 +59,14 @@ export function QRCodeComponent() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-between h-full w-full px-4 py-2 overflow-hidden">
-      <div className="w-full max-w-[90%] md:max-w-[700px]">
+    <div className="flex flex-col items-center justify-between h-full w-full px-4 py-6 overflow-hidden">
+      <div className="w-full max-w-[90%] md:max-w-[850px]">
         <div className="bg-[#9FDAF9] p-4 rounded-lg shadow-lg w-full flex flex-col md:flex-row items-center justify-around gap-4">
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col items-center mx-6">
             <div className="flex flex-col items-center mb-4">
               <h1 className="text-2xl font-bold text-center">{ssid}</h1>
               <FaWifi size={40} className="md:flex hidden" />
-              <h2 className="font-semibold mt-2 text-sm text-accent">Scan QR code for access</h2>
+              <h2 className="font-semibold mt-4 text-sm text-accent">Scan QR code for access</h2>
             </div>
 
             {password ? (
@@ -87,16 +87,16 @@ export function QRCodeComponent() {
             ) : (
               <p>Loading QR...</p>
             )}
-            <div className="mt-2 text-left w-full">
+            <div className="mt-4 text-left w-full">
               <p className="text-sm font-semibold">
                 SSID: <span className="font-normal">{ssid}</span>
               </p>
-              <p className="text-sm font-semibold mb-2">
+              <p className="text-sm font-semibold mb-4">
                 Password: <span className="font-normal">{password ?? 'Loading...'}</span>
               </p>
               <button
                 onClick={handleDownloadPdf}
-                className="bg-[#002757] text-white hover:bg-[#FA1651] flex items-center justify-center gap-2 text-sm rounded-lg p-1 transition duration-200"
+                className="bg-[#002757] text-white hover:bg-[#FA1651] flex items-center justify-center gap-2 text-sm rounded-lg p-2 transition duration-200"
               >
                 <RiFileDownloadLine size={14} /> download PDF
               </button>
@@ -104,7 +104,7 @@ export function QRCodeComponent() {
 
           </div>
 
-          <div className="hidden md:flex flex-col gap-4 items-center">
+          <div className="hidden md:flex flex-col gap-6 items-center my-4">
             <SingleUserComponent />
             <GroupSelectComponent />
           </div>
@@ -125,7 +125,7 @@ export function QRCodeComponent() {
             <HiMiniUserGroup />
           </button>
         </div>
-        <div className="text-center mt-2">
+        <div className="text-center mt-6">
           <p className="text-sm font-semibold">
             This QR code is valid for 7 days.
             <span className="hidden md:inline"> After that, you will need to scan it again.</span>
