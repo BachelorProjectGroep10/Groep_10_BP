@@ -103,7 +103,7 @@ export function QRCodeComponent() {
                 </button>
               </div>
             </div>
-
+            
             {/* On md and smaller show the QR or form based on activeView */}
             <div className="md:hidden w-full flex flex-col items-center justify-center">
             {activeView === 'qr' && (
