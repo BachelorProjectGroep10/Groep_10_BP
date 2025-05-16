@@ -98,7 +98,7 @@ export function QRCodeComponent() {
                 onClick={handleDownloadPdf}
                 className="bg-[#002757] text-white hover:bg-[#FA1651] flex items-center justify-center gap-2 text-sm rounded-lg p-1 transition duration-200"
               >
-                <RiFileDownloadLine size={14} /> download PDF
+                <RiFileDownloadLine size={14} /> Download PDF
               </button>
             </div>
 
