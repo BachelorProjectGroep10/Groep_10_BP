@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import * as bodyParser from 'body-parser';
 import passwordRouter from './controller/password.routes';
+import userRouter from './controller/user.routes';
 import initializeCronJobs from './util/provider/cronjobs';
 const app = express();
 
@@ -28,6 +29,7 @@ app.use(cors({
 app.use(bodyParser.json());
 
 app.use('/password', passwordRouter);
+app.use('/user', userRouter);
 
 initializeCronJobs();
 

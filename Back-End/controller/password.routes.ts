@@ -1,4 +1,3 @@
-// backend/controller/password.routes.ts
 import express, { Request, Response, NextFunction } from 'express';
 import PasswordService from '../service/password.service';
 

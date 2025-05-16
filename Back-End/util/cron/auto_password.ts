@@ -1,7 +1,7 @@
 import cron from 'node-cron';
 import { insertPassword } from '../../domain/data-access/password.db';
 
-const SCHEDULE_EVERY_30_MIN = '*/30 * * * *'; // every 30 minutes
+const SCHEDULE_EVERY_60_MIN = '*/60 * * * *'; // every 60 minutes
 const EXECUTE_IMMEDIATELY = false;
 
 function generateAsciiPassword(length = 8): string {
@@ -19,7 +19,7 @@ export default class AutoPasswordCron {
       await this.generateAndStorePassword();
     }
 
-    cron.schedule(SCHEDULE_EVERY_30_MIN, async () => {
+    cron.schedule(SCHEDULE_EVERY_60_MIN, async () => {
       await this.generateAndStorePassword();
     });
 
