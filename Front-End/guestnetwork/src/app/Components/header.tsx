@@ -55,6 +55,11 @@ export function HeaderComponent() {
                                 </Link>
                             </li>
                             <li>
+                                <Link href="/overview" className="text-[#002757] hover:text-[#FA1651] font-medium">
+                                    Overview
+                                </Link>
+                            </li>
+                            <li>
                                 <Link href="/" className="flex items-center text-[#002757] hover:text-[#FA1651] font-medium" onClick={handleLogout}>
                                     <LuLogOut className="mr-2" />
                                     Logout

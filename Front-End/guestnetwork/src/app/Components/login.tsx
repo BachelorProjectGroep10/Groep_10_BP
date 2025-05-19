@@ -24,6 +24,7 @@ export default function LoginComponent() {
     if (response.ok) {
       const data = await response.json();
       sessionStorage.setItem("admin", JSON.stringify(data));
+      sessionStorage.setItem("token", data.token);
       setTimeout(() => {
         router.push("/dashboard");
       }, 1000);
