@@ -4,6 +4,7 @@ import cors from 'cors';
 import * as bodyParser from 'body-parser';
 import passwordRouter from './controller/password.routes';
 import userRouter from './controller/user.routes';
+import groupRouter from './controller/group.routes';
 import initializeCronJobs from './util/provider/cronjobs';
 import helmet from 'helmet';
 import adminRouter from './controller/admin.routes';
@@ -41,6 +42,7 @@ app.use(expressjwt({
 
 app.use('/password', passwordRouter);
 app.use('/user', userRouter);
+app.use('/group', groupRouter);
 app.use('/admin', adminRouter );
 
 initializeCronJobs();

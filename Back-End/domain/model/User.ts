@@ -3,7 +3,7 @@ export class User {
     readonly macAddress: string;
     readonly email?: string;
     readonly studentNumber?: string;
-    readonly password: string;
+    readonly password?: string;
     readonly timeNeeded: number;
     readonly active: number;
     readonly groupId?: number;
@@ -14,7 +14,7 @@ export class User {
         macAddress: string;
         email?: string;
         studentNumber?: string;
-        password: string;
+        password?: string;
         timeNeeded: number;
         active: number;
         groupId?: number;
