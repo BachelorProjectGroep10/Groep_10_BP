@@ -3,6 +3,7 @@
 import React from 'react';
 import Background from './background';
 import { QRCode } from 'react-qrcode-logo';
+import { FaWifi } from 'react-icons/fa';
 
 interface QRCodePdfLayoutProps {
   ssid?: string;
@@ -23,6 +24,22 @@ export function QRCodePdfLayout({ ssid, password }: QRCodePdfLayoutProps) {
       </div>
 
       <div className="relative z-10 flex flex-col items-center justify-center h-full text-center p-20">
+        <div className="mb-6 flex flex-col items-center justify-center">
+          <div className="bg-[#9FDAF9] w-32 h-32 sm:w-40 sm:h-40 rounded-full mb-4 flex items-center justify-center">
+            <img
+              src="/Images/Logo_UCLL_ROUND.png"
+              alt="UCLL Logo"
+              className="w-24 h-24 sm:w-32 sm:h-32 rounded-full"
+            />
+          </div>
+          <h1 className="text-3xl font-bold mb-2">
+            UCLL Guest Network
+          </h1>
+          <p className="text-lg">
+            Scan the QR code below to connect to the UCLL Guest WiFi
+          </p>
+        </div>
+
         <div className="bg-[#9FDAF9] p-10 rounded-xl shadow mb-6">
           <QRCode
             value={`WIFI:S:${ssid};H:true;T:WPA;P:${password};;`}
