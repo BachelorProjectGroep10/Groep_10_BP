@@ -137,7 +137,7 @@ export default function SingleUserComponent(){
         <div className="col-span-full flex justify-center">
           <button
             type="submit"
-            className="bg-[#002757] text-white py-1 px-4 rounded-md text-sm"
+            className="bg-[#002757] hover:bg-[#FA1651] text-white py-1 px-4 rounded-md text-sm"
           >
             Submit
           </button>
