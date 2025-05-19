@@ -3,20 +3,18 @@ import { User } from "../Types";
 const basicUrl = `${process.env.NEXT_PUBLIC_API_URL}`;
 
 const getUsers = async () => {
-    const storedToken = sessionStorage.getItem('admin');
-    const token = storedToken ? JSON.parse(storedToken).token : null;
+    const token = sessionStorage.getItem("token") || "";
     return fetch(`${basicUrl}/user`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`       
+            Authorization: `Bearer ${token}`
         }
     });
 }
 
 const addUser = async (user: User) => {
-    const storedToken = sessionStorage.getItem('admin');
-    const token = storedToken ? JSON.parse(storedToken).token : null;
+    const token = sessionStorage.getItem("token") || "";
     return fetch(`${basicUrl}/user`, {
         method: 'POST',
         headers: {

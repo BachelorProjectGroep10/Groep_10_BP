@@ -3,8 +3,7 @@ import { Group } from "../Types";
 const basicUrl = `${process.env.NEXT_PUBLIC_API_URL}`;
 
 const getGroups = async () => {
-    const storedToken = sessionStorage.getItem('admin');
-    const token = storedToken ? JSON.parse(storedToken).token : null;
+    const token = sessionStorage.getItem("token") || "";
     return fetch(`${basicUrl}/group`, {
         method: 'GET',
         headers: {
@@ -15,8 +14,7 @@ const getGroups = async () => {
 }
 
 const addGroup = async (group: Group) => {
-    const storedToken = sessionStorage.getItem('admin');
-    const token = storedToken ? JSON.parse(storedToken).token : null;
+    const token = sessionStorage.getItem("token") || "";
     return fetch(`${basicUrl}/group`, {
         method: 'POST',
         headers: {
@@ -27,9 +25,9 @@ const addGroup = async (group: Group) => {
     });
 }
 
-const UserService = {
+const GroupService = {
     getGroups,
     addGroup
 };
 
-export default UserService;
+export default GroupService;
