@@ -1,12 +1,12 @@
-'use client'
-import Background from "@/app/Components/background";
-import { HeaderComponent } from "@/app/Components/header";
-import QRCodeComponent from "../Components/qrCode";
+'use client';
 import { useRouter } from "next/navigation";
+import Background from "../../Components/background";
+import { HeaderComponent } from "../../Components/header";
 import { useEffect } from "react";
+import OverviewComponent from "../../Components/Overview";
 
 
-export default function Dashboard() {
+export default function Overview() {
   const router = useRouter();
   useEffect(() => {
     const admin = sessionStorage.getItem("admin");
@@ -23,8 +23,8 @@ export default function Dashboard() {
       </div>
       <div className="relative z-10 flex flex-col min-h-screen">
         <HeaderComponent />
-        <QRCodeComponent />
+        <OverviewComponent />
       </div>
     </div>
-  );
+  )
 }
