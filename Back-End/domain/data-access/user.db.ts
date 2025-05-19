@@ -1,6 +1,7 @@
 import knex from '../../util/database';
 import { User } from '../model/User';
 import { encryptPassword, decryptPassword } from '../../util/crypto';
+import { generateRandomPassword } from '../../util/autoPassword';
 
 // Get all users
 const getUsers = async (): Promise<User[]> => {
@@ -12,11 +13,15 @@ const getUsers = async (): Promise<User[]> => {
 };
 
 // Insert a user into the database
-const insertUser = async (user: User): Promise<void> => {
+const insertUser = async (user: User): Promise<string> => {
   const trx = await knex.transaction();
 
   try {
-    const { encrypted, iv } = encryptPassword(user.password);
+    // Generate random password
+    const randomPassword = generateRandomPassword();
+
+    // Encrypt the generated password
+    const { encrypted, iv } = encryptPassword(randomPassword);
 
     await trx('users').insert({
       macAddress: user.macAddress,
@@ -32,6 +37,9 @@ const insertUser = async (user: User): Promise<void> => {
 
     await trx.commit();
     console.log('User inserted successfully');
+
+    // Return the plain password so you can send it via email or show it
+    return randomPassword;
   } catch (err) {
     await trx.rollback();
     console.error('DB error inserting user:', err);

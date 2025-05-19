@@ -7,12 +7,20 @@ export type User = {
     readonly macAddress: string;
     readonly email?: string;
     readonly studentNumber?: string;
-    readonly password: string;
+    readonly password?: string;
     readonly timeNeeded: number;
     readonly active: number;
     readonly groupId?: number;
     readonly description?: string;
 }
+
+export type Group = {
+    readonly id?: number;
+    readonly groupName: string;
+    readonly description: string;
+    readonly password?: string;
+    readonly expiredAt: Date;
+};
 
 export type Admin = {
     readonly username: string;

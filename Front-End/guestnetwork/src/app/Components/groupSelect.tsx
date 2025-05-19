@@ -1,49 +1,64 @@
 import React, { useEffect, useState } from 'react';
+import GroupService from '../Services/GroupService';
 
 export default function GroupSelectComponent() {
   const [message, setMessage] = useState('');
   const [groupName, setGroupName] = useState('');
-  const [timeNeeded, setTimeNeeded] = useState('');
-  const [rows, setRows] = useState(5); 
+  const [expiredAt, setExpiredAt] = useState('');
+  const [description, setDescription] = useState('');
+  const [rows, setRows] = useState(4);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (parseInt(timeNeeded) < 1) {
-      alert('Days needed must be at least 1.');
+    if (!expiredAt) {
+      alert('Please select an expiration date.');
       return;
     }
 
-    setMessage(`✅ Group added successfully!`);
-    setGroupName('');
-    setTimeNeeded('');
+    const newGroup = {
+      groupName,
+      description,
+      expiredAt: new Date(expiredAt),
+    };
+
+    try {
+      const response = await GroupService.addGroup(newGroup);
+
+      if (response.ok) {
+        setMessage('✅ Group added successfully!');
+        setGroupName('');
+        setDescription('');
+        setExpiredAt('');
+      } else {
+        setMessage('❌ Error adding group.');
+      }
+    } catch (error) {
+      console.error(error);
+      setMessage('❌ An error occurred while submitting.');
+    }
   };
 
   useEffect(() => {
-    function handleResize() {
-      if (window.innerWidth <= 768) {
-        setRows(3);
-      } else {
-        setRows(5);
-      }
-    }
+    const handleResize = () => {
+      setRows(window.innerWidth <= 768 ? 3 : 4);
+    };
 
     handleResize();
     window.addEventListener('resize', handleResize);
-
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   return (
-    <div className="flex flex-col items-center w-full space-y-3 bg-white rounded-lg shadow-md p-6">
+    <div className="flex flex-col items-center w-full space-y-2 bg-white rounded-lg shadow-md p-4">
       <form
         onSubmit={handleSubmit}
-        className="grid grid-cols-2 gap-x-8 gap-y-4 w-full form-grid-collapse"
+        className="grid grid-cols-2 gap-x-8 gap-y-2 w-full form-grid-collapse"
       >
-        <h3 className="text-xl font-bold pb-2 col-span-full text-center">Group registration</h3>
+        <h3 className="text-xl font-bold pb-2 col-span-full text-center">Group Registration</h3>
 
         {/* Left Column */}
-        <div className="flex flex-col space-y-3">
+        <div className="flex flex-col space-y-2">
           <label className="text-sm font-medium">Group Name *</label>
           <input
             type="text"
@@ -53,19 +68,26 @@ export default function GroupSelectComponent() {
             className="bg-gray-300 text-black rounded-lg px-3 py-2 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
             required
           />
+
+          <label className="text-sm font-medium">Expires At *</label>
+          <input
+            type="date"
+            value={expiredAt}
+            onChange={(e) => setExpiredAt(e.target.value)}
+            className="bg-gray-300 text-black rounded-lg px-3 py-2 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
+            required
+          />
         </div>
 
         {/* Right Column */}
-        <div className="flex flex-col space-y-3">
-          <label className="text-sm font-medium">Days Needed *</label>
-          <input
-            type="number"
-            placeholder="7"
-            value={timeNeeded}
-            onChange={(e) => setTimeNeeded(e.target.value)}
-            min={1}
-            className="bg-gray-300 text-black rounded-lg px-3 py-2 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
-            required
+        <div className="flex flex-col space-y-2">
+          <label className="text-sm font-medium">Description</label>
+          <textarea
+            placeholder="Optional description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="bg-gray-300 text-black rounded-lg px-3 py-2 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300 resize-none"
+            rows={rows}
           />
         </div>
 
@@ -76,7 +98,7 @@ export default function GroupSelectComponent() {
           </div>
         )}
 
-        {/* Submit Button - Full Width */}
+        {/* Submit Button */}
         <div className="col-span-full flex justify-center">
           <button
             type="submit"

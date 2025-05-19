@@ -23,7 +23,6 @@ const addUser = async (user: User): Promise<void> => {
         macAddress: user.macAddress,
         email: user.email,
         studentNumber: user.studentNumber,
-        password: user.password,
         timeNeeded: user.timeNeeded,
         active: user.active,
         groupId: user.groupId,
