@@ -48,7 +48,7 @@ export default function OverviewComponent() {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-start gap-5 w-full h-full p-6 min-h-screen ">
+    <div className="flex flex-col items-center justify-start gap-5 w-full p-6">
       <div>
         <h1 className="text-3xl font-bold text-[#003366] flex items-center justify-center gap-2"> Overview </h1>
         <p className="text-gray-600 mb-4">Manage your users and groups here</p>

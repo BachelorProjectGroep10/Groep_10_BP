@@ -17,14 +17,14 @@ export default function Overview() {
     }
   }, []);
   return (
-      <div className="relative w-screen overflow-x-hidden overflow-y-auto md:h-screen md:overflow-hidden">
-        <div className="absolute top-0 left-0 w-screen h-screen">
-          <Background />
-        </div>
-        <div className="relative z-10 flex flex-col min-h-screen">
-          <HeaderComponent />
-          <OverviewComponent />
-        </div>
+    <div className="relative w-full min-h-screen overflow-x-hidden">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 ">
+        <Background />
       </div>
+      <div className="relative z-10 flex flex-col min-h-screen">
+        <HeaderComponent />
+        <OverviewComponent />
+      </div>
+    </div>
   )
 }
