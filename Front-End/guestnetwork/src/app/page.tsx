@@ -5,8 +5,12 @@ import { HeaderComponent } from "./Components/header";
 import LoginComponent from "./Components/login";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
+import './i18n'
 
 export default function Home() {
+  const {t} = useTranslation();
+
   const router = useRouter();
   useEffect(() => {
     const admin = sessionStorage.getItem("admin");

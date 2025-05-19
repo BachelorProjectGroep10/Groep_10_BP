@@ -8,5 +8,28 @@
         "ssid": "SSID",
         "password": "Password",
         "connect": "Connect"
+    },
+    "user": {
+        "userRegistration": "User Registration",
+        "userRegistrationSuccess": "✅ User registered successfully!",
+        "userRegistrationError": "❌ User registration failed",
+        "macAddress": "MAC Address",
+        "daysNeeded": "Days Needed",
+        "studentNumber": "Student Number",
+        "selectGroup": "Select Group",
+        "noGroup": "No group",
+        "description": "Description",
+        "optionalDescription": "Optional description",
+        "submit": "Submit"
+    },
+    "group": {
+        "groupRegistration": "Group Registration",
+        "groupRegistrationSuccess": "✅ Group registered successfully!",
+        "groupRegistrationError": "❌ Group registration failed",
+        "groupName": "Group Name",
+        "description": "Description",
+        "optionalDescription": "Optional description",
+        "expiresAt": "Expires At",
+        "submit": "Submit"
     }
 }

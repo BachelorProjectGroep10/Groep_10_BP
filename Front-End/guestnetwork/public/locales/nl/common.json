@@ -8,5 +8,28 @@
         "ssid": "SSID",
         "password": "Wachtwoord",
         "connect": "Verbinden"
+    },
+    "user": {
+        "userRegistration": "Gebruiker Registratie",
+        "userRegistrationSuccess": "✅ Registratie gebruiker succesvol",
+        "userRegistrationError": "❌ Registratie gebruiker mislukt",
+        "macAddress": "MAC-adres",
+        "daysNeeded": "Aantal dagen",
+        "studentNumber": "Studentnummer",
+        "selectGroup": "Selecteer Groep",
+        "noGroup": "Geen groep",
+        "description": "Beschrijving",
+        "optionalDescription": "Optionele beschrijving",
+        "submit": "Indienen"
+    },
+    "group": {
+        "groupRegistration": "Groep Registratie",
+        "groupRegistrationSuccess": "✅ Registratie groep succesvol",
+        "groupRegistrationError": "❌ Registratie groep mislukt",
+        "groupName": "Groepsnaam",
+        "description": "Beschrijving",
+        "optionalDescription": "Optionele beschrijving",
+        "expiresAt": "Verloopt op",
+        "submit": "Indienen"
     }
 }

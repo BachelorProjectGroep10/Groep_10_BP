@@ -12,6 +12,7 @@
     "date-fns": "^4.1.0",
     "html2canvas": "^1.4.1",
     "i18next": "^25.1.2",
+    "i18next-resources-for-ts": "^1.6.0",
     "jspdf": "^3.0.1",
     "next": "15.3.2",
     "next-i18next": "^15.4.2",

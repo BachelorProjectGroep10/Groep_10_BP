@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import GroupService from '../Services/GroupService';
+import { useTranslation } from "react-i18next";
+import '../i18n'; 
 
 export default function GroupSelectComponent() {
   const [message, setMessage] = useState('');
@@ -7,6 +9,8 @@ export default function GroupSelectComponent() {
   const [expiredAt, setExpiredAt] = useState('');
   const [description, setDescription] = useState('');
   const [rows, setRows] = useState(4);
+
+  const {t} = useTranslation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,21 +59,21 @@ export default function GroupSelectComponent() {
         onSubmit={handleSubmit}
         className="grid grid-cols-2 gap-x-8 gap-y-2 w-full form-grid-collapse"
       >
-        <h3 className="text-xl font-bold pb-2 col-span-full text-center">Group Registration</h3>
+        <h3 className="text-xl font-bold pb-2 col-span-full text-center">{t('group.groupRegistration')}</h3>
 
         {/* Left Column */}
         <div className="flex flex-col space-y-2">
-          <label className="text-sm font-medium">Group Name *</label>
+          <label className="text-sm font-medium">{t('group.groupName')} *</label>
           <input
             type="text"
-            placeholder="Group Name"
+            placeholder={t('group.groupName')}
             value={groupName}
             onChange={(e) => setGroupName(e.target.value)}
             className="bg-gray-300 text-black rounded-lg px-3 py-2 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
             required
           />
 
-          <label className="text-sm font-medium">Expires At *</label>
+          <label className="text-sm font-medium">{t('group.expiresAt')} *</label>
           <input
             type="date"
             value={expiredAt}
@@ -81,9 +85,9 @@ export default function GroupSelectComponent() {
 
         {/* Right Column */}
         <div className="flex flex-col space-y-2">
-          <label className="text-sm font-medium">Description</label>
+          <label className="text-sm font-medium">{t('group.description')}</label>
           <textarea
-            placeholder="Optional description"
+            placeholder={t('group.optionalDescription')}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             className="bg-gray-300 text-black rounded-lg px-3 py-2 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300 resize-none"
@@ -104,7 +108,7 @@ export default function GroupSelectComponent() {
             type="submit"
             className="bg-[#002757] hover:bg-[#FA1651] text-white py-1 px-4 rounded-md text-sm"
           >
-            Submit
+            {t('group.submit')}
           </button>
         </div>
       </form>
