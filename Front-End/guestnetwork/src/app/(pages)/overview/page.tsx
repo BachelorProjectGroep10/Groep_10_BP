@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import Background from "../../Components/background";
 import { HeaderComponent } from "../../Components/header";
 import { useEffect } from "react";
-import OverviewComponent from "../../Components/Overview";
+import OverviewComponent from "../../Components/Overview/Overview";
 
 
 export default function Overview() {
