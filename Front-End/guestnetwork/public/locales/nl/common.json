@@ -15,6 +15,7 @@
         "daysNeeded": "Aantal dagen",
         "studentNumber": "Studentnummer",
         "selectGroup": "Selecteer Groep",
+        "selectVlan": "Selecteer VLAN",
         "noGroup": "Geen groep",
         "description": "Beschrijving",
         "optionalDescription": "Optionele beschrijving",

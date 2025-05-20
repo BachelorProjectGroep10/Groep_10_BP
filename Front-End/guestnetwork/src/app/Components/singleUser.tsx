@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import UserService from '../Services/UserService';
 import { User } from '../Types';
 import GroupService from '../Services/GroupService';
+import VlanService from '../Services/VlanService';
 import { useTranslation } from "react-i18next";
 import '../i18n'; 
 import { IoPersonAddSharp } from 'react-icons/io5';
@@ -21,6 +22,8 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
   const [description, setDescription] = useState('');
   const [groups, setGroups] = useState<{ id: number; groupName: string }[]>([]);
   const [groupId, setGroupId] = useState<number | null>(null);
+  const [vlans, setVlans] = useState<{ id: number; vlanName: string }[]>([]);
+  const [vlanId, setVlanId] = useState<number | null>(null);
   const [rows, setRows] = useState(6);
   const [isUserFormOpen, setIsUserFormOpen] = useState(false);
 
@@ -48,6 +51,10 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
       (newUser as any).groupId = groupId;
     }
 
+    if (vlanId !== null) {
+      (newUser as any).vlanId = vlanId;
+    }
+
     try {
       const response = await UserService.addUser(newUser);
       if (response.ok) {
@@ -59,6 +66,7 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
         setExpiredAt('');
         setDescription('');
         setGroupId(null);
+        setVlanId(null);
       } else {
         setMessage(t('user.userRegistrationError'));
       }
@@ -91,6 +99,25 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
     }
 
     fetchGroups();
+
+    async function fetchVlans() {
+      try {
+        const response = await VlanService.getVlans();
+        if (!response.ok) {
+          throw new Error('Failed to fetch VLANs');
+        }
+        const data = await response.json();
+        const simplifiedVlans = data.map((v: any) => ({
+          id: v.id,
+          vlanName: v.vlanName,
+        }));
+        setVlans(simplifiedVlans);
+      } catch (err) {
+        console.error('Error fetching VLANs:', err);
+      }
+    }
+
+    fetchVlans();
 
     function handleResize() {
       setRows(window.innerWidth <= 768 ? 3 : 6);
@@ -179,6 +206,22 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
               {groups.map((group) => (
                 <option key={group.id} value={group.id}>
                   {group.groupName}
+                </option>
+              ))}
+            </select>
+
+            <label className="text-sm font-medium">{t('user.selectVlan')}</label>
+            <select
+              value={vlanId === null ? '' : vlanId}
+              onChange={(e) =>
+                setVlanId(e.target.value === '' ? null : Number(e.target.value))
+              }
+              className="bg-gray-300 text-black rounded-lg px-2 pr-6 py-2 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
+            >
+              <option value="">TO BE CHANGED - Default</option>
+              {vlans.map((vlan) => (
+                <option key={vlan.id} value={vlan.id}>
+                  {vlan.vlanName}
                 </option>
               ))}
             </select>

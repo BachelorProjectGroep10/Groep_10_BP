@@ -21,6 +21,13 @@ export type Group = {
     readonly password?: string;
 };
 
+export type Vlan = {
+    readonly id?: number;
+    readonly vlanNumber: number;
+    readonly vlanName: string;
+    readonly isDefault?: boolean;
+}
+
 export type Admin = {
     readonly username: string;
     readonly password: string;

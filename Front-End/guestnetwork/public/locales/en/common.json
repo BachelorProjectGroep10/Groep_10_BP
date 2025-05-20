@@ -15,6 +15,7 @@
         "expiredAt": "Expiration Date",
         "studentNumber": "Student Number",
         "selectGroup": "Select Group",
+        "selectVlan": "Select VLAN",
         "noGroup": "No group",
         "description": "Description",
         "optionalDescription": "Optional description",
