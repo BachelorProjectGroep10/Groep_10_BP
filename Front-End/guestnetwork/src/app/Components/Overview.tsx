@@ -90,14 +90,14 @@ export default function OverviewComponent() {
                   {users.map((user: User, idx: number) => (
                     <tr
                       key={user.id}
-                      className="hover:bg-[#9FDAF9]  text-[#003366] text-left border-b border-gray-200"
+                      className="hover:bg-[#9FDAF9] text-[#003366] text-left border-b border-gray-200"
                     >
                       <td className="px-6 py-4">{user.macAddress}</td>
                       <td className="px-6 py-4">{user.groupId}</td>
                       <td className="px-6 py-4">{user.email}</td>
                       <td className="px-6 py-4">{user.studentNumber}</td>
                       <td className="px-6 py-4">{user.password}</td>
-                      <td className="px-6 py-4">{formatDate(user.expiredAt)}</td>
+                      <td className="px-6 py-4">{formatDate(user?.expiredAt)}</td>
                       <td className="px-6 py-4">
                         <span
                           className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
