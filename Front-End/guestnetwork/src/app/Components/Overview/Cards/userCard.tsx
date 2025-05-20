@@ -17,7 +17,7 @@ export default function UserCard({ user }: UserCardProps) {
       </div>
       <div className="text-sm text-[#003366] space-y-1">
         <p>{user.email}</p>
-        <p className="font-semibold">{user.studentNumber}</p>
+        <p className="font-semibold">{user.uid}</p>
       </div>
 
       <div className="text-sm text-[#003366]">

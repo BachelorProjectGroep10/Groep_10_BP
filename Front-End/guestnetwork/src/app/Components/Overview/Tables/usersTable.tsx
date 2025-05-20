@@ -18,7 +18,7 @@ export default function UsersTable( { users }: UserTableProps) {
             <th className="px-6 py-3 font-semibold">{t('overview.macAddress')}</th>
             <th className="px-6 py-3 font-semibold">{t('overview.groupId')}</th>
             <th className="px-6 py-3 font-semibold">Email</th>
-            <th className="px-6 py-3 font-semibold">{t('overview.studentNumber')}</th>
+            <th className="px-6 py-3 font-semibold">{t('overview.uid')}</th>
             <th className="px-6 py-3 font-semibold">{t('overview.password')}</th>
             <th className="px-6 py-3 font-semibold">{t('overview.expirationDate')}</th>
             <th className="px-6 py-3 font-semibold">{t('overview.active')}</th>
@@ -37,7 +37,7 @@ export default function UsersTable( { users }: UserTableProps) {
                 <td className="px-6 py-4">{user.macAddress}</td>
                 <td className="px-6 py-4">{user.groupId}</td>
                 <td className="px-6 py-4">{user.email}</td>
-                <td className="px-6 py-4">{user.studentNumber}</td>
+                <td className="px-6 py-4">{user.uid}</td>
                 <td className="px-6 py-4">{user.password}</td>
                 <td className="px-6 py-4">{formatDate(user?.expiredAt)}</td>
                 <td className="px-6 py-4">
