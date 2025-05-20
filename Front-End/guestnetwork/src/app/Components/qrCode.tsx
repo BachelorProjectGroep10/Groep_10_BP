@@ -69,7 +69,7 @@ export function QRCodeComponent() {
       <div className="w-full max-w-screen-md mx-auto px-4">
         <div className="bg-[#9FDAF9] px-2 py-2 rounded-lg shadow-lg w-full flex flex-col md:flex-row items-center justify-around gap-4 ">
           <div className="flex flex-col items-center mx-8 w-full md:w-auto">
-            <div className="hidden md:flex md:flex-col md:items-center">
+            <div className="hidden md:flex md:flex-col md:items-center py-4">
               <h1 className="text-2xl font-bold text-center">{t('qrcode.title')}</h1>
               <FaWifi size={40} />
               <h2 className="font-semibold my-2 text-sm text-accent">{t('qrcode.smallMessage')}</h2>
@@ -108,7 +108,7 @@ export function QRCodeComponent() {
             </div>
             
             {/* On md and smaller show the QR or form based on activeView */}
-            <div className="md:hidden w-full flex flex-col items-center justify-center">
+            <div className="md:hidden w-full flex flex-col items-center justify-center p-2">
             {activeView === 'qr' && (
               <>
                 <h1 className="text-2xl font-bold text-center">{ssid}</h1>
@@ -149,15 +149,15 @@ export function QRCodeComponent() {
                 </>
               )}
 
-              {activeView === 'single' && <SingleUserComponent />}
-              {activeView === 'group' && <GroupSelectComponent />}
+              {activeView === 'single' && <SingleUserComponent isMobile={true} />}
+              {activeView === 'group' && <GroupSelectComponent isMobile={true} />}
             </div>
           </div>
 
           {/* On md+ show the forms always next to QR code */}
-          <div className="hidden md:flex flex-col gap-4">
-            <SingleUserComponent />
-            <GroupSelectComponent />
+          <div className="hidden md:flex flex-col items-center justify-center gap-4">
+            <SingleUserComponent isMobile={false} />
+            <GroupSelectComponent isMobile={false} />
           </div>
         </div>
 
