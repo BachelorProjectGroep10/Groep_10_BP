@@ -6,7 +6,7 @@ export type User = {
     readonly id?: number;
     readonly macAddress: string;
     readonly email?: string;
-    readonly studentNumber?: string;
+    readonly uid?: string;
     readonly password?: string;
     readonly expiredAt: Date;
     readonly active: number;

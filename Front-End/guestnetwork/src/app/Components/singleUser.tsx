@@ -17,7 +17,7 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
   const [message, setMessage] = useState('');
   const [macAddress, setMacAddress] = useState('');
   const [email, setEmail] = useState('');
-  const [studentNumber, setStudentNumber] = useState('');
+  const [uid, setUid] = useState('');
   const [expiredAt, setExpiredAt] = useState('');
   const [description, setDescription] = useState('');
   const [groups, setGroups] = useState<{ id: number; groupName: string }[]>([]);
@@ -41,7 +41,7 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
     const newUser: User = {
       macAddress,
       email,
-      studentNumber,
+      uid,
       expiredAt: new Date(expiredAt),
       active: 1,
       description,
@@ -62,7 +62,7 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
         // Reset form fields
         setMacAddress('');
         setEmail('');
-        setStudentNumber('');
+        setUid('');
         setExpiredAt('');
         setDescription('');
         setGroupId(null);
@@ -182,12 +182,12 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
               className="bg-gray-300 text-black rounded-lg px-3 py-2 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
 
-            <label className="text-sm font-medium">{t('user.studentNumber')}</label>
+            <label className="text-sm font-medium">{t('user.uid')}</label>
             <input
               type="text"
               placeholder='X0000000'
-              value={studentNumber}
-              onChange={(e) => setStudentNumber(e.target.value)}
+              value={uid}
+              onChange={(e) => setUid(e.target.value)}
               className="bg-gray-300 text-black rounded-lg px-3 py-2 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
           </div>

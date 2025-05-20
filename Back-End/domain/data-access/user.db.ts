@@ -28,7 +28,7 @@ const insertUser = async (user: User): Promise<string> => {
     await trx('users').insert({
       macAddress: user.macAddress,
       email: user.email,
-      studentNumber: user.studentNumber,
+      uid: user.uid,
       password: encrypted,
       iv,
       expiredAt: expiredDate.toISOString().slice(0, 19).replace('T', ' '),

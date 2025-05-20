@@ -8,7 +8,7 @@ const getAllUsers = async (): Promise<User[]> => {
         id: user.id,
         macAddress: user.macAddress,
         email: user.email,
-        studentNumber: user.studentNumber,
+        uid: user.uid,
         password: user.password,
         expiredAt: user.expiredAt,
         active: user.active,
@@ -22,7 +22,7 @@ const addUser = async (user: User): Promise<void> => {
     const newUser = new User({
         macAddress: user.macAddress,
         email: user.email,
-        studentNumber: user.studentNumber,
+        uid: user.uid,
         expiredAt: user.expiredAt,
         active: user.active,
         groupId: user.groupId,
