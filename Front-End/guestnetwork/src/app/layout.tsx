@@ -17,11 +17,15 @@ export const metadata: Metadata = {
   description: "Bachelorproef UCLL Guest Network groep 10",
 };
 
+interface LayoutProps {
+  children: React.ReactNode;
+  types: any;
+}
+
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+  types
+}: LayoutProps) {
   return (
     <html lang="en">
       <body
