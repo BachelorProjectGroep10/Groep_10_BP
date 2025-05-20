@@ -32,7 +32,7 @@ export function HeaderComponent() {
     }, [language]);
 
     return (
-        <header className="w-full flex flex-col md:flex-row items-center justify-around p-4">
+        <header className="w-full flex flex-col md:flex-row items-center justify-around pt-1">
             <div className="relative w-[120px] h-[60px] ">
                 <Image
                     src={logoSrc}
