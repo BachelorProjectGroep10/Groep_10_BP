@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import GroupService from '../Services/GroupService';
 import { useTranslation } from "react-i18next";
 import '../i18n'; 
+import { Group } from '../Types';
 
 export default function GroupSelectComponent() {
   const [message, setMessage] = useState('');
   const [groupName, setGroupName] = useState('');
-  const [expiredAt, setExpiredAt] = useState('');
   const [description, setDescription] = useState('');
   const [rows, setRows] = useState(4);
 
@@ -15,15 +15,9 @@ export default function GroupSelectComponent() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!expiredAt) {
-      alert('Please select an expiration date.');
-      return;
-    }
-
-    const newGroup = {
+    const newGroup: Group = {
       groupName,
       description,
-      expiredAt: new Date(expiredAt),
     };
 
     try {
@@ -33,7 +27,6 @@ export default function GroupSelectComponent() {
         setMessage('✅ Group added successfully!');
         setGroupName('');
         setDescription('');
-        setExpiredAt('');
       } else {
         setMessage('❌ Error adding group.');
       }
@@ -69,15 +62,6 @@ export default function GroupSelectComponent() {
             placeholder={t('group.groupName')}
             value={groupName}
             onChange={(e) => setGroupName(e.target.value)}
-            className="bg-gray-300 text-black rounded-lg px-3 py-2 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
-            required
-          />
-
-          <label className="text-sm font-medium">{t('group.expiresAt')} *</label>
-          <input
-            type="date"
-            value={expiredAt}
-            onChange={(e) => setExpiredAt(e.target.value)}
             className="bg-gray-300 text-black rounded-lg px-3 py-2 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
             required
           />

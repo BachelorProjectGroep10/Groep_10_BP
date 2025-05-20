@@ -8,7 +8,7 @@ export type User = {
     readonly email?: string;
     readonly studentNumber?: string;
     readonly password?: string;
-    readonly timeNeeded: number;
+    readonly expiredAt: Date;
     readonly active: number;
     readonly groupId?: number;
     readonly description?: string;
@@ -19,7 +19,6 @@ export type Group = {
     readonly groupName: string;
     readonly description: string;
     readonly password?: string;
-    readonly expiredAt: Date;
 };
 
 export type Admin = {
