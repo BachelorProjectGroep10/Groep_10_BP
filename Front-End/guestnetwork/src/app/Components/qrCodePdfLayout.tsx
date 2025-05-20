@@ -3,25 +3,31 @@
 import React from 'react';
 import Background from './background';
 import { QRCode } from 'react-qrcode-logo';
-import { FaWifi } from 'react-icons/fa';
 
 interface QRCodePdfLayoutProps {
   ssid?: string;
   password?: string;
+  showBackground?: boolean;
 }
 
-export function QRCodePdfLayout({ ssid, password }: QRCodePdfLayoutProps) {
+export function QRCodePdfLayout({
+  ssid,
+  password,
+  showBackground = true, 
+}: QRCodePdfLayoutProps) {
   return (
     <div
       className="relative bg-white overflow-hidden"
-      style={{ width: '794px', height: '1123px', position: 'relative' }}
+      style={{ width: '794px', height: '1123px' }}
     >
-      <div  
-        className="absolute top-0 left-0"
-        style={{ width: '794px', height: '1123px', zIndex: 0 }}
-      >
-        <Background />
-      </div>
+      {showBackground && (
+        <div
+          className="absolute top-0 left-0"
+          style={{ width: '794px', height: '1123px', zIndex: 0 }}
+        >
+          <Background />
+        </div>
+      )}
 
       <div className="relative z-10 flex flex-col items-center justify-center h-full text-center p-20">
         <div className="mb-6 flex flex-col items-center justify-center">
