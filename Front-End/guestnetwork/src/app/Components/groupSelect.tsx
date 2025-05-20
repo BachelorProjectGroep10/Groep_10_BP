@@ -7,11 +7,11 @@ import { IoPersonAddSharp } from 'react-icons/io5';
 import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa';
 import { MdGroups } from 'react-icons/md';
 
-interface Group {
+interface GroupInterface {
   isMobile: boolean;
 }
 
-export default function GroupSelectComponent( {isMobile}: Group) {
+export default function GroupSelectComponent( {isMobile}: GroupInterface) {
   const [message, setMessage] = useState('');
   const [groupName, setGroupName] = useState('');
   const [description, setDescription] = useState('');
@@ -92,15 +92,6 @@ export default function GroupSelectComponent( {isMobile}: Group) {
               placeholder={t('group.groupName')}
               value={groupName}
               onChange={(e) => setGroupName(e.target.value)}
-              className="bg-gray-300 text-black rounded-lg px-3 py-2 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
-              required
-            />
-
-            <label className="text-sm font-medium">{t('group.expiresAt')} *</label>
-            <input
-              type="date"
-              value={expiredAt}
-              onChange={(e) => setExpiredAt(e.target.value)}
               className="bg-gray-300 text-black rounded-lg px-3 py-2 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
               required
             />
