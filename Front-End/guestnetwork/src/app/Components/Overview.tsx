@@ -77,7 +77,7 @@ export default function OverviewComponent() {
                   <th className="px-6 py-3 font-semibold">Email</th>
                   <th className="px-6 py-3 font-semibold">{t('overview.studentNumber')}</th>
                   <th className="px-6 py-3 font-semibold">{t('overview.password')}</th>
-                  <th className="px-6 py-3 font-semibold">{t('overview.timeNeeded')}</th>
+                  <th className="px-6 py-3 font-semibold">{t('overview.expirationDate')}</th>
                   <th className="px-6 py-3 font-semibold">{t('overview.active')}</th>
                 </tr>
               </thead>
@@ -97,7 +97,7 @@ export default function OverviewComponent() {
                       <td className="px-6 py-4">{user.email}</td>
                       <td className="px-6 py-4">{user.studentNumber}</td>
                       <td className="px-6 py-4">{user.password}</td>
-                      <td className="px-6 py-4">{user.timeNeeded} {t('overview.days')}</td>
+                      <td className="px-6 py-4">{formatDate(user.expiredAt)}</td>
                       <td className="px-6 py-4">
                         <span
                           className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${

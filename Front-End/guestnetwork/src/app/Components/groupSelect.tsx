@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import GroupService from '../Services/GroupService';
 import { useTranslation } from "react-i18next";
 import '../i18n'; 
+import { Group } from '../Types';
 import { IoPersonAddSharp } from 'react-icons/io5';
 import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa';
 import { MdGroups } from 'react-icons/md';
@@ -13,7 +14,6 @@ interface Group {
 export default function GroupSelectComponent( {isMobile}: Group) {
   const [message, setMessage] = useState('');
   const [groupName, setGroupName] = useState('');
-  const [expiredAt, setExpiredAt] = useState('');
   const [description, setDescription] = useState('');
   const [rows, setRows] = useState(4);
   const [isGroupFormOpen, setIsGroupFormOpen] = useState(false);
@@ -23,15 +23,9 @@ export default function GroupSelectComponent( {isMobile}: Group) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!expiredAt) {
-      alert('Please select an expiration date.');
-      return;
-    }
-
-    const newGroup = {
+    const newGroup: Group = {
       groupName,
       description,
-      expiredAt: new Date(expiredAt),
     };
 
     try {
@@ -41,7 +35,6 @@ export default function GroupSelectComponent( {isMobile}: Group) {
         setMessage('✅ Group added successfully!');
         setGroupName('');
         setDescription('');
-        setExpiredAt('');
       } else {
         setMessage('❌ Error adding group.');
       }

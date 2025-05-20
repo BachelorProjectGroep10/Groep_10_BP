@@ -17,7 +17,7 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
   const [macAddress, setMacAddress] = useState('');
   const [email, setEmail] = useState('');
   const [studentNumber, setStudentNumber] = useState('');
-  const [timeNeeded, setTimeNeeded] = useState('');
+  const [expiredAt, setExpiredAt] = useState('');
   const [description, setDescription] = useState('');
   const [groups, setGroups] = useState<{ id: number; groupName: string }[]>([]);
   const [groupId, setGroupId] = useState<number | null>(null);
@@ -29,9 +29,8 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-
-    if (parseInt(timeNeeded) < 1) {
-      alert('Days needed must be at least 1.');
+    if (!expiredAt) {
+      alert('Please select an expiration date.');
       return;
     }
 
@@ -40,7 +39,7 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
       macAddress,
       email,
       studentNumber,
-      timeNeeded: parseInt(timeNeeded),
+      expiredAt: new Date(expiredAt),
       active: 1,
       description,
     };
@@ -57,7 +56,7 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
         setMacAddress('');
         setEmail('');
         setStudentNumber('');
-        setTimeNeeded('');
+        setExpiredAt('');
         setDescription('');
         setGroupId(null);
       } else {
@@ -109,7 +108,7 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
         onSubmit={handleSubmit}
         className="grid grid-cols-2 gap-x-8 gap-y-2 w-full form-grid-collapse"
       >
-        <div className="col-span-full flex items-center justify-between mb-4">
+       <div className="col-span-full flex items-center justify-between mb-4">
           <div className="flex items-center justify-center gap-2">
             <h2 className="text-2xl font-bold text-[#002757] flex items-center justify-center gap-2">
               <IoPersonAddSharp className="text-3xl" />
@@ -138,13 +137,11 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
               required
             />
 
-            <label className="text-sm font-medium">{t('user.daysNeeded')} *</label>
+            <label className="text-sm font-medium">{t('user.expiredAt')} *</label>
             <input
-              type="number"
-              placeholder="7"
-              value={timeNeeded}
-              onChange={(e) => setTimeNeeded(e.target.value)}
-              min={1}
+              type="date"
+              value={expiredAt}
+              onChange={(e) => setExpiredAt(e.target.value)}
               className="bg-gray-300 text-black rounded-lg px-3 py-2 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
               required
             />

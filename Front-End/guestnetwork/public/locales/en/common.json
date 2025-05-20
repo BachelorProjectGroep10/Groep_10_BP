@@ -12,7 +12,7 @@
         "userRegistrationSuccess": "✅ User registered successfully!",
         "userRegistrationError": "❌ User registration failed",
         "macAddress": "MAC Address",
-        "daysNeeded": "Days Needed",
+        "expiredAt": "Expiration Date",
         "studentNumber": "Student Number",
         "selectGroup": "Select Group",
         "noGroup": "No group",
@@ -27,7 +27,6 @@
         "groupName": "Group Name",
         "description": "Description",
         "optionalDescription": "Optional description",
-        "expiresAt": "Expires At",
         "submit": "Submit"
     },
     "header": {
@@ -49,7 +48,6 @@
         "groupId": "Group ID",
         "studentNumber": "Student Number",
         "password": "Password",
-        "timeNeeded": "Time Needed",
         "active": "Active",
         "days": "Days",
         "yes": "Yes",
