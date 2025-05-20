@@ -3,6 +3,7 @@
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { QRCodeSVG } from 'qrcode.react';
+import { MdDashboardCustomize } from "react-icons/md";
 import React from 'react';
 import { useEffect, useState } from "react";
 import { FaWifi } from 'react-icons/fa';
@@ -22,6 +23,8 @@ import '../i18n';
 
 
 export function QRCodeComponent() {
+  const [showBackground, setShowBackground] = useState(true);
+  const [showModal, setShowModal] = useState(false);
   const pdfRef = React.useRef<HTMLDivElement | null>(null);
 
   const [activeView, setActiveView] = useState<'qr' | 'single' | 'group'>('qr');
@@ -98,12 +101,20 @@ export function QRCodeComponent() {
                 <p className="text-sm font-semibold mb-4">
                   {t('qrcode.password')}: <span className="font-normal">{password ?? t('qrcode.loading')}</span>
                 </p>
-                <button
-                  onClick={handleDownloadPdf}
-                  className="bg-[#002757] text-white hover:bg-[#FA1651] flex items-center justify-center gap-2 text-sm rounded-lg p-2 transition duration-200"
-                >
-                  <RiFileDownloadLine size={14} /> download PDF
-                </button>
+                <div className="mt-4 mx-left w-full max-w-[200px] flex flex-col gap-2">
+                  <div className="flex gap-2">
+                    <button
+                      onClick={handleDownloadPdf}
+                      className="bg-[#002757] text-white hover:bg-[#FA1651] flex items-center justify-center gap-2 text-sm rounded-lg p-2 transition duration-200 mb-2"                    >
+                      <RiFileDownloadLine size={14} /> download PDF
+                    </button>
+                    <button 
+                      onClick={() => setShowModal(true)}
+                      className="bg-[#002757] text-white hover:bg-[#FA1651] flex items-center justify-center gap-2 text-sm rounded-lg p-2 transition duration-200 mb-2"                    >
+                      <MdDashboardCustomize />
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
             
@@ -139,12 +150,20 @@ export function QRCodeComponent() {
                     <p className="text-sm font-semibold mb-4">
                       {t('qrcode.password')}: <span className="font-normal">{password ?? t('qrcode.loading')}</span>
                     </p>
-                    <button
-                      onClick={handleDownloadPdf}
-                      className="bg-[#002757] text-white hover:bg-[#FA1651] flex items-center justify-center gap-2 text-sm rounded-lg p-2 transition duration-200 w-full mb-2"
-                    >
-                      <RiFileDownloadLine size={14} /> download PDF
-                    </button>
+                    <div className="mt-4 mx-left w-full max-w-[200px] flex flex-col gap-2">
+                      <div className="flex gap-2">
+                        <button
+                          onClick={handleDownloadPdf}
+                          className="bg-[#002757] text-white hover:bg-[#FA1651] flex items-center justify-center gap-2 text-sm rounded-lg p-2 transition duration-200 mb-2"                    >
+                          <RiFileDownloadLine size={14} /> download PDF
+                        </button>
+                        <button 
+                          onClick={() => setShowModal(true)}
+                          className="bg-[#002757] text-white hover:bg-[#FA1651] flex items-center justify-center gap-2 text-sm rounded-lg p-2 transition duration-200 mb-2"                    >
+                          <MdDashboardCustomize />
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </>
               )}
@@ -204,9 +223,43 @@ export function QRCodeComponent() {
           style={{ width: '794px', height: '1123px' }}
           className="flex flex-col items-center justify-around"
         >
-          <QRCodePdfLayout ssid={ssid} password={password} />
+          <QRCodePdfLayout ssid={ssid} password={password} showBackground={showBackground} />
         </div>
       </div>
+
+      {/* Customize Modal */}
+      {showModal && (
+        <div className="fixed top-0 left-0 w-full h-full bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
+            <h2 className="text-lg font-bold mb-4">Customize PDF Layout</h2>
+
+            <label className="flex items-center mb-4 cursor-pointer text-gray-800">
+              <input
+                type="checkbox"
+                checked={showBackground}
+                onChange={(e) => setShowBackground(e.target.checked)}
+                className="form-checkbox h-5 w-5 text-[#002757] rounded border-gray-300 focus:ring-[#002757] focus:ring-2"
+              />
+              <span className="ml-2 select-none">Show background ("rounds")</span>
+            </label>
+
+            <div className="flex justify-end gap-2">
+              <button
+                className="bg-gray-300 px-4 py-2 rounded"
+                onClick={() => setShowModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="bg-[#002757] text-white px-4 py-2 rounded"
+                onClick={() => setShowModal(false)}
+              >
+                Apply
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
