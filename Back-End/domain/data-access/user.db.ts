@@ -23,13 +23,15 @@ const insertUser = async (user: User): Promise<string> => {
     // Encrypt the generated password
     const { encrypted, iv } = encryptPassword(randomPassword);
 
+    const expiredDate = new Date(user.expiredAt);
+
     await trx('users').insert({
       macAddress: user.macAddress,
       email: user.email,
       studentNumber: user.studentNumber,
       password: encrypted,
       iv,
-      timeNeeded: user.timeNeeded,
+      expiredAt: expiredDate.toISOString().slice(0, 19).replace('T', ' '),
       active: user.active,
       groupId: user.groupId,
       description: user.description,

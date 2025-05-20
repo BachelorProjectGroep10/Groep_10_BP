@@ -24,14 +24,11 @@ const insertGroup = async (group: Group): Promise<string> => {
     // Encrypt the generated password
     const { encrypted, iv } = encryptPassword(randomPassword);
 
-    const expiredDate = new Date(group.expiredAt);
-
     await trx('groups').insert({
       groupName: group.groupName,
       description: group.description,
       password: encrypted,
       iv,
-      expiredAt: expiredDate.toISOString().slice(0, 19).replace('T', ' '),
     });
 
     await trx.commit();

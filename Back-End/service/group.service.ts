@@ -9,7 +9,6 @@ const getAllGroups = async (): Promise<Group[]> => {
             groupName: group.groupName,
             description: group.description,
             password: group.password,
-            expiredAt: group.expiredAt,
         });
     });
 };
@@ -17,8 +16,7 @@ const getAllGroups = async (): Promise<Group[]> => {
 const addGroup = async (group: Group): Promise<void> => {
     const newGroup = new Group({
         groupName: group.groupName,
-        description: group.description,
-        expiredAt: group.expiredAt,
+        description: group.description
     });
     await insertGroup(newGroup);
 }

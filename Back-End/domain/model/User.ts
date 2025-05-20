@@ -4,7 +4,7 @@ export class User {
     readonly email?: string;
     readonly studentNumber?: string;
     readonly password?: string;
-    readonly timeNeeded: number;
+    readonly expiredAt: Date;
     readonly active: number;
     readonly groupId?: number;
     readonly description?: string;
@@ -15,7 +15,7 @@ export class User {
         email?: string;
         studentNumber?: string;
         password?: string;
-        timeNeeded: number;
+        expiredAt: Date;
         active: number;
         groupId?: number;
         description?: string;
@@ -25,7 +25,7 @@ export class User {
         this.email = data.email;
         this.studentNumber = data.studentNumber;
         this.password = data.password;
-        this.timeNeeded = data.timeNeeded;
+        this.expiredAt = data.expiredAt;
         this.active = data.active;
         this.groupId = data.groupId;
         this.description = data.description;
