@@ -135,7 +135,6 @@ export default function OverviewComponent() {
                   <th className="px-6 py-3 font-semibold">{t('overview.groupName')}</th>
                   <th className="px-6 py-3 font-semibold">{t('overview.description')}</th>
                   <th className="px-6 py-3 font-semibold">{t('overview.password')}</th>
-                  <th className="px-6 py-3 font-semibold">{t('overview.expirationDate')}</th>
                 </tr>
               </thead>
             </table>
@@ -153,7 +152,6 @@ export default function OverviewComponent() {
                       <td className="px-6 py-4">{group.groupName}</td>
                       <td className="px-6 py-4">{group.description}</td>
                       <td className="px-6 py-4">{group.password}</td>
-                      <td className="px-6 py-4">{formatDate(group.expiredAt)}</td>
                     </tr>
                   ))}
                 </tbody>
