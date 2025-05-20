@@ -1,12 +1,63 @@
 {
-    "guestnetwork": {
-        "title": "Toegang tot het UCLL-gastnetwerk",
-        "description": "Het UCLL-gastnetwerk is een gratis Wi-Fi-netwerk voor gasten van UCLL. Je kunt dit netwerk gebruiken om toegang tot het internet te krijgen tijdens je bezoek.",
-        "smallMessage": "Scan de QR-code om toegang te krijgen tot het UCLL-gastnetwerk",
-        "footerMessage": "Deze QR-code is 7 dagen geldig. Daarna moet je opnieuw een QR-code scannen om toegang te krijgen tot het UCLL-gastnetwerk.",
-        "qrCode": "QR-code",
-        "ssid": "SSID",
+    "qrcode": {
+        "title": "UCLL Gastnetwerk",
+        "smallMessage": "Scan QR-code voor toegang",
+        "loading": "Laden...",
         "password": "Wachtwoord",
-        "connect": "Verbinden"
+        "footerMessage": "Deze QR-code is geldig voor 7 dagen.",
+        "footerMessage2": "Daarna moet je deze opnieuw scannen."
+    },
+    "user": {
+        "userRegistration": "Gebruiker Registratie",
+        "userRegistrationSuccess": "✅ Registratie gebruiker succesvol",
+        "userRegistrationError": "❌ Registratie gebruiker mislukt",
+        "macAddress": "MAC-adres",
+        "daysNeeded": "Aantal dagen",
+        "studentNumber": "Studentnummer",
+        "selectGroup": "Selecteer Groep",
+        "noGroup": "Geen groep",
+        "description": "Beschrijving",
+        "optionalDescription": "Optionele beschrijving",
+        "submit": "Indienen"
+    },
+    "group": {
+        "groupRegistration": "Groep Registratie",
+        "groupRegistrationSuccess": "✅ Registratie groep succesvol",
+        "groupRegistrationError": "❌ Registratie groep mislukt",
+        "groupName": "Groepsnaam",
+        "description": "Beschrijving",
+        "optionalDescription": "Optionele beschrijving",
+        "expiresAt": "Verloopt op",
+        "submit": "Indienen"
+    },
+    "header": {
+        "overview": "Overzicht",
+        "logout": "Uitloggen"
+    },
+    "login": {
+        "login": "Inloggen",
+        "subtitle": "Log in om toegang te krijgen tot het UCLL-gastnetwerk",
+        "username": "Gebruikersnaam",
+        "password": "Wachtwoord"
+    },
+    "overview": {
+        "title": "Overzicht",
+        "subtitle": "Beheer hier je gebruikers en groepen.",
+        "users": "Gebruikers",
+        "groups": "Groepen",
+        "macAddress": "MAC-adres",
+        "groupId": "Groep ID",
+        "studentNumber": "Studentnummer",
+        "password": "Wachtwoord",
+        "timeNeeded": "Tijd nodig",
+        "active": "Actief",
+        "days": "Dagen",
+        "yes": "Ja",
+        "no": "Nee",
+        "groupName": "Groepsnaam",
+        "description": "Beschrijving",
+        "expirationDate": "Vervaldatum",
+        "noUsers": "Geen gebruikers gevonden",
+        "noGroups": "Geen groepen gevonden"
     }
 }

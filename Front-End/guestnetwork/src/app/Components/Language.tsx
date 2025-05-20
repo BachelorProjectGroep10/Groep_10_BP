@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import i18n from "../i18n";
 
 type LanguageComponentProps = {
   language: string;
@@ -9,12 +10,18 @@ type LanguageComponentProps = {
 export function LanguageComponent({language, setLanguage}: LanguageComponentProps) {
   const handleLanguageChange = (lang: string) => {
     setLanguage(lang);
+
+    i18n.changeLanguage(lang.toLowerCase());
   };
 
   const getButtonClass = (lang: string) =>
     `hover:text-[#9FDAF9] ${
       language === lang ? "text-[#E30147] font-bold" : "text-gray-700"
     }`;
+
+  useEffect(() => {
+    i18n.changeLanguage(language.toLowerCase());
+  }, [language]);
 
   return (
     <div className="flex items-center justify-end">

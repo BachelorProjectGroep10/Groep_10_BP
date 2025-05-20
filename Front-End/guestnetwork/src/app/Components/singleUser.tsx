@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import UserService from '../Services/UserService';
 import { User } from '../Types';
 import GroupService from '../Services/GroupService';
+import { useTranslation } from "react-i18next";
+import '../i18n'; 
 
 export default function SingleUserComponent() {
   const [message, setMessage] = useState('');
@@ -13,6 +15,8 @@ export default function SingleUserComponent() {
   const [groups, setGroups] = useState<{ id: number; groupName: string }[]>([]);
   const [groupId, setGroupId] = useState<number | null>(null);
   const [rows, setRows] = useState(6);
+
+  const {t} = useTranslation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,7 +43,7 @@ export default function SingleUserComponent() {
     try {
       const response = await UserService.addUser(newUser);
       if (response.ok) {
-        setMessage('✅ User added successfully!');
+        setMessage(t('user.userRegistrationSuccess'));
         // Reset form fields
         setMacAddress('');
         setEmail('');
@@ -48,11 +52,11 @@ export default function SingleUserComponent() {
         setDescription('');
         setGroupId(null);
       } else {
-        setMessage('❌ Error adding user.');
+        setMessage(t('user.userRegistrationError'));
       }
     } catch (error) {
       console.error(error);
-      setMessage('❌ An error occurred while submitting.');
+      setMessage(t('user.userRegistrationError'));
     }
   };
 
@@ -92,11 +96,11 @@ export default function SingleUserComponent() {
         onSubmit={handleSubmit}
         className="grid grid-cols-2 gap-x-8 gap-y-2 w-full form-grid-collapse"
       >
-        <h3 className="text-xl font-bold pb-2 col-span-full text-center">User registration</h3>
+        <h3 className="text-xl font-bold pb-2 col-span-full text-center">{t('user.userRegistration')}</h3>
 
         {/* Left Column */}
         <div className="flex flex-col space-y-2">
-          <label className="text-sm font-medium">Mac Address *</label>
+          <label className="text-sm font-medium">{t('user.macAddress')} *</label>
           <input
             type="text"
             placeholder="XX:XX:XX:XX:XX:XX"
@@ -106,7 +110,7 @@ export default function SingleUserComponent() {
             required
           />
 
-          <label className="text-sm font-medium">Days Needed *</label>
+          <label className="text-sm font-medium">{t('user.daysNeeded')} *</label>
           <input
             type="number"
             placeholder="7"
@@ -126,7 +130,7 @@ export default function SingleUserComponent() {
             className="bg-gray-300 text-black rounded-lg px-3 py-2 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
           />
 
-          <label className="text-sm font-medium">Student Number</label>
+          <label className="text-sm font-medium">{t('user.studentNumber')}</label>
           <input
             type="text"
             placeholder='X0000000'
@@ -138,7 +142,7 @@ export default function SingleUserComponent() {
 
         {/* Right Column */}
         <div className="flex flex-col space-y-2">
-          <label className="text-sm font-medium">Select Group</label>
+          <label className="text-sm font-medium">{t('user.selectGroup')}</label>
           <select
             value={groupId === null ? '' : groupId}
             onChange={(e) =>
@@ -146,7 +150,7 @@ export default function SingleUserComponent() {
             }
             className="bg-gray-300 text-black rounded-lg px-2 pr-6 py-2 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
           >
-            <option value="">No group</option>
+            <option value="">{t('user.noGroup')}</option>
             {groups.map((group) => (
               <option key={group.id} value={group.id}>
                 {group.groupName}
@@ -154,9 +158,9 @@ export default function SingleUserComponent() {
             ))}
           </select>
 
-          <label className="text-sm font-medium">Description</label>
+          <label className="text-sm font-medium">{t('user.description')}</label>
           <textarea
-            placeholder="Optional description"
+            placeholder={t('user.optionalDescription')}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             className="bg-gray-300 text-black rounded-lg px-3 py-2 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300 resize-none"
@@ -177,7 +181,7 @@ export default function SingleUserComponent() {
             type="submit"
             className="bg-[#002757] hover:bg-[#FA1651] text-white py-1 px-4 rounded-md text-sm"
           >
-            Submit
+            {t('user.submit')}
           </button>
         </div>
       </form>

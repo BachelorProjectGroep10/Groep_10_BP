@@ -5,11 +5,15 @@ import Link from "next/link";
 import { LuLogOut, LuMenu } from "react-icons/lu";
 import { LanguageComponent } from "./Language";
 import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
+import '../i18n'; 
 
 export function HeaderComponent() {
     const [language, setLanguage] = useState("EN");
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [isloggedIn, setIsLoggedIn] = useState(false);
+
+    const { t } = useTranslation();
 
     const router = useRouter();
     const logoSrc = language === "NL" ? "/Images/Logo_UCLL_NL.png" : "/Images/Logo_UCLL_EN.png";
@@ -56,13 +60,13 @@ export function HeaderComponent() {
                             </li>
                             <li>
                                 <Link href="/overview" className="text-[#002757] hover:text-[#FA1651] font-medium">
-                                    Overview
+                                    {t("header.overview")}
                                 </Link>
                             </li>
                             <li>
                                 <Link href="/" className="flex items-center text-[#002757] hover:text-[#FA1651] font-medium" onClick={handleLogout}>
                                     <LuLogOut className="mr-2" />
-                                    Logout
+                                    {t("header.logout")}
                                 </Link>
                             </li>
                             <li>
