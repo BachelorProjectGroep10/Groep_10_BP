@@ -1,13 +1,11 @@
 {
-    "guestnetwork": {
-        "title": "Get access to the UCLL Guest Network",
-        "description": "The UCLL Guest Network is a free Wi-Fi network for guests of UCLL. You can use this network to access the internet during your visit.",
-        "smallMessage": "Scan QR code to get access to the UCLL Guest Network",
-        "footerMessage": "This QR code is valid for 7 days. After that, you will need to scan the QR code again to get access to the UCLL Guest Network.",
-        "qrCode": "QR code",
-        "ssid": "SSID",
+    "qrcode": {
+        "title": "Guest Network",
+        "smallMessage": "Scan QR code for access",
+        "loading": "Loading...",
         "password": "Password",
-        "connect": "Connect"
+        "footerMessage": "This QR code is valid for 7 days.",
+        "footerMessage2": "After that, you will need to scan it again."
     },
     "user": {
         "userRegistration": "User Registration",
@@ -31,5 +29,35 @@
         "optionalDescription": "Optional description",
         "expiresAt": "Expires At",
         "submit": "Submit"
+    },
+    "header": {
+        "overview": "Overview",
+        "logout": "Logout"
+    },
+    "login": {
+        "login": "Login",
+        "subtitle": "Log in to get access to the UCLL Guest Network",
+        "username": "Username",
+        "password": "Password"
+    },
+    "overview": {
+        "title": "Overview",
+        "subtitle": "Manage your users and groups here.",
+        "users": "Users",
+        "groups": "Groups",
+        "macAddress": "MAC Address",
+        "groupId": "Group ID",
+        "studentNumber": "Student Number",
+        "password": "Password",
+        "timeNeeded": "Time Needed",
+        "active": "Active",
+        "days": "Days",
+        "yes": "Yes",
+        "no": "No",
+        "groupName": "Group Name",
+        "description": "Description",
+        "expirationDate": "Expiration Date",
+        "noUsers": "No users found",
+        "noGroups": "No groups found"
     }
 }

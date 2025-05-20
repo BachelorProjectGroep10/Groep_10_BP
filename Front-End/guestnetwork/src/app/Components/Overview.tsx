@@ -9,6 +9,8 @@ import { IoPersonAddSharp } from "react-icons/io5";
 import { MdGroups } from "react-icons/md";
 import GroupService from "../Services/GroupService";
 import formatDate from "./formatDate";
+import { useTranslation } from "react-i18next";
+import '../i18n'; 
 
 
 export default function OverviewComponent() {
@@ -17,6 +19,7 @@ export default function OverviewComponent() {
   const [isUserTableOpen, setIsUserTableOpen] = useState(false); 
   const [isGroupTableOpen, setIsGroupTableOpen] = useState(false); 
 
+  const {t} = useTranslation();
 
   const fetchUsers = async () => {
     try {
@@ -50,13 +53,13 @@ export default function OverviewComponent() {
   return (
     <div className="flex flex-col items-center justify-start gap-5 w-full p-6">
       <div>
-        <h1 className="text-3xl font-bold text-[#003366] flex items-center justify-center gap-2"> Overview </h1>
-        <p className="text-gray-600 mb-4">Manage your users and groups here</p>
+        <h1 className="text-3xl font-bold text-[#003366] flex items-center justify-center gap-2">{t('overview.title')}</h1>
+        <p className="text-gray-600 mb-4">{t('overview.subtitle')}</p>
       </div>
       <div className="bg-gray-50 rounded-2xl shadow-lg w-full max-w-6xl p-6">
         {/* Header + Toggle */}
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-3xl font-bold text-[#003366] flex items-center justify-center gap-2"> <IoPersonAddSharp size={25} /> Users</h1>
+          <h1 className="text-3xl font-bold text-[#003366] flex items-center justify-center gap-2"> <IoPersonAddSharp size={25} />{t('overview.users')}</h1>
           <button
             onClick={() => setIsUserTableOpen(!isUserTableOpen)}
             className=" text-white px-4 py-2 rounded-lg transition duration-300 ease-in-out bg-[#002757] hover:bg-[#9FDAF9] focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:ring-opacity-50"
@@ -69,13 +72,13 @@ export default function OverviewComponent() {
             <table className="min-w-full table-auto border-collapse">
               <thead>
                 <tr className=" text-[#003366] text-left">
-                  <th className="px-6 py-3 font-semibold">MAC Address</th>
-                  <th className="px-6 py-3 font-semibold">Group ID</th>
+                  <th className="px-6 py-3 font-semibold">{t('overview.macAddress')}</th>
+                  <th className="px-6 py-3 font-semibold">{t('overview.groupId')}</th>
                   <th className="px-6 py-3 font-semibold">Email</th>
-                  <th className="px-6 py-3 font-semibold">Student Number</th>
-                  <th className="px-6 py-3 font-semibold">Password</th>
-                  <th className="px-6 py-3 font-semibold">Time Needed</th>
-                  <th className="px-6 py-3 font-semibold">Active</th>
+                  <th className="px-6 py-3 font-semibold">{t('overview.studentNumber')}</th>
+                  <th className="px-6 py-3 font-semibold">{t('overview.password')}</th>
+                  <th className="px-6 py-3 font-semibold">{t('overview.timeNeeded')}</th>
+                  <th className="px-6 py-3 font-semibold">{t('overview.active')}</th>
                 </tr>
               </thead>
             </table>
@@ -94,14 +97,14 @@ export default function OverviewComponent() {
                       <td className="px-6 py-4">{user.email}</td>
                       <td className="px-6 py-4">{user.studentNumber}</td>
                       <td className="px-6 py-4">{user.password}</td>
-                      <td className="px-6 py-4">{user.timeNeeded} Days</td>
+                      <td className="px-6 py-4">{user.timeNeeded} {t('overview.days')}</td>
                       <td className="px-6 py-4">
                         <span
                           className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
                             user.active ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
                           }`}
                         >
-                          {user.active ? "Yes" : "No"}
+                          {user.active ? t('overview.yes') : t('overview.no')}
                         </span>
                       </td>
                     </tr>
@@ -115,7 +118,7 @@ export default function OverviewComponent() {
       <div className="bg-gray-50 rounded-2xl shadow-lg w-full max-w-6xl p-6">
         {/* Header + Toggle */}
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-3xl font-bold text-[#003366] flex items-center justify-center gap-2"> <MdGroups size={35} /> Groups</h1>
+          <h1 className="text-3xl font-bold text-[#003366] flex items-center justify-center gap-2"> <MdGroups size={35} />{t('overview.groups')}</h1>
           <button
             onClick={() => setIsGroupTableOpen(!isGroupTableOpen)}
             className=" text-white px-4 py-2 rounded-lg transition duration-300 ease-in-out bg-[#002757] hover:bg-[#9FDAF9] focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:ring-opacity-50"
@@ -129,10 +132,10 @@ export default function OverviewComponent() {
               <thead>
                 <tr className=" text-[#003366] text-left">
                   <th className="px-6 py-3 font-semibold">ID</th>
-                  <th className="px-6 py-3 font-semibold">Group Name</th>
-                  <th className="px-6 py-3 font-semibold">Description</th>
-                  <th className="px-6 py-3 font-semibold">Password</th>
-                  <th className="px-6 py-3 font-semibold">Expiration Date</th>
+                  <th className="px-6 py-3 font-semibold">{t('overview.groupName')}</th>
+                  <th className="px-6 py-3 font-semibold">{t('overview.description')}</th>
+                  <th className="px-6 py-3 font-semibold">{t('overview.password')}</th>
+                  <th className="px-6 py-3 font-semibold">{t('overview.expirationDate')}</th>
                 </tr>
               </thead>
             </table>

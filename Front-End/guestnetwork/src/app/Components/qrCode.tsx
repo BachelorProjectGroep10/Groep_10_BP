@@ -17,6 +17,8 @@ import GroupSelectComponent from './groupSelect';
 import { IoQrCodeSharp } from "react-icons/io5";
 import { IoPersonAddSharp } from "react-icons/io5";
 import { MdGroups } from "react-icons/md";
+import { useTranslation } from "react-i18next";
+import '../i18n'; 
 
 
 export function QRCodeComponent() {
@@ -24,6 +26,8 @@ export function QRCodeComponent() {
 
   const [activeView, setActiveView] = useState<'qr' | 'single' | 'group'>('qr');
   const ssid = 'GuestNetwork';
+
+  const { t } = useTranslation();
 
   const fetchPassword = async () => {
     const response = await PasswordService.getPassword();
@@ -66,9 +70,9 @@ export function QRCodeComponent() {
         <div className="bg-[#9FDAF9] px-2 py-2 rounded-lg shadow-lg w-full flex flex-col md:flex-row items-center justify-around gap-4 ">
           <div className="flex flex-col items-center mx-8 w-full md:w-auto">
             <div className="hidden md:flex md:flex-col md:items-center">
-              <h1 className="text-2xl font-bold text-center">{ssid}</h1>
+              <h1 className="text-2xl font-bold text-center">{t('qrcode.title')}</h1>
               <FaWifi size={40} />
-              <h2 className="font-semibold my-2 text-sm text-accent">Scan QR code for access</h2>
+              <h2 className="font-semibold my-2 text-sm text-accent">{t('qrcode.smallMessage')}</h2>
               {password ? (
                 <QRCode
                   value={`WIFI:S:${ssid};H:true;T:WPA;P:${password};;`}
@@ -85,14 +89,14 @@ export function QRCodeComponent() {
                   eyeRadius={10}
                 />
               ) : (
-                <p>Loading QR...</p>
+                <p>{t('qrcode.loading')}</p>
               )}
               <div className="mt-2 text-left w-full max-w-[300px]">
                 <p className="text-sm font-semibold">
                   SSID: <span className="font-normal">{ssid}</span>
                 </p>
                 <p className="text-sm font-semibold mb-4">
-                  Password: <span className="font-normal">{password ?? 'Loading...'}</span>
+                  {t('qrcode.password')}: <span className="font-normal">{password ?? t('qrcode.loading')}</span>
                 </p>
                 <button
                   onClick={handleDownloadPdf}
@@ -109,7 +113,7 @@ export function QRCodeComponent() {
               <>
                 <h1 className="text-2xl font-bold text-center">{ssid}</h1>
                 <FaWifi size={40} className="mx-auto" />
-                <h2 className="font-semibold my-4 text-sm text-accent text-center">Scan QR code for access</h2>
+                <h2 className="font-semibold my-4 text-sm text-accent text-center">{t('qrcode.smallMessage')}</h2>
                   {password ? (
                     <QRCode
                       value={`WIFI:S:${ssid};H:true;T:WPA;P:${password};;`}
@@ -126,14 +130,14 @@ export function QRCodeComponent() {
                       eyeRadius={10}
                     />
                   ) : (
-                    <p>Loading QR...</p>
+                    <p>{t('qrcode.loading')}</p>
                   )}
                   <div className="mt-4 mx-auto w-full max-w-[200px] text-left">
                     <p className="text-sm font-semibold">
                       SSID: <span className="font-normal">{ssid}</span>
                     </p>
                     <p className="text-sm font-semibold mb-4">
-                      Password: <span className="font-normal">{password ?? 'Loading...'}</span>
+                      {t('qrcode.password')}: <span className="font-normal">{password ?? t('qrcode.loading')}</span>
                     </p>
                     <button
                       onClick={handleDownloadPdf}
@@ -188,8 +192,8 @@ export function QRCodeComponent() {
 
         <div className="text-center mt-4">
           <p className="text-sm font-semibold">
-            This QR code is valid for 7 days.
-            <span className="hidden md:inline"> After that, you will need to scan it again.</span>
+            {t('qrcode.footerMessage')}
+            <span className="hidden md:inline"> {t('qrcode.footerMessage2')}</span>
           </p>
         </div>
       </div>
