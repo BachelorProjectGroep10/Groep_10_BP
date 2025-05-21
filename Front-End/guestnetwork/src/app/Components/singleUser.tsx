@@ -7,6 +7,8 @@ import { useTranslation } from "react-i18next";
 import '../i18n'; 
 import { IoPersonAddSharp } from 'react-icons/io5';
 import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa';
+import useInterval from 'use-interval';
+import useSWR, { mutate } from 'swr';
 
 interface SingleUserProps {
   isMobile: boolean;
@@ -19,8 +21,7 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
   const [uid, setUid] = useState('');
   const [expiredAt, setExpiredAt] = useState('');
   const [description, setDescription] = useState('');
-  const [groups, setGroups] = useState<{ id: number; groupName: string }[]>([]);
-  const [groupId, setGroupId] = useState<number | null>(null);
+  const [groupName, setGroupName] = useState<string | null>(null);
   const [rows, setRows] = useState(6);
   const [isUserFormOpen, setIsUserFormOpen] = useState(false);
 
@@ -44,10 +45,6 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
       description,
     };
 
-    if (groupId !== null) {
-      (newUser as any).groupId = groupId;
-    }
-
     try {
       const response = await UserService.addUser(newUser);
       if (response.ok) {
@@ -58,7 +55,6 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
         setUid('');
         setExpiredAt('');
         setDescription('');
-        setGroupId(null);
       } else {
         setMessage(t('user.userRegistrationError'));
       }
@@ -68,29 +64,28 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
     }
   };
 
+  async function fetchGroups(): Promise<{ id: number; groupName: string }[]> {
+    try {
+      const response = await GroupService.getGroups();
+      if (!response.ok) {
+        throw new Error('Failed to fetch groups');
+      }
+
+      const data = await response.json();
+      return data.map((g: any) => ({
+        id: g.id,           // assuming your group object has an id property
+        groupName: g.groupName,
+      }));
+    } catch (err) {
+      console.error('Error fetching groups:', err);
+      return [];
+    }
+  }
+
   useEffect(() => {
     if(isMobile) {
       setIsUserFormOpen(true);
     }
-
-    async function fetchGroups() {
-      try {
-        const response = await GroupService.getGroups();
-        if (!response.ok) {
-          throw new Error('Failed to fetch groups');
-        }
-        const data = await response.json();
-        const simplifiedGroups = data.map((g: any) => ({
-          id: g.id,
-          groupName: g.groupName,
-        }));
-        setGroups(simplifiedGroups);
-      } catch (err) {
-        console.error('Error fetching groups:', err);
-      }
-    }
-
-    fetchGroups();
 
     function handleResize() {
       setRows(window.innerWidth <= 768 ? 3 : 6);
@@ -101,6 +96,12 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  const { data: groups, isLoading: isGroupsLoading } = useSWR('groups', fetchGroups);
+
+  useInterval(() => {
+    mutate('groups', fetchGroups);
+  }, 2000);
 
   return (
     <div className="flex flex-col items-center w-full space-y-2 bg-white rounded-lg shadow-md p-4">
@@ -169,19 +170,20 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
           <div className="flex flex-col space-y-2 mt-2">
             <label className="text-sm font-medium">{t('user.selectGroup')}</label>
             <select
-              value={groupId === null ? '' : groupId}
+              value={groupName === null ? '' : groupName}
               onChange={(e) =>
-                setGroupId(e.target.value === '' ? null : Number(e.target.value))
+                setGroupName(e.target.value === '' ? null : e.target.value)
               }
               className="bg-gray-300 text-black rounded-lg px-2 pr-6 py-2 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
             >
               <option value="">{t('user.noGroup')}</option>
-              {groups.map((group) => (
+              {(groups ?? []).map((group) => (
                 <option key={group.id} value={group.id}>
                   {group.groupName}
                 </option>
               ))}
             </select>
+
 
             <label className="text-sm font-medium">{t('user.description')}</label>
             <textarea
