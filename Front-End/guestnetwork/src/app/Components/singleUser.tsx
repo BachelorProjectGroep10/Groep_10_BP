@@ -64,7 +64,7 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
     }
   };
 
-  async function fetchGroups(): Promise<string[]> {
+  async function fetchGroups(): Promise<{ id: number; groupName: string }[]> {
     try {
       const response = await GroupService.getGroups();
       if (!response.ok) {
@@ -72,7 +72,10 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
       }
 
       const data = await response.json();
-      return data.map((g: any) => g.groupName);
+      return data.map((g: any) => ({
+        id: g.id,           // assuming your group object has an id property
+        groupName: g.groupName,
+      }));
     } catch (err) {
       console.error('Error fetching groups:', err);
       return [];
@@ -174,12 +177,13 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
               className="bg-gray-300 text-black rounded-lg px-2 pr-6 py-2 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
             >
               <option value="">{t('user.noGroup')}</option>
-              {(groups ?? []).map((groupName, index) => (
-                <option key={index} value={groupName}>
-                  {groupName}
+              {(groups ?? []).map((group) => (
+                <option key={group.id} value={group.id}>
+                  {group.groupName}
                 </option>
               ))}
             </select>
+
 
             <label className="text-sm font-medium">{t('user.description')}</label>
             <textarea
