@@ -127,7 +127,7 @@ export function QRCodeComponent() {
                 <h2 className="font-semibold my-4 text-sm text-accent text-center">{t('qrcode.smallMessage')}</h2>
                   {password ? (
                     <QRCode
-                      value={`WIFI:S:${ssid};H:true;T:WPA;P:${password};;`}
+                      value={`WIFI:S:${ssid};T:WPA;P:${password};;`}
                       size={200}
                       logoImage='/Images/Logo_UCLL_ROUND.png'
                       logoWidth={40}

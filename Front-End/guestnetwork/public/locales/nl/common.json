@@ -19,7 +19,10 @@
         "noGroup": "Geen groep",
         "description": "Beschrijving",
         "optionalDescription": "Optionele beschrijving",
-        "submit": "Indienen"
+        "submit": "Indienen",
+        "macAddressTooltip": "Toegestane formaten: :00:00:00:00:00, 000000000000. Zowel kleine als hoofdletters zijn toegestaan. Het MAC-adres moet uniek zijn.",
+        "uidTooltip": "Het toegestane formaat van de Gebruiker ID is X000000, kan student of personeels ID zijn. De Gebruiker ID moet uniek zijn."
+    
     },
     "group": {
         "groupRegistration": "Groep Registratie",
