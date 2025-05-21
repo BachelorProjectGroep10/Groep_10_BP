@@ -14,6 +14,7 @@ const getAllUsers = async (): Promise<User[]> => {
         active: user.active,
         description: user.description,
         vlan: user.vlan,
+        groupName: user.groupName,
         });
     });
 };
