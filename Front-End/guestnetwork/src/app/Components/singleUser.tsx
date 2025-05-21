@@ -9,6 +9,9 @@ import { IoPersonAddSharp } from 'react-icons/io5';
 import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa';
 import useInterval from 'use-interval';
 import useSWR, { mutate } from 'swr';
+import { Tooltip } from 'react-tooltip';
+import { FaInfoCircle } from "react-icons/fa";
+
 
 interface SingleUserProps {
   isMobile: boolean;
@@ -24,6 +27,7 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
   const [groupName, setGroupName] = useState<string | null>(null);
   const [rows, setRows] = useState(6);
   const [isUserFormOpen, setIsUserFormOpen] = useState(false);
+
 
   const {t} = useTranslation();
 
@@ -111,7 +115,7 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
       >
        <div className="col-span-full flex items-center justify-between mb-4">
           <div className="flex items-center justify-center gap-2">
-            <h2 className="text-2xl font-bold text-[#002757] flex items-center justify-center gap-2">
+            <h2 className="text-2xl font-bold text-[#002757] flex items-center justify-center gap-2 pr-4">
               <IoPersonAddSharp className="text-3xl" />
               {t('user.userRegistration')}
             </h2>
@@ -128,10 +132,24 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
 
         <div className={`col-span-full ${isUserFormOpen ? 'block' : 'hidden'}`}>
           <div className="flex flex-col space-y-2">
-            <label className="text-sm font-medium">{t('user.macAddress')} *</label>
+            <div className="flex items-center justify-between gap-2">
+              <label className="text-sm font-medium">
+                {t('user.macAddress')} *
+              </label>
+              <FaInfoCircle
+                data-tooltip-id="macTip"
+                data-tooltip-content={t('user.macAddressTooltip')}
+                className="text-[#002757] cursor-pointer"
+              />
+              <Tooltip
+                id="macTip"
+                place="right"
+                className="!max-w-[250px] !text-sm !p-2 !bg-gray-800 !text-white !rounded-md shadow-md"
+              />
+            </div>
             <input
               type="text"
-              placeholder="xxxxxxxxxxxx"
+              placeholder={t('user.macAddress')} 
               value={macAddress}
               onChange={(e) => setMacAddress(e.target.value)}
               className="bg-gray-300 text-black rounded-lg px-3 py-2 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
@@ -150,13 +168,24 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
             <label className="text-sm font-medium">Email</label>
             <input
               type="email"
-              placeholder="XX.XX@XX.X"
+              placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="bg-gray-300 text-black rounded-lg px-3 py-2 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
-
-            <label className="text-sm font-medium">{t('user.uid')}</label>
+            <div className="flex items-center justify-between gap-2">
+              <label className="text-sm font-medium">{t('user.uid')}</label>
+              <FaInfoCircle
+                data-tooltip-id="uidTip"
+                data-tooltip-content={t('user.uidTooltip')}
+                className="text-[#002757] cursor-pointer"
+              />
+              <Tooltip
+                id="uidTip"
+                place="right"
+                className="!max-w-[250px] !text-sm !p-2 !bg-gray-800 !text-white !rounded-md shadow-md"
+              />
+            </div>
             <input
               type="text"
               placeholder='X0000000'

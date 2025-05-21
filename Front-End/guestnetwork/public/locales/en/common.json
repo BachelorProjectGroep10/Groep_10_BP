@@ -19,7 +19,9 @@
         "noGroup": "No group",
         "description": "Description",
         "optionalDescription": "Optional description",
-        "submit": "Submit"
+        "submit": "Submit",
+        "macAddressTooltip": "Allowed formats: 00:00:00:00:00, 000000000000. Lower and upper case letters are allowed. The MAC address must be unique.",
+        "uidTooltip": "The User ID's allowed format is X000000, can be student or staff ID. The User ID must be unique."
     },
     "group": {
         "groupRegistration": "Group Registration",
