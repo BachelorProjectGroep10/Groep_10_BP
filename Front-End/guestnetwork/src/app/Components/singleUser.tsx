@@ -149,7 +149,7 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
 
             <label className="text-sm font-medium">Email</label>
             <input
-              type="text"
+              type="email"
               placeholder="XX.XX@XX.X"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
