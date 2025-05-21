@@ -12,21 +12,21 @@ const getAllUsers = async (): Promise<User[]> => {
         password: user.password,
         expiredAt: user.expiredAt,
         active: user.active,
-        groupId: user.groupId,
         description: user.description,
+        groupName: user.groupName,
         });
     });
 };
 
 const addUser = async (user: User): Promise<void> => {
     const newUser = new User({
-        macAddress: user.macAddress,
+        macAddress: user.macAddress.toLowerCase(),
         email: user.email,
         uid: user.uid,
         expiredAt: user.expiredAt,
         active: user.active,
-        groupId: user.groupId,
         description: user.description,
+        groupName: user.groupName,
     });
     await insertUser(newUser);
 }

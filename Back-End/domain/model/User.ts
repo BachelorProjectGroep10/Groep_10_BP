@@ -6,8 +6,8 @@ export class User {
     readonly password?: string;
     readonly expiredAt: Date;
     readonly active: number;
-    readonly groupId?: number;
     readonly description?: string;
+    readonly groupName?: string;
     
     constructor(data: {
         id?: number;
@@ -17,8 +17,8 @@ export class User {
         password?: string;
         expiredAt: Date;
         active: number;
-        groupId?: number;
         description?: string;
+        groupName?: string;
     }) {
         this.id = data.id;
         this.macAddress = data.macAddress;
@@ -27,7 +27,7 @@ export class User {
         this.password = data.password;
         this.expiredAt = data.expiredAt;
         this.active = data.active;
-        this.groupId = data.groupId;
         this.description = data.description;
+        this.groupName = data.groupName;
     }
 }

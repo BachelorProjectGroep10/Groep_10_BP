@@ -2,7 +2,7 @@ import cron from 'node-cron';
 import { insertPassword } from '../../domain/data-access/password.db';
 import { generateRandomPassword } from '../../util/autoPassword';
 
-const SCHEDULE_EVERY_60_MIN = '*/60 * * * *'; // every 60 minutes
+const SCHEDULE_EVERY_60_MIN = '*/60 * * * *'; // every 60 minutes this should be every 7 days when the system is running
 const EXECUTE_IMMEDIATELY = false;
 
 export default class AutoPasswordCron {

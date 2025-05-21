@@ -11,6 +11,5 @@ export type User = {
     readonly password: string,
     readonly timeNeeded: number,
     readonly active: number,
-    readonly groupId?: number,
     readonly description?: string
 };
