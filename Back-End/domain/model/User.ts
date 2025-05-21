@@ -8,6 +8,7 @@ export class User {
     readonly active: number;
     readonly description?: string;
     readonly groupName?: string;
+    readonly vlan?: number;
     
     constructor(data: {
         id?: number;
@@ -19,6 +20,7 @@ export class User {
         active: number;
         description?: string;
         groupName?: string;
+        vlan?: number;
     }) {
         this.id = data.id;
         this.macAddress = data.macAddress;
@@ -29,5 +31,6 @@ export class User {
         this.active = data.active;
         this.description = data.description;
         this.groupName = data.groupName;
+        this.vlan = data.vlan;
     }
 }

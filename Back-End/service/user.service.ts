@@ -13,7 +13,7 @@ const getAllUsers = async (): Promise<User[]> => {
         expiredAt: user.expiredAt,
         active: user.active,
         description: user.description,
-        groupName: user.groupName,
+        vlan: user.vlan,
         });
     });
 };

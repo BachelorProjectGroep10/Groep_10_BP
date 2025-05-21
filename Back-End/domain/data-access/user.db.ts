@@ -6,22 +6,36 @@ import { generateRandomPassword } from '../../util/autoPassword';
 const getUsers = async (): Promise<User[]> => {
   try {
     const rows = await knex('radcheck')
-      .select('radcheck.*', 'radreply.value as psk')
-      .leftJoin('radreply', 'radcheck.username', 'radreply.username')
-      .where('radcheck.attribute', 'Cleartext-Password')
-      .andWhere('radreply.attribute', 'Cisco-AVPair')
-      .andWhere('radreply.op', '+='); 
+      .select(
+        'radcheck.*',
+        'psk_reply.value as psk',
+        'vlan_reply.value as vlan'
+      )
+      .leftJoin({ psk_reply: 'radreply' }, function () {
+        this.on('radcheck.username', '=', 'psk_reply.username')
+          .andOn('psk_reply.attribute', '=', knex.raw('?', ['Cisco-AVPair']))
+          .andOn('psk_reply.op', '=', knex.raw('?', ['+=']));
+      })
+      .leftJoin({ vlan_reply: 'radreply' }, function () {
+        this.on('radcheck.username', '=', 'vlan_reply.username')
+          .andOn('vlan_reply.attribute', '=', knex.raw('?', ['Tunnel-Private-Group-ID']));
+      })
+      .where('radcheck.attribute', 'Cleartext-Password');
+
 
     return rows.map((row) => {
+      const cleanedPassword = row.psk ? row.psk.replace('psk=', '') : null;
+
       return new User({
         id: row.id,
         macAddress: row.username,
         email: row.email,
         uid: row.uid,
-        password: row.value,
+        password: cleanedPassword ?? row.psk,
         expiredAt: row.validUntil,
         active: row.isDisabled === 0 ? 1 : 0,
         description: row.description,
+        vlan: row.vlan,
       });
     });
   } catch (err) {
@@ -105,9 +119,9 @@ const insertUserIntoRadUserGroup = async (user: User): Promise<void> => {
   const trx = await knex.transaction();
 
   try {
-    const checkGroup = await trx('radgroupcheck')
-      .select('groupname')
-      .where('groupname', user.groupName)
+    const checkGroup = await trx('groupname')
+      .select('name')
+      .where('name', user.groupName)
       .first();
 
     if (!checkGroup) {

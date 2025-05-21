@@ -5,10 +5,10 @@ import { generateRandomPassword } from '../../util/autoPassword';
 // Get all groups
 const getGroups = async (): Promise<Group[]> => {
   try {
-    const rows = await knex('radgroupcheck')
-      .select('radgroupcheck.*', 'radgroupreply.value as psk')
-      .leftJoin('radgroupreply', 'radgroupcheck.groupname', 'radgroupreply.groupname')
-      .where('radgroupcheck.attribute', 'Cleartext-Password')
+    const rows = await knex('groupname')
+      .select('groupname.*', 'radgroupreply.value as psk')
+      .leftJoin('radgroupreply', 'groupname.name', 'radgroupreply.groupname')
+      .where('groupname.attribute', 'Cleartext-Password')
       .andWhere('radgroupreply.attribute', 'Cisco-AVPair')
       .andWhere('radgroupreply.op', '+='); 
 
@@ -17,7 +17,7 @@ const getGroups = async (): Promise<Group[]> => {
         id: row.id,
         groupName: row.groupname,
         description: row.description,
-        password: row.value,
+        password: row.psk ? row.psk.replace('psk=', '') : null,
       });
     });
   } catch (err) {
@@ -26,17 +26,20 @@ const getGroups = async (): Promise<Group[]> => {
   }
 }
 
-
-// Insert a group into the database
 const insertGroup = async (group: Group): Promise<Group> => {
   const trx = await knex.transaction();
 
   try {
-    await trx('radgroupcheck').insert({
-      groupname: group.groupName,
-      attribute: 'Cleartext-Password',
-      op: ':=',
-      value: group.groupName,
+    const checkGroup = await trx('groupname').where('name', group.groupName).first();
+    
+    if (checkGroup) {
+      console.error('Group already exists');
+      await trx.rollback();
+      throw new Error('Group already exists');
+    }
+
+    await trx('groupname').insert({
+      name: group.groupName,
       description: group.description,
     });
 
