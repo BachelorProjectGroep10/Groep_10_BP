@@ -14,7 +14,7 @@ const getGroups = async (): Promise<Group[]> => {
       .leftJoin({ psk_reply: 'radgroupreply' }, function () {
         this.on('groupname.name', '=', 'psk_reply.groupname')
           .andOn('psk_reply.attribute', '=', knex.raw('?', ['Cisco-AVPair']))
-          .andOn('psk_reply.op', '=', knex.raw('?', [':=']));
+          .andOn('psk_reply.op', '=', knex.raw('?', ['+=']));
       })
       .leftJoin({ vlan_reply: 'radgroupreply' }, function () {
         this.on('groupname.name', '=', 'vlan_reply.groupname')
