@@ -15,11 +15,11 @@ import UsersTable from "./Tables/usersTable";
 import GroupsTable from "./Tables/groupsTable";
 import GroupCard from "./Cards/groupCard";
 import UserCard from "./Cards/userCard";
+import useSWR, { mutate } from "swr";
+import useInterval from "use-interval";
 
 
 export default function OverviewComponent() {
-  const [users, setUsers] = useState<User[]>([]);
-  const [groups, setGroups] = useState<Group[]>([]);
   const [isUserTableOpen, setIsUserTableOpen] = useState(false); 
   const [isGroupTableOpen, setIsGroupTableOpen] = useState(false); 
 
@@ -30,7 +30,7 @@ export default function OverviewComponent() {
       const response = await UserService.getUsers();
       if (response.ok) {
         const data = await response.json();
-        setUsers(data);
+        return(data);
       }
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -42,17 +42,20 @@ export default function OverviewComponent() {
       const response = await GroupService.getGroups();
       if (response.ok) {
         const data = await response.json();
-        setGroups(data);
+        return(data);
       }
     } catch (error) {
       console.error("Error fetching groups:", error);
     }
   }
 
-  useEffect(() => {
-    fetchUsers();
-    fetchGroups();
-  }, []);
+  const { data: users, isLoading: isUsersLoading } = useSWR('users', fetchUsers);
+  const { data: groups, isLoading: isGroupsLoading } = useSWR('groups', fetchGroups);
+
+  useInterval(() => {
+    mutate('users', fetchUsers);
+    mutate('groups', fetchGroups);
+  }, 2000);
 
   return (
     <div className="flex flex-col items-center justify-start gap-5 w-full p-6">
@@ -105,7 +108,7 @@ export default function OverviewComponent() {
             {/* Mobile view */}
             <div className="grid grid-cols-1 gap-4 w-full md:hidden">
               {groups.map((group: Group) => (
-                <GroupCard key={group.id} group={group} />
+                <GroupCard key={group.groupName} group={group} />
               ))}
             </div>
           </>

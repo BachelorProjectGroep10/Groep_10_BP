@@ -18,20 +18,22 @@ export default function GroupsTable( { groups }: GroupsTableProps) {
             <th className="px-6 py-3 font-semibold">{t('overview.groupName')}</th>
             <th className="px-6 py-3 font-semibold">{t('overview.description')}</th>
             <th className="px-6 py-3 font-semibold">{t('overview.password')}</th>
+            <th className="px-6 py-3 font-semibold">VLAN</th>
           </tr>
         </thead>
       </table>
       <div className="max-h-[225px] overflow-y-auto">
         <table className="min-w-full table-auto border-collapse">
           <tbody>
-            {groups.map((group: Group, idx: number) => (
+            {groups.map((group: Group) => (
               <tr
-                key={group.id}
+                key={group.groupName}
                 className="hover:bg-[#9FDAF9] text-[#003366] text-left border-b border-gray-200"
               >
                 <td className="px-6 py-4">{group.groupName}</td>
                 <td className="px-6 py-4">{group.description}</td>
                 <td className="px-6 py-4">{group.password}</td>
+                <td className="px-6 py-4">{group.vlan}</td>
               </tr>
             ))}
           </tbody>

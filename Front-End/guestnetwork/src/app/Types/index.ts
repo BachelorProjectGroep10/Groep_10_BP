@@ -12,6 +12,7 @@ export type User = {
     readonly active: number;
     readonly description?: string;
     readonly groupName?: string;
+    readonly vlan?: number;
 }
 
 export type Group = {
@@ -19,6 +20,7 @@ export type Group = {
     readonly groupName: string;
     readonly description: string;
     readonly password?: string;
+    readonly vlan?: number;
 };
 
 export type Vlan = {

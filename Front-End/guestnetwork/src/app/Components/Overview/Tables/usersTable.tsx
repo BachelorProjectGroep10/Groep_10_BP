@@ -41,7 +41,7 @@ export default function UsersTable( { users }: UserTableProps) {
                 <td className="px-6 py-4">{user.uid}</td>
                 <td className="px-6 py-4">{user.password}</td>
                 <td className="px-6 py-4">{formatDate(user?.expiredAt)}</td>
-                <td className="px-6 py-4">TO BE ADDED</td>                  
+                <td className="px-6 py-4">{user.vlan}</td>                  
                 <td className="px-6 py-4">
                   <span
                     className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${

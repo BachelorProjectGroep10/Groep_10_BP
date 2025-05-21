@@ -28,7 +28,7 @@ export function QRCodeComponent() {
   const pdfRef = React.useRef<HTMLDivElement | null>(null);
 
   const [activeView, setActiveView] = useState<'qr' | 'single' | 'group'>('qr');
-  const ssid = 'GuestNetwork';
+  const ssid = 'BP Groep 10 - Gast Test';
 
   const { t } = useTranslation();
 
