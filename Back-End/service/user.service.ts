@@ -1,5 +1,5 @@
 import { User } from '../domain/model/User';
-import { getUsers, insertUser } from '../domain/data-access/user.db';
+import { getUsers, insertUser, deleteUserFromDb } from '../domain/data-access/user.db';
 
 const getAllUsers = async (): Promise<User[]> => {
     const users = await getUsers();
@@ -32,4 +32,8 @@ const addUser = async (user: User): Promise<void> => {
     await insertUser(newUser);
 }
 
-export default { getAllUsers, addUser };
+const deleteUser = async (macAddress: string): Promise<void> => {
+    await deleteUserFromDb(macAddress);
+}
+
+export default { getAllUsers, addUser, deleteUser };

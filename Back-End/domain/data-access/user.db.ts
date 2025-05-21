@@ -148,6 +148,25 @@ const insertUserIntoRadUserGroup = async (user: User): Promise<void> => {
   }
 }
 
+const deleteUserFromDb = async (macAddress: string): Promise<void> => {
+  console.log('Deleting user:', macAddress);
+  try {
+    await Promise.all([
+      knex('radcheck')
+        .where('username', macAddress)
+        .del(),
+      knex('radreply')
+        .where('username', macAddress)
+        .del(),
+      knex('radusergroup')
+        .where('username', macAddress)
+        .del(),
+    ]);
+    console.log('User deleted successfully');
+  } catch (err) {
+    console.error('DB error deleting user:', err);
+    throw new Error('Delete failed');
+  }
+}
 
-
-export { getUsers, insertUser };
+export { getUsers, insertUser, deleteUserFromDb };

@@ -22,4 +22,14 @@ userRouter.post('/', async (req: Request, res: Response, next: NextFunction) => 
   }
 });
 
+userRouter.delete('/:macAddress', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const macAddress = req.params.macAddress;
+    await UserService.deleteUser(macAddress);
+    res.status(200).json({ message: 'User deleted successfully' });
+  } catch (error) {
+    next(error);
+  }
+})
+
 export default userRouter;
