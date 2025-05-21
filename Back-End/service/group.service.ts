@@ -5,10 +5,10 @@ const getAllGroups = async (): Promise<Group[]> => {
     const groups = await getGroups();
     return groups.map(group => {
         return new Group({
-            id: group.id,
             groupName: group.groupName,
             description: group.description,
             password: group.password,
+            vlan: group.vlan
         });
     });
 };

@@ -6,20 +6,32 @@ import { generateRandomPassword } from '../../util/autoPassword';
 const getGroups = async (): Promise<Group[]> => {
   try {
     const rows = await knex('groupname')
-      .select('groupname.*', 'radgroupreply.value as psk')
-      .leftJoin('radgroupreply', 'groupname.name', 'radgroupreply.groupname')
-      .where('groupname.attribute', 'Cleartext-Password')
-      .andWhere('radgroupreply.attribute', 'Cisco-AVPair')
-      .andWhere('radgroupreply.op', '+='); 
+      .select(
+        'groupname.*', 
+        'psk_reply.value as psk',
+        'vlan_reply.value as vlan'
+      )
+      .leftJoin({ psk_reply: 'radgroupreply' }, function () {
+        this.on('groupname.name', '=', 'psk_reply.groupname')
+          .andOn('psk_reply.attribute', '=', knex.raw('?', ['Cisco-AVPair']))
+          .andOn('psk_reply.op', '=', knex.raw('?', [':=']));
+      })
+      .leftJoin({ vlan_reply: 'radgroupreply' }, function () {
+        this.on('groupname.name', '=', 'vlan_reply.groupname')
+          .andOn('vlan_reply.attribute', '=', knex.raw('?', ['Tunnel-Private-Group-ID']));
+      })
+      .where('groupname.name', '!=', 'NULL')
 
     return rows.map((row) => {
       return new Group({
         id: row.id,
-        groupName: row.groupname,
+        groupName: row.name,
         description: row.description,
         password: row.psk ? row.psk.replace('psk=', '') : null,
+        vlan: row.vlan,
       });
     });
+
   } catch (err) {
     console.error('DB error fetching groups:', err);
     throw new Error('Fetch failed');
