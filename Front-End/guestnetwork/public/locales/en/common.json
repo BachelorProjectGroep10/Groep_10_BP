@@ -46,7 +46,6 @@
         "users": "Users",
         "groups": "Groups",
         "macAddress": "MAC Address",
-        "groupId": "Group ID",
         "uid": "User ID",
         "password": "Password",
         "active": "Active",

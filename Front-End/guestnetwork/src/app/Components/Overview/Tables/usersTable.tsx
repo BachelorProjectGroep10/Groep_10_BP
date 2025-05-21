@@ -16,11 +16,12 @@ export default function UsersTable( { users }: UserTableProps) {
         <thead>
           <tr className=" text-[#003366] text-left">
             <th className="px-6 py-3 font-semibold">{t('overview.macAddress')}</th>
-            <th className="px-6 py-3 font-semibold">{t('overview.groupId')}</th>
+            <th className="px-6 py-3 font-semibold">{t('overview.groupName')}</th>
             <th className="px-6 py-3 font-semibold">Email</th>
             <th className="px-6 py-3 font-semibold">{t('overview.uid')}</th>
             <th className="px-6 py-3 font-semibold">{t('overview.password')}</th>
             <th className="px-6 py-3 font-semibold">{t('overview.expirationDate')}</th>
+            <th className="px-6 py-3 font-semibold">VLAN</th>
             <th className="px-6 py-3 font-semibold">{t('overview.active')}</th>
           </tr>
         </thead>
@@ -35,11 +36,12 @@ export default function UsersTable( { users }: UserTableProps) {
                 className="hover:bg-[#9FDAF9] text-[#003366] text-left border-b border-gray-200"
               >
                 <td className="px-6 py-4">{user.macAddress}</td>
-                <td className="px-6 py-4">{user.groupId}</td>
+                <td className="px-6 py-4">{user.groupName}</td>
                 <td className="px-6 py-4">{user.email}</td>
                 <td className="px-6 py-4">{user.uid}</td>
                 <td className="px-6 py-4">{user.password}</td>
                 <td className="px-6 py-4">{formatDate(user?.expiredAt)}</td>
+                <td className="px-6 py-4">TO BE ADDED</td>                  
                 <td className="px-6 py-4">
                   <span
                     className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
