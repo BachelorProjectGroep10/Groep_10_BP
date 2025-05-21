@@ -11,29 +11,29 @@ export default function GroupsTable( { groups }: GroupsTableProps) {
   const {t} = useTranslation();
 
   return (
-    <div className="overflow-x-auto border-t border-gray-200 pt-4 bg-white rounded-lg">
-      <table className="min-w-full table-auto border-collapse ">
-        <thead>
-          <tr className=" text-[#003366] text-left">
-            <th className="px-6 py-3 font-semibold">{t('overview.groupName')}</th>
-            <th className="px-6 py-3 font-semibold">{t('overview.password')}</th>
-            <th className="px-6 py-3 font-semibold">VLAN</th>
-            <th className="px-6 py-3 font-semibold">{t('overview.description')}</th>
+    <div className="overflow-x-auto bg-white rounded-lg shadow border border-gray-200">
+      <table className="min-w-full table-fixed border-collapse">
+        <thead className="sticky top-0 z-10 bg-[#f0f4f8] text-[#003366] text-left shadow-sm">
+          <tr>
+            <th className="w-1/4 p-4 font-semibold">{t('overview.groupName')}</th>
+            <th className="w-1/4 p-4 font-semibold">{t('overview.password')}</th>
+            <th className="w-1/4 p-4 font-semibold">VLAN</th>
+            <th className="w-1/4 p-4 font-semibold">{t('overview.description')}</th>
           </tr>
         </thead>
       </table>
-      <div className="max-h-[225px] overflow-y-auto">
-        <table className="min-w-full table-auto border-collapse">
+      <div className="max-h-[250px] overflow-y-auto">
+        <table className="min-w-full table-fixed border-collapse">
           <tbody>
             {groups.map((group: Group) => (
               <tr
                 key={group.groupName}
-                className="hover:bg-[#9FDAF9] text-[#003366] text-left border-b border-gray-200"
+                className="hover:bg-[#e6f3ff] text-[#003366] border-b border-gray-100 transition duration-150 text-left"
               >
-                <td className="px-6 py-4">{group.groupName}</td>
-                <td className="px-6 py-4">{group.password}</td>
-                <td className="px-6 py-4">{group.vlan}</td>
-                <td className="px-6 py-4">{group.description}</td>
+                <td className="w-1/4 p-4 break-words">{group.groupName}</td>
+                <td className="w-1/4 p-4 break-words">{group.password}</td>
+                <td className="w-1/4 p-4 break-words">{group.vlan}</td>
+                <td className="w-1/4 p-4 break-words">{group.description}</td>
               </tr>
             ))}
           </tbody>
