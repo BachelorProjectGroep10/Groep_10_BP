@@ -8,7 +8,7 @@ const getGroups = async (): Promise<Group[]> => {
     const rows = await knex('radgroupcheck')
       .select('radgroupcheck.*', 'radgroupreply.value as psk')
       .leftJoin('radgroupreply', 'radgroupcheck.groupname', 'radgroupreply.groupname')
-      .where('radcheck.attribute', 'Cleartext-Password')
+      .where('radgroupcheck.attribute', 'Cleartext-Password')
       .andWhere('radgroupreply.attribute', 'Cisco-AVPair')
       .andWhere('radgroupreply.op', '+='); 
 

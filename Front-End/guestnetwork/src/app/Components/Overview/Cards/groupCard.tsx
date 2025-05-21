@@ -15,10 +15,6 @@ export default function GroupCard({ group }: GroupCardProps) {
         <p><strong>Description:</strong> {group.description}</p>
         <p><strong>Password:</strong> {group.password}</p>
       </div>
-
-      <div className="text-sm text-[#003366]">
-        <p><strong>Group ID:</strong> {group.id}</p>
-      </div>
     </div>
   );
 }

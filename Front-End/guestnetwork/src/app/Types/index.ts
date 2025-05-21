@@ -10,8 +10,8 @@ export type User = {
     readonly password?: string;
     readonly expiredAt: Date;
     readonly active: number;
-    readonly groupId?: number;
     readonly description?: string;
+    readonly groupName?: string;
 }
 
 export type Group = {

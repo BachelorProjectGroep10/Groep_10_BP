@@ -6,7 +6,6 @@ import { Group } from '../Types';
 import { IoPersonAddSharp } from 'react-icons/io5';
 import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa';
 import { MdGroups } from 'react-icons/md';
-import VlanService from '../Services/VlanService';
 
 interface GroupInterface {
   isMobile: boolean;
@@ -56,25 +55,6 @@ export default function GroupSelectComponent( {isMobile}: GroupInterface) {
     if(isMobile) {
       setIsGroupFormOpen(true);
     }
-
-    async function fetchVlans() {
-      try {
-        const response = await VlanService.getVlans();
-        if (!response.ok) {
-          throw new Error('Failed to fetch VLANs');
-        }
-        const data = await response.json();
-        const simplifiedVlans = data.map((v: any) => ({
-          id: v.id,
-          vlanName: v.vlanName,
-        }));
-        setVlans(simplifiedVlans);
-      } catch (err) {
-        console.error('Error fetching VLANs:', err);
-      }
-    }
-
-    fetchVlans();
 
     const handleResize = () => {
       setRows(window.innerWidth <= 768 ? 3 : 4);
