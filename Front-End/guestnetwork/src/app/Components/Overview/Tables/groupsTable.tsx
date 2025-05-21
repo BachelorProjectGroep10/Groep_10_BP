@@ -16,9 +16,9 @@ export default function GroupsTable( { groups }: GroupsTableProps) {
         <thead>
           <tr className=" text-[#003366] text-left">
             <th className="px-6 py-3 font-semibold">{t('overview.groupName')}</th>
-            <th className="px-6 py-3 font-semibold">{t('overview.description')}</th>
             <th className="px-6 py-3 font-semibold">{t('overview.password')}</th>
             <th className="px-6 py-3 font-semibold">VLAN</th>
+            <th className="px-6 py-3 font-semibold">{t('overview.description')}</th>
           </tr>
         </thead>
       </table>
@@ -31,9 +31,9 @@ export default function GroupsTable( { groups }: GroupsTableProps) {
                 className="hover:bg-[#9FDAF9] text-[#003366] text-left border-b border-gray-200"
               >
                 <td className="px-6 py-4">{group.groupName}</td>
-                <td className="px-6 py-4">{group.description}</td>
                 <td className="px-6 py-4">{group.password}</td>
                 <td className="px-6 py-4">{group.vlan}</td>
+                <td className="px-6 py-4">{group.description}</td>
               </tr>
             ))}
           </tbody>

@@ -22,7 +22,7 @@ export default function UserCard({ user }: UserCardProps) {
 
       <div className="text-sm text-[#003366]">
         <p><strong>User ID:</strong> {user.id}</p>
-        <p><strong>Group Name:</strong> {user.groupName}</p>
+        <p><strong>Group Name:</strong> {user.groupName?.trim() ? user.groupName : 'No group'}</p>
       </div>
 
       <p className="text-sm text-[#003366]">
