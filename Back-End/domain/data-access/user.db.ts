@@ -9,7 +9,8 @@ const getUsers = async (): Promise<User[]> => {
       .select(
         'radcheck.*',
         'psk_reply.value as psk',
-        'vlan_reply.value as vlan'
+        'vlan_reply.value as vlan',
+        'radusergroup.groupname as groupName',
       )
       .leftJoin({ psk_reply: 'radreply' }, function () {
         this.on('radcheck.username', '=', 'psk_reply.username')
@@ -20,6 +21,7 @@ const getUsers = async (): Promise<User[]> => {
         this.on('radcheck.username', '=', 'vlan_reply.username')
           .andOn('vlan_reply.attribute', '=', knex.raw('?', ['Tunnel-Private-Group-ID']));
       })
+      .leftJoin('radusergroup', 'radcheck.username', 'radusergroup.username')
       .where('radcheck.attribute', 'Cleartext-Password');
 
 
@@ -36,6 +38,7 @@ const getUsers = async (): Promise<User[]> => {
         active: row.isDisabled === 0 ? 1 : 0,
         description: row.description,
         vlan: row.vlan,
+        groupName: row.groupName,
       });
     });
   } catch (err) {
