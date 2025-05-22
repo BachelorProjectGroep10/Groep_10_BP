@@ -32,4 +32,36 @@ userRouter.delete('/:macAddress', async (req: Request, res: Response, next: Next
   }
 })
 
+userRouter.post('/regen/:macAddress', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const macAddress = req.params.macAddress;
+    await UserService.regenUserPw(macAddress);
+    res.status(200).json({ message: 'User password regenerated successfully' });
+  } catch (error) {
+    next(error);
+  }
+})
+
+userRouter.post('/addToGroup/:macAddress', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const macAddress = req.params.macAddress;
+    const groupName = req.body.groupName;
+    await UserService.addUserToAGroup(macAddress, groupName);
+    res.status(200).json({ message: 'User added to group successfully' });
+  } catch (error) {
+    next(error);
+  }
+})
+
+userRouter.post('/removeFromGroup/:macAddress', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const macAddress = req.params.macAddress;
+    const groupName = req.body.groupName;
+    await UserService.removeUserFromAGroup(macAddress, groupName);
+    res.status(200).json({ message: 'User removed from group successfully' });
+  } catch (error) {
+    next(error);
+  }
+})
+
 export default userRouter;
