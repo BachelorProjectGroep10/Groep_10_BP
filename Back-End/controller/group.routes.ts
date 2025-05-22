@@ -22,4 +22,14 @@ groupRouter.post('/', async (req: Request, res: Response, next: NextFunction) =>
   }
 });
 
+groupRouter.delete('/:groupName', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const groupName = req.params.groupName;
+    await GroupService.deleteGroup(groupName);
+    res.status(200).json({ message: 'Group deleted successfully' });
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default groupRouter;

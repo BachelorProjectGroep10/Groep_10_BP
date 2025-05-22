@@ -148,6 +148,21 @@ const insertUserIntoRadUserGroup = async (user: User): Promise<void> => {
   }
 }
 
+const deleteUserFromDb = async (macAddress: string): Promise<void> => {
+  const trx = await knex.transaction();
 
+  try {
+    await trx('radcheck').where('username', macAddress).del();
+    await trx('radreply').where('username', macAddress).del();
+    await trx('radusergroup').where('username', macAddress).del();
 
-export { getUsers, insertUser };
+    await trx.commit();
+    console.log('User deleted successfully');
+  } catch (err) {
+    await trx.rollback();
+    console.error('DB error deleting user:', err);
+    throw new Error('Delete failed');
+  }
+};
+
+export { getUsers, insertUser, deleteUserFromDb };
