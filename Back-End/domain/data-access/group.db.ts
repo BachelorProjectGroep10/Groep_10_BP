@@ -103,4 +103,54 @@ const insertIntoRadGroupReply = async (group: Group): Promise<void> => {
   }
 }
 
-export { getGroups, insertGroup };
+const checkGroupHasUsers = async (groupname: string): Promise<boolean> => {
+  try {
+    const countResult = await knex('radusergroup')
+      .where('groupname', groupname)
+      .count('* as count')
+      .first();
+
+    const userCount = countResult && countResult.count !== undefined ? Number(countResult.count) : 0;
+    return userCount > 0;
+  } catch (err) {
+    console.error('DB error checking group users:', err);
+    throw new Error('Check failed');
+  }
+}
+
+const deleteGroupFromDB = async (groupname: string): Promise<void> => {
+  const trx = await knex.transaction();
+
+  try {
+    const hasUsers = await checkGroupHasUsers(groupname);
+    if (hasUsers) {
+      await trx.rollback();
+      throw new Error('Group has users, cannot delete');
+    }
+
+    await trx('radgroupreply')
+      .where('groupname', groupname)
+      .del();
+
+    await trx('radusergroup')
+      .where('groupname', groupname)
+      .del();
+
+    await trx('groupname')
+      .where('name', groupname)
+      .del();
+
+    await trx.commit();
+    console.log('Group deleted successfully');
+  } catch (err) {
+    await trx.rollback();
+    console.error('DB error deleting group:', err);
+    if (err instanceof Error) {
+      throw new Error(err.message);
+    } else {
+      throw new Error('Unknown error occurred while deleting group');
+    }
+  }
+}
+
+export { getGroups, insertGroup, deleteGroupFromDB, checkGroupHasUsers };
