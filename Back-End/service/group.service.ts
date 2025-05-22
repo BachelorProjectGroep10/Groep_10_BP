@@ -1,5 +1,5 @@
 import { Group } from "../domain/model/Group";
-import { getGroups, insertGroup } from "../domain/data-access/group.db";
+import { deleteGroupFromDB, getGroups, insertGroup } from "../domain/data-access/group.db";
 
 const getAllGroups = async (): Promise<Group[]> => {
     const groups = await getGroups();
@@ -21,4 +21,8 @@ const addGroup = async (group: Group): Promise<void> => {
     await insertGroup(newGroup);
 }
 
-export default { getAllGroups, addGroup };
+const deleteGroup = async (groupName: string): Promise<void> => {
+    await deleteGroupFromDB(groupName);
+}
+
+export default { getAllGroups, addGroup, deleteGroup };
