@@ -47,6 +47,7 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
       expiredAt: new Date(expiredAt),
       active: 1,
       description,
+      groupName
     };
 
     try {
