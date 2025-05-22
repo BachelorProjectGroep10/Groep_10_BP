@@ -35,7 +35,6 @@ const trx = await knex.transaction();
         value: `psk=${password}`,
       });
 
-    // Optionally, insert if not exists
     if (affectedRows === 0) {
       await trx('radreply').insert({
         username: 'DEFAULT',

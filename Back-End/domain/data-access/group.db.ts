@@ -38,6 +38,44 @@ const getGroups = async (): Promise<Group[]> => {
   }
 }
 
+
+const getGroup = async (groupName: string): Promise<Group | null> => {
+  try {
+    const rows = await knex('groupname')
+      .select(
+        'groupname.*', 
+        'psk_reply.value as psk',
+        'vlan_reply.value as vlan'
+      )
+      .leftJoin({ psk_reply: 'radgroupreply' }, function () {
+        this.on('groupname.name', '=', 'psk_reply.groupname')
+          .andOn('psk_reply.attribute', '=', knex.raw('?', ['Cisco-AVPair']))
+          .andOn('psk_reply.op', '=', knex.raw('?', ['+=']));
+      })
+      .leftJoin({ vlan_reply: 'radgroupreply' }, function () {
+        this.on('groupname.name', '=', 'vlan_reply.groupname')
+          .andOn('vlan_reply.attribute', '=', knex.raw('?', ['Tunnel-Private-Group-ID']));
+      })
+      .where('groupname.name', groupName);
+
+    if (rows.length === 0) {
+      return null;
+    }
+
+    const row = rows[0];
+    return new Group({
+      id: row.id,
+      groupName: row.name,
+      description: row.description,
+      password: row.psk ? row.psk.replace('psk=', '') : null,
+      vlan: row.vlan,
+    });
+  } catch (err) {
+    console.error('DB error fetching group:', err);
+    throw new Error('Fetch failed');
+  }
+}
+
 const insertGroup = async (group: Group): Promise<Group> => {
   const trx = await knex.transaction();
 
@@ -153,4 +191,4 @@ const deleteGroupFromDB = async (groupname: string): Promise<void> => {
   }
 }
 
-export { getGroups, insertGroup, deleteGroupFromDB, checkGroupHasUsers };
+export { getGroups, insertGroup, deleteGroupFromDB, checkGroupHasUsers, getGroup };
