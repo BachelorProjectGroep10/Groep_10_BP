@@ -148,6 +148,4 @@ const insertUserIntoRadUserGroup = async (user: User): Promise<void> => {
   }
 }
 
-
-
 export { getUsers, insertUser };

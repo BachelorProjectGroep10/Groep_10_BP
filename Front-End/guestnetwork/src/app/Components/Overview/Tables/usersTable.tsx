@@ -67,33 +67,45 @@ export default function UsersTable({ users }: UserTableProps) {
         </table>
       </div>
 
-      {/* Modal */}
+      {/* Pop Up */}
       {showPopUp && selectedUser && (
-        <div className="fixed top-0 left-0 w-full h-full bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm border border-black">
-            <h2 className="text-lg font-bold mb-4">User Details</h2>
+      <div className="fixed top-0 left-0 w-full h-full bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-50">
+        <div className="relative bg-white p-6 rounded-lg shadow-lg w-full max-w-sm border border-black">
+          <button
+            onClick={() => setShowPopUp(false)}
+            aria-label="Close popup"
+            className="absolute top-4 right-6 text-[#003366] hover:text-[#FA1651] text-2xl font-bold"
+          >
+            &times;
+          </button>
 
-            <div className="text-sm text-gray-700 space-y-2">
-              <p><strong>MAC Address:</strong> {selectedUser.macAddress}</p>
-              <p><strong>Password:</strong> {selectedUser.password}</p>
-              <p><strong>Expires:</strong> {formatDate(selectedUser.expiredAt)}</p>
-              <p><strong>Active:</strong> {selectedUser.active ? t('overview.yes') : t('overview.no')}</p>
-              <p><strong>Group:</strong> {selectedUser.groupName || 'No group'}</p>
-              <p><strong>Email:</strong> {selectedUser.email || 'N/A'}</p>
-              <p><strong>VLAN:</strong> {selectedUser.vlan || 'N/A'}</p>
-            </div>
+          <h2 className="text-lg font-bold mb-4">User Details</h2>
+          <div className="text-sm text-gray-700 space-y-2">
+            <p><strong>MAC Address:</strong> {selectedUser.macAddress}</p>
+            <p><strong>Password:</strong> {selectedUser.password}</p>
+            <p><strong>Expires:</strong> {formatDate(selectedUser.expiredAt)}</p>
+            <p><strong>Active:</strong> {selectedUser.active ? t('overview.yes') : t('overview.no')}</p>
+            <p><strong>Group:</strong> {selectedUser.groupName || 'No group'}</p>
+            <p><strong>Email:</strong> {selectedUser.email || 'N/A'}</p>
+            <p><strong>VLAN:</strong> {selectedUser.vlan || 'N/A'}</p>
+          </div>
 
-            <div className="flex justify-end gap-2 mt-6">
-              <button
-                className="bg-gray-300 px-4 py-2 rounded"
-                onClick={() => setShowPopUp(false)}
-              >
-                Close
-              </button>
-            </div>
+          <div className="flex justify-end gap-2 mt-6">
+            <button
+              onClick={() => {
+                // Add your delete logic here, for example:
+                // deleteUser(selectedUser.macAddress);
+                console.log("Delete user:", selectedUser.macAddress);
+                setShowPopUp(false);
+              }}
+              className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-800 transition duration-200"
+            >
+              Delete
+            </button>
           </div>
         </div>
-      )}
+      </div>
+    )}
     </div>
   );
 }
