@@ -8,7 +8,7 @@ import { FaArrowAltCircleUp } from "react-icons/fa";
 import { IoPersonAddSharp } from "react-icons/io5";
 import { MdGroups } from "react-icons/md";
 import GroupService from "../../Services/GroupService";
-import formatDate from "../formatDate"
+import { formatDate } from "../formatDate"
 import { useTranslation } from "react-i18next";
 import '../../i18n'; 
 import UsersTable from "./Tables/usersTable";

@@ -1,5 +1,5 @@
 import { Group } from "@/app/Types";
-import formatDate from "../../formatDate";
+import { formatDate } from "../../formatDate";
 import { useTranslation } from "react-i18next";
 import '../../../i18n';
 

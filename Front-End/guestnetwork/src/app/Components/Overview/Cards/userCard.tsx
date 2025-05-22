@@ -1,5 +1,5 @@
 import { User } from "@/app/Types";
-import formatDate from "../../formatDate";
+import { formatDate } from "../../formatDate";
 import { useTranslation } from "react-i18next";
 
 interface UserCardProps {
