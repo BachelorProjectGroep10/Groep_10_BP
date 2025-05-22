@@ -105,11 +105,21 @@ export default function UsersTable({ users }: UserTableProps) {
                 <>
                   <div>
                     <label>Password:</label>
-                    <input
-                      value={editableUser.password}
-                      onChange={(e) => setEditableUser({ ...editableUser, password: e.target.value })}
-                      className="border px-2 py-1 w-full"
-                    />
+                    <div className="flex items-center gap-2">
+                      <span className="px-2 py-1 border rounded bg-gray-100 text-sm font-mono">
+                        {editableUser.password}
+                      </span>
+                      <button
+                        onClick={() => {
+                          // To be added
+                          //const newPassword = generateRandomPassword(); // or await from UserService
+                          //setEditableUser({ ...editableUser, password: newPassword });
+                        }}
+                        className="bg-[#003366] text-white px-2 py-1 rounded hover:bg-blue-700 text-sm"
+                      >
+                        Regenerate
+                      </button>
+                    </div>
                   </div>
                   <div>
                     <label>Expires:</label>
