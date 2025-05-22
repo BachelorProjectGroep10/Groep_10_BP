@@ -1,5 +1,5 @@
 import { User } from '../domain/model/User';
-import { getUsers, insertUser, deleteUserFromDb } from '../domain/data-access/user.db';
+import { getUsers, deleteUserFromDb, insertUserWithGroup, insertUserWithoutGroup } from '../domain/data-access/user.db';
 
 const getAllUsers = async (): Promise<User[]> => {
     const users = await getUsers();
@@ -20,17 +20,22 @@ const getAllUsers = async (): Promise<User[]> => {
 };
 
 const addUser = async (user: User): Promise<void> => {
-    const newUser = new User({
-        macAddress: user.macAddress.toLowerCase(),
-        email: user.email,
-        uid: user.uid,
-        expiredAt: user.expiredAt,
-        active: user.active,
-        description: user.description,
-        groupName: user.groupName,
-    });
-    await insertUser(newUser);
-}
+  const newUser = new User({
+    macAddress: user.macAddress.toLowerCase(),
+    email: user.email,
+    uid: user.uid,
+    expiredAt: user.expiredAt,
+    active: user.active,
+    description: user.description,
+    groupName: user.groupName,
+  });
+
+  if (user.groupName) {
+    await insertUserWithGroup(newUser);
+  } else {
+    await insertUserWithoutGroup(newUser);
+  }
+};
 
 const deleteUser = async (macAddress: string): Promise<void> => {
     await deleteUserFromDb(macAddress);
