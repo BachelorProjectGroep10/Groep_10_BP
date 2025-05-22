@@ -184,21 +184,21 @@ export default function UsersTable({ users }: UserTableProps) {
                 <>
                   <button
                     onClick={() => {
-                      console.log("Updated user:", editableUser);
-                      setIsEditing(false);
-                    }}
-                    className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-800"
-                  >
-                    Save
-                  </button>
-                  <button
-                    onClick={() => {
                       setEditableUser({ ...selectedUser });
                       setIsEditing(false);
                     }}
                     className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-600"
                   >
                     Cancel
+                  </button>
+                  <button
+                    onClick={() => {
+                      console.log("Updated user:", editableUser);
+                      setIsEditing(false);
+                    }}
+                    className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-800"
+                  >
+                    Save
                   </button>
                 </>
               ) : (

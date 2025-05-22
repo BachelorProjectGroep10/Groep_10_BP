@@ -143,21 +143,21 @@ export default function GroupsTable( { groups }: GroupsTableProps) {
                 <>
                   <button
                     onClick={() => {
-                      console.log("Updated group:", editableGroup);
-                      setIsEditing(false);
-                    }}
-                    className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-800"
-                  >
-                    Save
-                  </button>
-                  <button
-                    onClick={() => {
                       setEditableGroup({ ...selectedGroup }); 
                       setIsEditing(false);
                     }}
                     className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-600"
                   >
                     Cancel
+                  </button>
+                  <button
+                    onClick={() => {
+                      console.log("Updated group:", editableGroup);
+                      setIsEditing(false);
+                    }}
+                    className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-800"
+                  >
+                    Save
                   </button>
                 </>
               ) : (
