@@ -3,6 +3,7 @@ import { formatDate, formatDateInput } from "../../formatDate";
 import { useTranslation } from "react-i18next";
 import '../../../i18n';
 import { useEffect, useState } from "react";
+import UserService from "../../../Services/UserService"
 
 interface UserTableProps {
   users: User[]
@@ -19,6 +20,16 @@ export default function UsersTable({ users }: UserTableProps) {
   const handleExtraClick = (user: User) => {
     setSelectedUser(user);
     setShowPopUp(true);
+  };
+
+  const deleteUser = async (macAddress: string) => {
+    try {
+      await UserService.deleteUser(macAddress);
+      setShowPopUp(false);
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      alert("Failed to delete user.");
+    }
   };
 
   useEffect(() => {
@@ -191,8 +202,9 @@ export default function UsersTable({ users }: UserTableProps) {
               )}
               <button
                 onClick={() => {
-                  console.log("Delete user:", selectedUser.macAddress);
-                  setShowPopUp(false);
+                  if (selectedUser) {
+                    deleteUser(selectedUser.macAddress);
+                  }
                 }}
                 className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-800"
               >

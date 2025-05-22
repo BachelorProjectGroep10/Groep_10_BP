@@ -25,9 +25,21 @@ const addUser = async (user: User) => {
     });
 }
 
+const deleteUser = async (macAddress: string) => {
+    const token = sessionStorage.getItem("token") || "";
+    return fetch(`${basicUrl}/user/${macAddress}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+        }
+    });
+}
+
 const UserService = {
     getUsers,
-    addUser
+    addUser,
+    deleteUser
 };
 
 export default UserService;
