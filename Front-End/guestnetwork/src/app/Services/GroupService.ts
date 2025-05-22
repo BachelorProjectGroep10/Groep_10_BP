@@ -25,9 +25,22 @@ const addGroup = async (group: Group) => {
     });
 }
 
+const deleteGroup = async (groupName: string) => {
+    const token = sessionStorage.getItem("token") || "";
+    return fetch(`${basicUrl}/group/${groupName}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+        }
+    });
+}
+
+
 const GroupService = {
     getGroups,
-    addGroup
+    addGroup,
+    deleteGroup
 };
 
 export default GroupService;
