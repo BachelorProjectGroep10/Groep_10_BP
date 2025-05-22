@@ -3,7 +3,11 @@ import { User } from '../model/User';
 import { generateRandomPassword } from '../../util/autoPassword';
 import { getGroup } from './group.db';
 
-// Get all users
+// This file contains the data access layer for user-related operations.
+// It includes functions to get users, insert users with or without groups, and delete users.
+// The functions interact with the database using Knex.js and handle transactions where necessary.
+// The functions are designed to be reusable and modular, allowing for easy integration into the rest of the application.
+
 const getUsers = async (): Promise<User[]> => {
   try {
     const rows = await knex('radcheck')
@@ -48,9 +52,6 @@ const getUsers = async (): Promise<User[]> => {
   }
 };
 
-// Insert a user into the database
-
-
 const insertUserWithoutGroup = async (user: User): Promise<User> => {
   return wrapWithTransaction(async (trx) => {
     await insertIntoRadcheck(trx, user);
@@ -70,158 +71,12 @@ const insertUserWithGroup = async (user: User): Promise<User> => {
 
     await insertIntoRadcheck(trx, user);
     await insertIntoRadReply(trx, user, group.password);
-    await insertUserIntoRadUserGroup(trx, user);
+    await insertUserIntoRadUserGroup(trx, user.macAddress, user.groupName);
 
     console.log('User inserted with group');
     return user;
   });
 };
-
-
-// const insertUserWithoutGroup = async (user: User): Promise<User> => {
-//   const trx = await knex.transaction();
-//   try {
-//     const validUntil = new Date(user.expiredAt);
-
-//     await trx('radcheck').insert({
-//       uid: user.uid,
-//       username: user.macAddress,
-//       attribute: 'Cleartext-Password',
-//       email: user.email,
-//       op: ':=',
-//       value: user.macAddress,
-//       validUntil: validUntil.toISOString().slice(0, 19).replace('T', ' '),
-//       isDisabled: 0,
-//       description: user.description,
-//     });
-
-//     const randomPassword = generateRandomPassword();
-//     insertIntoRadReply(user, randomPassword);
-
-//     await trx.commit();
-//     console.log('User inserted successfully');
-
-//     return user 
-//   } catch (err) {
-//     await trx.rollback();
-//     console.error('DB error inserting user:', err);
-//     throw new Error('Insert failed');
-//   }
-// };
-
-
-// const insertUserWithGroup = async (user: User): Promise<User> => {
-//   const trx = await knex.transaction();
-
-//   try {
-//     const validUntil = new Date(user.expiredAt);
-
-//     await trx('radcheck').insert({
-//       uid: user.uid,
-//       username: user.macAddress,
-//       attribute: 'Cleartext-Password',
-//       email: user.email,
-//       op: ':=',
-//       value: user.macAddress,
-//       validUntil: validUntil.toISOString().slice(0, 19).replace('T', ' '),
-//       isDisabled: 0,
-//       description: user.description,
-//     });
-
-//     if (!user.groupName) {
-//       console.error('User groupName is undefined');
-//       await trx.rollback();
-//       throw new Error('User groupName is undefined');
-//     }
-//     const group = await getGroup(user.groupName);
-//     if (!group) {
-//       console.error('Group does not exist');
-//       await trx.rollback();
-//       throw new Error('Group does not exist');
-//     }
-
-//     if (!group.password) {
-//       await trx.rollback();
-//       console.error('Group password is undefined');
-//       throw new Error('Group password is undefined');
-//     }
-//     await insertIntoRadReply(user, group.password);
-//     await insertUserIntoRadUserGroup(user);
-
-//     await trx.commit();
-//     console.log('User inserted successfully');
-
-//     return user 
-//   } catch (err) {
-//     await trx.rollback();
-//     console.error('DB error inserting user:', err);
-//     throw new Error('Insert failed');
-//   }
-// }
-
-// const insertIntoRadReply = async (user: User, password: string): Promise<void> => {
-//   const trx = await knex.transaction();
-//   try {
-//     await trx('radreply').insert({
-//       username: user.macAddress,
-//       attribute: 'Tunnel-Private-Group-ID',
-//       op: ':=',
-//       value: 30,
-//     });
-
-//     await trx('radreply').insert({
-//       username: user.macAddress,
-//       attribute: 'Cisco-AVPair',
-//       op: '+=',
-//       value: `psk=${password}`,
-//     });
-
-//     await trx('radreply').insert({
-//       username: user.macAddress,
-//       attribute: 'Cisco-AVPair',
-//       op: ':=',
-//       value: 'psk-mode=ascii',
-//     });
-
-//     await trx.commit();
-//     console.log('User inserted into radreply successfully');
-//   } catch (err) {
-//     await trx.rollback();
-//     console.error('DB error inserting user into radreply:', err);
-//     throw new Error('Insert failed');
-//   }
-// }
-
-
-// const insertUserIntoRadUserGroup = async (user: User): Promise<void> => {
-//   const trx = await knex.transaction();
-
-//   try {
-//     const checkGroup = await trx('groupname')
-//       .select('name')
-//       .where('name', user.groupName)
-//       .first();
-
-//     if (!checkGroup) {
-//       console.error('Group does not exist');
-//       await trx.rollback();
-//       throw new Error('Group does not exist');
-//     }
-
-//     await trx('radusergroup').insert({
-//       username: user.macAddress,
-//       groupname: user.groupName,
-//       priority: 0,
-//     });
-
-//     await trx.commit();
-//     console.log('User inserted into radusergroup successfully');
-//   } catch (err) {
-//     await trx.rollback();
-//     console.error('DB error inserting user into radusergroup:', err);
-//     throw new Error('Insert failed');
-//   }
-// }
 
 const deleteUserFromDb = async (macAddress: string): Promise<void> => {
   return wrapWithTransaction(async (trx) => {
@@ -232,27 +87,67 @@ const deleteUserFromDb = async (macAddress: string): Promise<void> => {
   });
 };
 
-// const deleteUserFromDb = async (macAddress: string): Promise<void> => {
-//   const trx = await knex.transaction();
+const regenUserPassword = async (macAddress: string): Promise<void> => {
+  return wrapWithTransaction(async (trx) => {
+    const groupExists = await trx('radusergroup')
+      .select('groupname')
+      .where('username', macAddress)
+      .first();
 
-//   try {
-//     await trx('radcheck').where('username', macAddress).del();
-//     await trx('radreply').where('username', macAddress).del();
-//     await trx('radusergroup').where('username', macAddress).del();
+    if (groupExists) {
+      console.error('User is in a group, cannot regenerate password');
+      throw new Error('User is in a group, cannot regenerate password');
+    }
 
-//     await trx.commit();
-//     console.log('User deleted successfully');
-//   } catch (err) {
-//     await trx.rollback();
-//     console.error('DB error deleting user:', err);
-//     throw new Error('Delete failed');
-//   }
-// };
+    const randomPassword = generateRandomPassword();
+    await trx('radreply')
+      .where('username', macAddress)
+      .andWhere('attribute', 'Cisco-AVPair')
+      .update({ value: `psk=${randomPassword}` });
 
+    console.log('User password regenerated successfully');
+  });
+}
 
+const addUserToGroup = async (macAddress: string, groupName: string): Promise<void> => {
+  return wrapWithTransaction(async (trx) => {
+    const group = await getGroup(groupName);
+
+    if (!group) throw new Error('Group does not exist');
+
+    await trx('radreply')
+      .where('username', macAddress)
+      .andWhere('attribute', 'Cisco-AVPair')
+      .update({ value: `psk=${group.password}` });
+
+    await insertUserIntoRadUserGroup(trx, macAddress, groupName);
+    console.log('User added to group successfully');
+  });
+}
+
+const removeUserFromGroup = async (macAddress: string, groupName: string): Promise<void> => {
+  return wrapWithTransaction(async (trx) => {
+    const groupExists = await trx('radusergroup')
+      .select('groupname')
+      .where('username', macAddress)
+      .andWhere('groupname', groupName)
+      .first();
+
+    if (!groupExists) throw new Error('User not in group');
+
+    await trx('radusergroup').where({ username: macAddress, groupname: groupName }).del();
+
+    const randomPassword = generateRandomPassword();
+    await trx('radreply')
+      .where('username', macAddress)
+      .andWhere('attribute', 'Cisco-AVPair')
+      .update({ value: `psk=${randomPassword}` });
+    
+    console.log('User removed from group successfully');
+  });
+}
 
 // helper functions
-
 const wrapWithTransaction = async <T>(operation: (trx: any) => Promise<T>): Promise<T> => {
   const trx = await knex.transaction();
   try {
@@ -305,19 +200,19 @@ const insertIntoRadReply = async (trx: any, user: User, password: string) => {
   ]);
 };
 
-const insertUserIntoRadUserGroup = async (trx: any, user: User): Promise<void> => {
+const insertUserIntoRadUserGroup = async (trx: any, macAddress: string, groupName:string ): Promise<void> => {
   const groupExists = await trx('groupname')
     .select('name')
-    .where('name', user.groupName)
+    .where('name', groupName)
     .first();
 
   if (!groupExists) throw new Error('Group does not exist');
 
   await trx('radusergroup').insert({
-    username: user.macAddress,
-    groupname: user.groupName,
+    username: macAddress,
+    groupname: groupName,
     priority: 0,
   });
 };
 
-export { getUsers, insertUserWithoutGroup,insertUserWithGroup, deleteUserFromDb };
+export { getUsers, insertUserWithoutGroup,insertUserWithGroup, deleteUserFromDb, regenUserPassword, addUserToGroup, removeUserFromGroup };
