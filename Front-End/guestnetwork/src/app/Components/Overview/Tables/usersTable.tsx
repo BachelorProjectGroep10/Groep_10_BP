@@ -1,9 +1,13 @@
 import { User } from "@/app/Types";
 import { formatDate, formatDateInput } from "../../formatDate";
+import { IoMdRefresh } from "react-icons/io";
 import { useTranslation } from "react-i18next";
 import '../../../i18n';
 import { useEffect, useState } from "react";
 import UserService from "../../../Services/UserService"
+import GroupService from "@/app/Services/GroupService";
+import useInterval from "use-interval";
+import useSWR, { mutate } from "swr";
 
 interface UserTableProps {
   users: User[]
@@ -12,8 +16,8 @@ interface UserTableProps {
 export default function UsersTable({ users }: UserTableProps) {
   const [showPopUp, setShowPopUp] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editableUser, setEditableUser] = useState({ ...selectedUser });
+  const [isEditingGroup, setIsEditingGroup] = useState(false);
+  const [groupName, setGroupName] = useState<string | null>(null);
 
   const { t } = useTranslation();
 
@@ -32,11 +36,29 @@ export default function UsersTable({ users }: UserTableProps) {
     }
   };
 
-  useEffect(() => {
-    if (selectedUser) {
-      setEditableUser({ ...selectedUser });
+  async function fetchGroups(): Promise<{ id: number; groupName: string }[]> {
+    try {
+      const response = await GroupService.getGroups();
+      if (!response.ok) {
+        throw new Error('Failed to fetch groups');
+      }
+
+      const data = await response.json();
+      return data.map((g: any) => ({
+        id: g.id,          
+        groupName: g.groupName,
+      }));
+    } catch (err) {
+      console.error('Error fetching groups:', err);
+      return [];
     }
-  }, [selectedUser]);
+  }
+  
+  const { data: groups, isLoading: isGroupsLoading } = useSWR('groups', fetchGroups);
+
+  useInterval(() => {
+    mutate('groups', fetchGroups);
+  }, 2000);
 
   return (
     <div className="overflow-x-auto bg-white rounded-lg shadow border border-gray-200">
@@ -104,16 +126,13 @@ export default function UsersTable({ users }: UserTableProps) {
               <div>
                 <label><strong>Password:</strong></label>
                 <div className="flex items-center gap-2">
-                  <span className="px-2 py-1 border rounded bg-gray-100 text-sm font-mono">
+                  <span>
                     {selectedUser.password}
                   </span>
                   <button
                     onClick={async () => {
                       try {
                         await UserService.regenUserPw(selectedUser.macAddress);
-                        // Optionally refetch the user data or just inform the user
-                        alert("Password regenerated successfully.");
-                        // e.g., refetchUser(selectedUser.macAddress); // your own handler
                       } catch (err) {
                         console.error("Failed to regenerate password:", err);
                         alert("Failed to regenerate password.");
@@ -121,14 +140,88 @@ export default function UsersTable({ users }: UserTableProps) {
                     }}
                     className="bg-[#003366] text-white px-2 py-1 rounded hover:bg-blue-700 text-sm"
                   >
-                    Regenerate
+                    <IoMdRefresh />
                   </button>
                 </div>
               </div>
 
               <p><strong>Expires:</strong> {formatDate(selectedUser.expiredAt)}</p>
               <p><strong>Active:</strong> {selectedUser.active ? t('overview.yes') : t('overview.no')}</p>
-              <p><strong>Group:</strong> {selectedUser.groupName || 'No group'}</p>
+
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-medium text-gray-700"><strong>Group:</strong></label>
+
+                {!isEditingGroup ? (
+                  <div className="flex items-center gap-2">
+                    <span>{selectedUser.groupName || 'No group'}</span>
+                    <button
+                      onClick={() => setIsEditingGroup(true)}
+                      className="bg-[#003366] text-white px-2 py-1 rounded hover:bg-blue-700 text-sm"
+                    >
+                      Change
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-2">
+                    <select
+                      value={groupName ?? selectedUser.groupName ?? ''}
+                      onChange={(e) => setGroupName(e.target.value)}
+                      className="block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                    >
+                      <option value="">No group</option>
+                      {groups?.map((g) => (
+                        <option key={g.id} value={g.groupName}>
+                          {g.groupName}
+                        </option>
+                      ))}
+                    </select>
+
+                    <div className="flex gap-2">
+                      <button
+                        onClick={async () => {
+                          if (!selectedUser) return;
+
+                          const oldGroup = selectedUser.groupName ?? '';
+                          const newGroup = groupName ?? '';
+
+                          try {
+                            if (oldGroup && oldGroup !== newGroup) {
+                              await UserService.removeFromGroup(selectedUser.macAddress, oldGroup);
+                            }
+
+                            if (newGroup && oldGroup !== newGroup) {
+                              await UserService.addToGroup(selectedUser.macAddress, newGroup);
+                            }
+
+                            alert('Group updated successfully');
+                            setIsEditingGroup(false);
+                            setShowPopUp(false);
+                            mutate('users'); // Optional: refresh user list if you're using SWR for it
+                          } catch (err) {
+                            console.error('Failed to update group:', err);
+                            alert('Failed to update group');
+                          }
+                        }}
+                        className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-800 text-sm"
+                      >
+                        Save
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          setGroupName(selectedUser.groupName ?? '');
+                          setIsEditingGroup(false);
+                        }}
+                      className="bg-[#003366] text-white px-2 py-1 rounded hover:bg-blue-700 text-sm"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            
+
               <p><strong>Email:</strong> {selectedUser.email || 'N/A'}</p>
               <p><strong>VLAN:</strong> {selectedUser.vlan || 'N/A'}</p>
             </div>

@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import '../../../i18n';
 import { useEffect, useState } from "react";
 import GroupService from "@/app/Services/GroupService";
+import { IoMdRefresh } from "react-icons/io";
 
 interface GroupsTableProps {
   groups: Group[]
@@ -13,8 +14,6 @@ export default function GroupsTable( { groups }: GroupsTableProps) {
   const {t} = useTranslation();
   const [showPopUp, setShowPopUp] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editableGroup, setEditableGroup] = useState({ ...selectedGroup });
 
   const handleExtraClick = (group: Group) => {
     setSelectedGroup(group);
@@ -30,13 +29,7 @@ export default function GroupsTable( { groups }: GroupsTableProps) {
       alert("Failed to delete user.");
     }
   };
-
-  useEffect(() => {
-    if (selectedGroup) {
-      setEditableGroup({ ...selectedGroup });
-    }
-  }, [selectedGroup]);
-
+  
   return (
     <div className="overflow-x-auto bg-white rounded-lg shadow border border-gray-200">
       <table className="min-w-full table-fixed border-collapse">
@@ -90,31 +83,7 @@ export default function GroupsTable( { groups }: GroupsTableProps) {
             <h2 className="text-lg font-bold mb-4">Group Details</h2>
             <div className="text-sm text-gray-700 space-y-2">
               <p><strong>Groupname:</strong> {selectedGroup.groupName}</p>
-
-              <div>
-                <label>Password:</label>
-                <div className="flex items-center gap-2">
-                  <span className="px-2 py-1 border rounded bg-gray-100 text-sm font-mono">
-                    {selectedGroup.password}
-                  </span>
-                  <button
-                    onClick={async () => {
-                      try {
-                        //await GroupService.regenGroupPw(selectedGroup.groupName); // You’ll need to implement this
-                        alert("Group password regenerated.");
-                        // Optionally: refetchGroup(selectedGroup.groupName);
-                      } catch (err) {
-                        console.error("Failed to regenerate group password:", err);
-                        alert("Failed to regenerate group password.");
-                      }
-                    }}
-                    className="bg-[#003366] text-white px-2 py-1 rounded hover:bg-blue-700 text-sm"
-                  >
-                    Regenerate
-                  </button>
-                </div>
-              </div>
-
+              <p><strong>Password:</strong> {selectedGroup.password}</p>
               <p><strong>VLAN:</strong> {selectedGroup.vlan || 'N/A'}</p>
               <p><strong>Description:</strong> {selectedGroup.description || 'N/A'}</p>
             </div>

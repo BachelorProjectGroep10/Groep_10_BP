@@ -78,7 +78,7 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
 
       const data = await response.json();
       return data.map((g: any) => ({
-        id: g.id,           // assuming your group object has an id property
+        id: g.id,          
         groupName: g.groupName,
       }));
     } catch (err) {
