@@ -5,6 +5,7 @@ import '../../../i18n';
 import { useEffect, useState } from "react";
 import GroupService from "@/app/Services/GroupService";
 import { IoMdRefresh } from "react-icons/io";
+import GroupDetailsPopup from "../../GroupDetailsPopUp";
 
 interface GroupsTableProps {
   groups: Group[]
@@ -71,39 +72,12 @@ export default function GroupsTable( { groups }: GroupsTableProps) {
 
       {/* Pop Up */}
       {showPopUp && selectedGroup && (
-        <div className="fixed top-0 left-0 w-full h-full bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="relative bg-white p-6 rounded-lg shadow-lg w-full max-w-sm border border-black">
-            <button
-              onClick={() => setShowPopUp(false)}
-              className="absolute top-4 right-6 text-[#003366] hover:text-[#FA1651] text-2xl font-bold"
-            >
-              &times;
-            </button>
-
-            <h2 className="text-lg font-bold mb-4">Group Details</h2>
-            <div className="text-sm text-gray-700 space-y-2">
-              <p><strong>Groupname:</strong> {selectedGroup.groupName}</p>
-              <p><strong>Password:</strong> {selectedGroup.password}</p>
-              <p><strong>VLAN:</strong> {selectedGroup.vlan || 'N/A'}</p>
-              <p><strong>Description:</strong> {selectedGroup.description || 'N/A'}</p>
-            </div>
-
-            <div className="flex justify-end gap-2 mt-6">
-              <button
-                onClick={() => {
-                  if (selectedGroup) {
-                    deleteGroup(selectedGroup.groupName);
-                  }
-                }}
-                className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-800"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
+        <GroupDetailsPopup
+          group={selectedGroup}
+          onClose={() => setShowPopUp(false)}
+          onDelete={deleteGroup}
+        />
       )}
-
     </div>
   );
 
