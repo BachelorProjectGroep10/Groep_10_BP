@@ -31,11 +31,11 @@ export function QRCodePdfLayout({
 
       <div className="relative z-10 flex flex-col items-center justify-center h-full text-center p-20">
         <div className="mb-6 flex flex-col items-center justify-center">
-          <div className="bg-[#9FDAF9] w-32 h-32 sm:w-40 sm:h-40 rounded-full mb-4 flex items-center justify-center">
+          <div className=" mb-4 flex items-center justify-center">
             <img
               src="/Images/Logo_UCLL_ROUND.png"
               alt="UCLL Logo"
-              className="w-24 h-24 sm:w-32 sm:h-32 rounded-full"
+              className="w-24 h-24 sm:w-40 sm:h-40 rounded-full"
             />
           </div>
           <h1 className="text-3xl font-bold mb-2">
@@ -46,13 +46,13 @@ export function QRCodePdfLayout({
           </p>
         </div>
 
-        <div className="bg-[#9FDAF9] p-10 rounded-xl shadow mb-6">
+        <div className="bg-[#9FDAF9] p-10 rounded-xl shadow mb-4 flex flex-col items-center justify-center">
           <QRCode
             value={`WIFI:S:${ssid};H:true;T:WPA;P:${password};;`}
-            size={240}
+            size={300}
             logoImage="/Images/Logo_UCLL_ROUND.png"
-            logoWidth={40}
-            logoHeight={40}
+            logoWidth={45}
+            logoHeight={45}
             logoOpacity={1}
             logoPadding={3}
             logoPaddingStyle="circle"
@@ -62,11 +62,15 @@ export function QRCodePdfLayout({
             eyeRadius={10}
             
           />
-          <p className="text-sm font-semibold mt-4">
-            <span className="font-semibold">SSID:</span> {ssid}
-            <br />
-            <span className="font-semibold">Password:</span> {password}
-          </p>
+          <h3 className='font-semibold text-2xl'>Scan Me</h3>
+          <div className='flex flex-col items-start justify-center bg-white p-4 rounded-lg mt-4'>
+            <p className="text-sm mt-4">
+              <span className="font-semibold">NETWERK / NETWORK:</span> {ssid}
+            </p>
+            <p className="text-sm mt-2">
+              <span className="font-semibold">WACHTWOORD / PASSWORD:</span> {password}
+            </p>
+          </div>
         </div>
         <div className="text-base">
           <p className="text-sm pt-2">This QR code is valid for 7 days.</p>
