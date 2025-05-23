@@ -26,6 +26,13 @@ export default function UsersTable({ users }: UserTableProps) {
     setShowPopUp(true);
   };
 
+  const closePopUp = () => {
+    setShowPopUp(false);
+    setSelectedUser(null);
+    setIsEditingGroup(false);
+    setGroupName(null);
+  }
+
   const deleteUser = async (macAddress: string) => {
     try {
       await UserService.deleteUser(macAddress);
@@ -113,7 +120,7 @@ export default function UsersTable({ users }: UserTableProps) {
         <div className="fixed top-0 left-0 w-full h-full bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="relative bg-white p-6 rounded-lg shadow-lg w-full max-w-sm border border-black">
             <button
-              onClick={() => setShowPopUp(false)}
+              onClick={() => closePopUp()}
               className="absolute top-4 right-6 text-[#003366] hover:text-[#FA1651] text-2xl font-bold"
             >
               &times;
@@ -169,8 +176,8 @@ export default function UsersTable({ users }: UserTableProps) {
                       className="block w-full border border-gray-300 rounded-md shadow-sm p-2"
                     >
                       <option value="">No group</option>
-                      {groups?.map((g) => (
-                        <option key={g.id} value={g.groupName}>
+                      {groups?.map((g, index) => (
+                        <option key={index} value={g.groupName}>
                           {g.groupName}
                         </option>
                       ))}

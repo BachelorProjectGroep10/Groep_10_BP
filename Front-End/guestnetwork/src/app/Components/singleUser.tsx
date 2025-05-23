@@ -207,8 +207,8 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
               className="bg-gray-300 text-black rounded-lg px-2 pr-6 py-2 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
             >
               <option value="">{t('user.noGroup')}</option>
-              {(groups ?? []).map((group) => (
-                <option key={group.id} value={group.id}>
+              {(groups ?? []).map((group, index) => (
+                <option key={index} value={group.groupName}>
                   {group.groupName}
                 </option>
               ))}
