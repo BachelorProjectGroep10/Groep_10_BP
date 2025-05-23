@@ -103,6 +103,7 @@ const regenUserPassword = async (macAddress: string): Promise<void> => {
     await trx('radreply')
       .where('username', macAddress)
       .andWhere('attribute', 'Cisco-AVPair')
+      .andWhere('op', '+=') 
       .update({ value: `psk=${randomPassword}` });
 
     console.log('User password regenerated successfully');
@@ -118,6 +119,7 @@ const addUserToGroup = async (macAddress: string, groupName: string): Promise<vo
     await trx('radreply')
       .where('username', macAddress)
       .andWhere('attribute', 'Cisco-AVPair')
+      .andWhere('op', '+=') 
       .update({ value: `psk=${group.password}` });
 
     await insertUserIntoRadUserGroup(trx, macAddress, groupName);
@@ -141,6 +143,7 @@ const removeUserFromGroup = async (macAddress: string, groupName: string): Promi
     await trx('radreply')
       .where('username', macAddress)
       .andWhere('attribute', 'Cisco-AVPair')
+      .andWhere('op', '+=') 
       .update({ value: `psk=${randomPassword}` });
     
     console.log('User removed from group successfully');
