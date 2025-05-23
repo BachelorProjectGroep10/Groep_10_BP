@@ -11,7 +11,7 @@ export type User = {
     readonly expiredAt: Date;
     readonly active: number;
     readonly description?: string;
-    readonly groupName?: string;
+    readonly groupName?: string | null;
     readonly vlan?: number;
 }
 
