@@ -91,83 +91,35 @@ export default function GroupsTable( { groups }: GroupsTableProps) {
             <div className="text-sm text-gray-700 space-y-2">
               <p><strong>Groupname:</strong> {selectedGroup.groupName}</p>
 
-              {isEditing ? (
-                <>
-                  <div>
-                    <label>Password:</label>
-                    <div className="flex items-center gap-2">
-                      <span className="px-2 py-1 border rounded bg-gray-100 text-sm font-mono">
-                        {editableGroup.password}
-                      </span>
-                      <button
-                        onClick={() => {
-                          // To be added
-                          //const newPassword = generateRandomPassword(); // or await from UserService
-                          //setEditableGroup({ ...editableGroup, password: newPassword });
-                        }}
-                        className="bg-[#003366] text-white px-2 py-1 rounded hover:bg-blue-700 text-sm"
-                      >
-                        Regenerate
-                      </button>
-                    </div>
-                  </div>
-                  <div>
-                    <label>VLAN:</label>
-                    <input
-                      type="number"
-                      value={editableGroup.vlan}
-                      onChange={(e) => setEditableGroup({ ...editableGroup, vlan: Number(e.target.value) })}
-                      className="border px-2 py-1 w-full"
-                    />
-                  </div>
-                  <div>
-                    <label>Description:</label>
-                    <input
-                      value={editableGroup.description || ''}
-                      onChange={(e) => setEditableGroup({ ...editableGroup, description: e.target.value})}
-                      className="border px-2 py-1 w-full"
-                    />
-                  </div>
-                </>
-              ) : (
-                <>
-                  <p><strong>Password:</strong> {selectedGroup.password}</p>
-                  <p><strong>VLAN:</strong> {selectedGroup.vlan || 'N/A'}</p>
-                  <p><strong>Email:</strong> {selectedGroup.description}</p>
-                </>
-              )}
+              <div>
+                <label>Password:</label>
+                <div className="flex items-center gap-2">
+                  <span className="px-2 py-1 border rounded bg-gray-100 text-sm font-mono">
+                    {selectedGroup.password}
+                  </span>
+                  <button
+                    onClick={async () => {
+                      try {
+                        //await GroupService.regenGroupPw(selectedGroup.groupName); // You’ll need to implement this
+                        alert("Group password regenerated.");
+                        // Optionally: refetchGroup(selectedGroup.groupName);
+                      } catch (err) {
+                        console.error("Failed to regenerate group password:", err);
+                        alert("Failed to regenerate group password.");
+                      }
+                    }}
+                    className="bg-[#003366] text-white px-2 py-1 rounded hover:bg-blue-700 text-sm"
+                  >
+                    Regenerate
+                  </button>
+                </div>
+              </div>
+
+              <p><strong>VLAN:</strong> {selectedGroup.vlan || 'N/A'}</p>
+              <p><strong>Description:</strong> {selectedGroup.description || 'N/A'}</p>
             </div>
 
-            <div className="flex justify-between gap-2 mt-6">
-              {isEditing ? (
-                <>
-                  <button
-                    onClick={() => {
-                      setEditableGroup({ ...selectedGroup }); 
-                      setIsEditing(false);
-                    }}
-                    className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-600"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={() => {
-                      console.log("Updated group:", editableGroup);
-                      setIsEditing(false);
-                    }}
-                    className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-800"
-                  >
-                    Save
-                  </button>
-                </>
-              ) : (
-                <button
-                  onClick={() => setIsEditing(true)}
-                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-800"
-                >
-                  Update
-                </button>
-              )}
+            <div className="flex justify-end gap-2 mt-6">
               <button
                 onClick={() => {
                   if (selectedGroup) {
@@ -182,6 +134,7 @@ export default function GroupsTable( { groups }: GroupsTableProps) {
           </div>
         </div>
       )}
+
     </div>
   );
 

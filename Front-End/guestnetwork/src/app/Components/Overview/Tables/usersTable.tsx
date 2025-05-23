@@ -101,114 +101,39 @@ export default function UsersTable({ users }: UserTableProps) {
             <div className="text-sm text-gray-700 space-y-2">
               <p><strong>MAC Address:</strong> {selectedUser.macAddress}</p>
 
-              {isEditing ? (
-                <>
-                  <div>
-                    <label>Password:</label>
-                    <div className="flex items-center gap-2">
-                      <span className="px-2 py-1 border rounded bg-gray-100 text-sm font-mono">
-                        {editableUser.password}
-                      </span>
-                      <button
-                        onClick={() => {
-                          // To be added
-                          //const newPassword = generateRandomPassword(); // or await from UserService
-                          //setEditableUser({ ...editableUser, password: newPassword });
-                        }}
-                        className="bg-[#003366] text-white px-2 py-1 rounded hover:bg-blue-700 text-sm"
-                      >
-                        Regenerate
-                      </button>
-                    </div>
-                  </div>
-                  <div>
-                    <label>Expires:</label>
-                    <input
-                      type="date"
-                      value={formatDateInput(editableUser.expiredAt)}
-                      onChange={(e) => setEditableUser({...editableUser, expiredAt: new Date(e.target.value)})}                      
-                      className="border px-2 py-1 w-full"
-                    />
-                  </div>
-                  <div>
-                    <label>Active:</label>
-                    <select
-                      value={editableUser.active}
-                      onChange={(e) => setEditableUser({ ...editableUser, active: Number(e.target.value)})}
-                      className="border px-2 py-1 w-full"
-                    >
-                      <option value="1">{t('overview.yes')}</option>
-                      <option value="0">{t('overview.no')}</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label>Group:</label>
-                    <input
-                      value={editableUser.groupName || ''}
-                      onChange={(e) => setEditableUser({ ...editableUser, groupName: e.target.value })}
-                      className="border px-2 py-1 w-full"
-                    />
-                  </div>
-                  <div>
-                    <label>Email:</label>
-                    <input
-                      type="email"
-                      value={editableUser.email || ''}
-                      onChange={(e) => setEditableUser({ ...editableUser, email: e.target.value })}
-                      className="border px-2 py-1 w-full"
-                    />
-                  </div>
-                  <div>
-                    <label>VLAN:</label>
-                    <input
-                      value={editableUser.vlan || ''}
-                      onChange={(e) => setEditableUser({ ...editableUser, vlan: Number(e.target.value)})}
-                      className="border px-2 py-1 w-full"
-                    />
-                  </div>
-                </>
-              ) : (
-                <>
-                  <p><strong>Password:</strong> {selectedUser.password}</p>
-                  <p><strong>Expires:</strong> {formatDate(selectedUser.expiredAt)}</p>
-                  <p><strong>Active:</strong> {selectedUser.active ? t('overview.yes') : t('overview.no')}</p>
-                  <p><strong>Group:</strong> {selectedUser.groupName || 'No group'}</p>
-                  <p><strong>Email:</strong> {selectedUser.email || 'N/A'}</p>
-                  <p><strong>VLAN:</strong> {selectedUser.vlan || 'N/A'}</p>
-                </>
-              )}
+              <div>
+                <label><strong>Password:</strong></label>
+                <div className="flex items-center gap-2">
+                  <span className="px-2 py-1 border rounded bg-gray-100 text-sm font-mono">
+                    {selectedUser.password}
+                  </span>
+                  <button
+                    onClick={async () => {
+                      try {
+                        await UserService.regenUserPw(selectedUser.macAddress);
+                        // Optionally refetch the user data or just inform the user
+                        alert("Password regenerated successfully.");
+                        // e.g., refetchUser(selectedUser.macAddress); // your own handler
+                      } catch (err) {
+                        console.error("Failed to regenerate password:", err);
+                        alert("Failed to regenerate password.");
+                      }
+                    }}
+                    className="bg-[#003366] text-white px-2 py-1 rounded hover:bg-blue-700 text-sm"
+                  >
+                    Regenerate
+                  </button>
+                </div>
+              </div>
+
+              <p><strong>Expires:</strong> {formatDate(selectedUser.expiredAt)}</p>
+              <p><strong>Active:</strong> {selectedUser.active ? t('overview.yes') : t('overview.no')}</p>
+              <p><strong>Group:</strong> {selectedUser.groupName || 'No group'}</p>
+              <p><strong>Email:</strong> {selectedUser.email || 'N/A'}</p>
+              <p><strong>VLAN:</strong> {selectedUser.vlan || 'N/A'}</p>
             </div>
 
-            <div className="flex justify-between gap-2 mt-6">
-              {isEditing ? (
-                <>
-                  <button
-                    onClick={() => {
-                      setEditableUser({ ...selectedUser });
-                      setIsEditing(false);
-                    }}
-                    className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-600"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={() => {
-                      console.log("Updated user:", editableUser);
-                      setIsEditing(false);
-                    }}
-                    className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-800"
-                  >
-                    Save
-                  </button>
-                </>
-              ) : (
-                <button
-                  onClick={() => setIsEditing(true)}
-                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-800"
-                >
-                  Update
-                </button>
-              )}
+            <div className="flex justify-end gap-2 mt-6">
               <button
                 onClick={() => {
                   if (selectedUser) {
