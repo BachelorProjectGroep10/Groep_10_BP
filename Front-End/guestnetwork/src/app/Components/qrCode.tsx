@@ -106,7 +106,7 @@ export function QRCodeComponent() {
                     <button
                       onClick={handleDownloadPdf}
                       className="bg-[#002757] text-white hover:bg-[#FA1651] flex items-center justify-center gap-2 text-sm rounded-lg p-2 transition duration-200 mb-2"                    >
-                      <RiFileDownloadLine size={14} /> download PDF
+                      <RiFileDownloadLine size={14} /> Download PDF
                     </button>
                     <button 
                       onClick={() => setShowModal(true)}

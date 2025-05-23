@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import GroupService from '../Services/GroupService';
 import { useTranslation } from "react-i18next";
 import '../i18n'; 
-import { Group } from '../Types';
-import { IoPersonAddSharp } from 'react-icons/io5';
+import { Group, Vlan } from '../Types';
 import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa';
 import { MdGroups } from 'react-icons/md';
+import VlanService from '../Services/VlanService';
 
 interface GroupInterface {
   isMobile: boolean;
@@ -15,24 +15,49 @@ export default function GroupSelectComponent( {isMobile}: GroupInterface) {
   const [message, setMessage] = useState('');
   const [groupName, setGroupName] = useState('');
   const [description, setDescription] = useState('');
-  const [vlans, setVlans] = useState<{ id: number; vlanName: string }[]>([]);
+  const [vlans, setVlans] = useState<Vlan[]>([]);
   const [vlanId, setVlanId] = useState<number | null>(null);
   const [rows, setRows] = useState(4);
   const [isGroupFormOpen, setIsGroupFormOpen] = useState(false);
+  const [selectedVlan, setSelectedVlan] = useState<Vlan | null>(null);
 
   const {t} = useTranslation();
+
+  const fetchVlans = async () => {
+    try {
+      const response = await VlanService.getVlans();
+      if (response.ok) {
+        const data: Vlan[] = await response.json();
+        setVlans(data);
+
+        const defaultVlan = data.find(vlan => vlan.isDefault === 1);
+        if (defaultVlan && typeof defaultVlan.id === 'number') {
+          setVlanId(defaultVlan.id);
+          setSelectedVlan(defaultVlan);
+        }
+      } else {
+        console.error('Failed to fetch VLANs');
+      }
+    } catch (error) {
+      console.error('Error fetching VLANs:', error);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+
+    if (!selectedVlan) {
+      setMessage('❌ Please select a VLAN.');
+      return;
+    }
+
     const newGroup: Group = {
       groupName,
       description,
+      vlan: selectedVlan.vlan
     };
 
-    if (vlanId !== null) {
-      (newGroup as any).vlanId = vlanId;
-    }
 
     try {
       const response = await GroupService.addGroup(newGroup);
@@ -42,6 +67,7 @@ export default function GroupSelectComponent( {isMobile}: GroupInterface) {
         setGroupName('');
         setDescription('');
         setVlanId(null);
+        setSelectedVlan(null);
       } else {
         setMessage('❌ Error adding group.');
       }
@@ -55,7 +81,7 @@ export default function GroupSelectComponent( {isMobile}: GroupInterface) {
     if(isMobile) {
       setIsGroupFormOpen(true);
     }
-
+    fetchVlans();
     const handleResize = () => {
       setRows(window.innerWidth <= 768 ? 3 : 4);
     };
@@ -104,15 +130,20 @@ export default function GroupSelectComponent( {isMobile}: GroupInterface) {
             <label className="text-sm font-medium">{t('user.selectVlan')}</label>
             <select
               value={vlanId === null ? '' : vlanId}
-              onChange={(e) =>
-                setVlanId(e.target.value === '' ? null : Number(e.target.value))
-              }
+              onChange={(e) => {
+                const selectedId = parseInt(e.target.value);
+                const vlan = vlans.find((v) => v.id === selectedId) || null;
+                setVlanId(selectedId);
+                setSelectedVlan(vlan);
+              }}
               className="bg-gray-300 text-black rounded-lg px-2 pr-6 py-2 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
             >
-              <option value="">TO BE CHANGED - Default</option>
-              {vlans.map((vlan) => (
-                <option key={vlan.id} value={vlan.id}>
-                  {vlan.vlanName}
+              <option value="" disabled>
+                --- Select ---
+              </option>
+              {vlans.map((vlan: Vlan, index) => (
+                <option key={index} value={vlan.id}>
+                  {vlan.vlan} - {vlan.name}
                 </option>
               ))}
             </select>
@@ -132,7 +163,7 @@ export default function GroupSelectComponent( {isMobile}: GroupInterface) {
 
           {/* Message Display */}
           {message && (
-            <div className="text-sm col-span-full text-center text-black px-4 rounded-md">
+            <div className="text-sm col-span-full text-center text-black px-4 rounded-md mt-2">
               {message}
             </div>
           )}
