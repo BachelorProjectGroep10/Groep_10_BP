@@ -82,7 +82,7 @@ export default function OverviewComponent() {
 
             <div className="grid grid-cols-1 gap-4 w-full md:hidden">
               {users.map((user: User) => (
-                <UserCard user={user} groups={groups} isGroupsLoading={isGroupsLoading} />
+                <UserCard key={user.id} user={user} groups={groups} isGroupsLoading={isGroupsLoading} />
               ))}
             </div>
           </>
