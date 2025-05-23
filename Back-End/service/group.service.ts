@@ -16,7 +16,8 @@ const getAllGroups = async (): Promise<Group[]> => {
 const addGroup = async (group: Group): Promise<void> => {
     const newGroup = new Group({
         groupName: group.groupName,
-        description: group.description
+        description: group.description,
+        vlan: group.vlan,
     });
     await insertGroup(newGroup);
 }

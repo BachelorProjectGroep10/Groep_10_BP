@@ -24,10 +24,10 @@ export type Group = {
 };
 
 export type Vlan = {
-    readonly id?: number;
-    readonly vlanNumber: number;
-    readonly vlanName: string;
-    readonly isDefault?: boolean;
+    readonly id?: number;          
+    readonly vlan: number;
+    readonly name: string;
+    readonly isDefault: number;
 }
 
 export type Admin = {

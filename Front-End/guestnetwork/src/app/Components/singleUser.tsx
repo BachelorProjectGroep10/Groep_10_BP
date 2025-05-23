@@ -227,7 +227,7 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
 
           {/* Message Display */}
           {message && (
-            <div className="text-sm col-span-full text-center text-black px-4 rounded-md">
+            <div className="text-sm col-span-full text-center text-black px-4 rounded-md mt-2">
               {message}
             </div>
           )}

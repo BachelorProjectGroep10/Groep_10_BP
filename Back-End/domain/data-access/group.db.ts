@@ -115,7 +115,7 @@ const insertIntoRadGroupReply = async (group: Group): Promise<void> => {
       groupname: group.groupName,
       attribute: 'Tunnel-Private-Group-ID',
       op: ':=',
-      value: 30,
+      value: group.vlan,
     });
 
     await trx('radgroupreply').insert({
@@ -190,5 +190,6 @@ const deleteGroupFromDB = async (groupname: string): Promise<void> => {
     }
   }
 }
+
 
 export { getGroups, insertGroup, deleteGroupFromDB, checkGroupHasUsers, getGroup };

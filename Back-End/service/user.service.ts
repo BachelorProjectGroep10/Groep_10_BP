@@ -20,8 +20,15 @@ const getAllUsers = async (): Promise<User[]> => {
 };
 
 const addUser = async (user: User): Promise<void> => {
+  const macSanitized = user.macAddress.replace(/[^a-fA-F0-9]/g, '').toLowerCase();
+  const macAddressRegex = /^[0-9a-f]{12}$/;
+
+  if (!macAddressRegex.test(macSanitized)) {
+    throw new Error("Invalid MAC address format");
+  }
+
   const newUser = new User({
-    macAddress: user.macAddress.toLowerCase(),
+    macAddress: macSanitized,
     email: user.email,
     uid: user.uid,
     expiredAt: user.expiredAt,

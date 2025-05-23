@@ -27,7 +27,8 @@ const getUsers = async (): Promise<User[]> => {
           .andOn('vlan_reply.attribute', '=', knex.raw('?', ['Tunnel-Private-Group-ID']));
       })
       .leftJoin('radusergroup', 'radcheck.username', 'radusergroup.username')
-      .where('radcheck.attribute', 'Cleartext-Password');
+      .where('radcheck.attribute', 'Cleartext-Password')
+      .andWhere('radcheck.username', '!=', 'DEFAULT');
 
 
     return rows.map((row) => {

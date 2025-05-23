@@ -1,3 +1,5 @@
+import { execPath } from "process";
+
 export type Password = {
     readonly password: string, 
     readonly valid: number
@@ -13,3 +15,10 @@ export type User = {
     readonly active: number,
     readonly description?: string
 };
+
+export type Vlan = {
+    readonly id?: number;          
+    readonly vlan: number;
+    readonly name: string;
+    readonly isDefault: boolean;
+}
