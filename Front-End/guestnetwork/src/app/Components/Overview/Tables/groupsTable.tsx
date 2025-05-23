@@ -73,6 +73,7 @@ export default function GroupsTable( { groups }: GroupsTableProps) {
       {/* Pop Up */}
       {showPopUp && selectedGroup && (
         <GroupDetailsPopup
+          key={selectedGroup.groupName}
           group={selectedGroup}
           onClose={() => setShowPopUp(false)}
           onDelete={deleteGroup}

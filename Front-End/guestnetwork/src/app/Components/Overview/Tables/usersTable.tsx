@@ -107,6 +107,7 @@ export default function UsersTable({ users }: UserTableProps) {
       {/* Pop Up */}
       {showPopUp && selectedUser && (
         <UserDetailsPopup
+          key={selectedUser.id}
           user={selectedUser}
           groups={groups ?? []}
           isGroupsLoading={isGroupsLoading}
