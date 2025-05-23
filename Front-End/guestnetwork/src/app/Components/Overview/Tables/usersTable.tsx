@@ -65,7 +65,7 @@ export default function UsersTable({ users }: UserTableProps) {
             <th className="w-1/5 p-4 font-semibold">{t('overview.password')}</th>
             <th className="w-1/5 p-4 font-semibold">{t('overview.expirationDate')}</th>
             <th className="w-1/5 p-4 font-semibold text-center">{t('overview.active')}</th>
-            <th className="w-1/5 p-4 font-semibold text-center">Actions</th>
+            <th className="w-1/5 p-4 font-semibold text-center">Extra</th>
           </tr>
         </thead>
       </table>
