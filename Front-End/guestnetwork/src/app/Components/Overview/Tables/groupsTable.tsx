@@ -40,7 +40,7 @@ export default function GroupsTable( { groups }: GroupsTableProps) {
             <th className="w-1/5 p-4 font-semibold">{t('overview.password')}</th>
             <th className="w-1/5 p-4 font-semibold">VLAN</th>
             <th className="w-1/5 p-4 font-semibold">{t('overview.description')}</th>
-            <th className="w-1/5 p-4 font-semibold text-center">Actions</th>
+            <th className="w-1/5 p-4 font-semibold text-center">Extra</th>
           </tr>
         </thead>
       </table>
