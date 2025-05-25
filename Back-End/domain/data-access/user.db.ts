@@ -2,12 +2,28 @@ import knex from '../../util/database';
 import { User } from '../model/User';
 import { generateRandomPassword } from '../../util/autoPassword';
 import { getGroup } from './group.db';
+import { validateUser } from '../../util/validation';
 
 // This file contains the data access layer for user-related operations.
 // It includes functions to get users, insert users with or without groups, and delete users.
 // The functions interact with the database using Knex.js and handle transactions where necessary.
 // The functions are designed to be reusable and modular, allowing for easy integration into the rest of the application.
 
+// helper functions
+const wrapWithTransaction = async <T>(operation: (trx: any) => Promise<T>): Promise<T> => {
+  const trx = await knex.transaction();
+  try {
+    const result = await operation(trx);
+    await trx.commit();
+    return result;
+  } catch (err) {
+    await trx.rollback();
+    console.error('Transaction failed:', err);
+    throw new Error('Database transaction failed');
+  }
+};
+
+// Execute DB functions
 const getUsers = async (): Promise<User[]> => {
   try {
     const rows = await knex('radcheck')
@@ -150,20 +166,6 @@ const removeUserFromGroup = async (macAddress: string, groupName: string): Promi
     console.log('User removed from group successfully');
   });
 }
-
-// helper functions
-const wrapWithTransaction = async <T>(operation: (trx: any) => Promise<T>): Promise<T> => {
-  const trx = await knex.transaction();
-  try {
-    const result = await operation(trx);
-    await trx.commit();
-    return result;
-  } catch (err) {
-    await trx.rollback();
-    console.error('Transaction failed:', err);
-    throw new Error('Database transaction failed');
-  }
-};
 
 const insertIntoRadcheck = async (trx: any, user: User) => {
   const validUntil = new Date(user.expiredAt).toISOString().slice(0, 19).replace('T', ' ');

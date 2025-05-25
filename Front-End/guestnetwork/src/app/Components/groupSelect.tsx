@@ -54,14 +54,14 @@ export default function GroupSelectComponent( {isMobile}: GroupInterface) {
 
     const newGroup: Group = {
       groupName,
-      description,
+      description: description.trim() === '' ? undefined : description.trim(),
       vlan: selectedVlan.vlan
     };
 
 
     try {
       const response = await GroupService.addGroup(newGroup);
-
+      const body = await response.json();
       if (response.ok) {
         setMessage('✅ Group added successfully!');
         setGroupName('');
@@ -69,6 +69,7 @@ export default function GroupSelectComponent( {isMobile}: GroupInterface) {
         setVlanId(null);
         setSelectedVlan(null);
       } else {
+        console.error('API error:', body);
         setMessage('❌ Error adding group.');
       }
     } catch (error) {

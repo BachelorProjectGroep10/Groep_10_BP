@@ -18,7 +18,7 @@ export type User = {
 export type Group = {
     readonly id?: number;
     readonly groupName: string;
-    readonly description: string;
+    readonly description?: string;
     readonly password?: string;
     readonly vlan?: number;
 };
