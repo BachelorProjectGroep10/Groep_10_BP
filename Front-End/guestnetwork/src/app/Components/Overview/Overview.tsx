@@ -55,7 +55,7 @@ export default function OverviewComponent() {
   useInterval(() => {
     mutate('users', fetchUsers);
     mutate('groups', fetchGroups);
-  }, 2000);
+  }, 500);
 
   return (
     <div className="flex flex-col items-center justify-start gap-5 w-full p-6">
