@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import GroupService from '../../Services/GroupService';
 import { useTranslation } from "react-i18next";
-import '../i18n'; 
+import '../../i18n'; 
 import { Group, Vlan } from '../../Types';
 import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa';
 import { MdGroups } from 'react-icons/md';

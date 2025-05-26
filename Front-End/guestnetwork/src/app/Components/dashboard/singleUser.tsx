@@ -4,7 +4,7 @@ import UserService from '../../Services/UserService';
 import { User } from '../../Types';
 import GroupService from '../../Services/GroupService';
 import { useTranslation } from "react-i18next";
-import '../i18n'; 
+import '../../i18n'; 
 import { IoPersonAddSharp } from 'react-icons/io5';
 import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa';
 import useInterval from 'use-interval';
