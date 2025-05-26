@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Background from '../Utils/background';
 import { QRCode } from 'react-qrcode-logo';
 
@@ -8,12 +8,16 @@ interface QRCodePdfLayoutProps {
   ssid?: string;
   password?: string;
   showBackground?: boolean;
+  monday: string;
+  sunday: string;
 }
 
 export function QRCodePdfLayout({
   ssid,
   password,
   showBackground = true, 
+  monday,
+  sunday
 }: QRCodePdfLayoutProps) {
   return (
     <div
@@ -64,17 +68,23 @@ export function QRCodePdfLayout({
           />
           <h3 className='font-semibold text-2xl'>Scan Me</h3>
           <div className='flex flex-col items-start justify-center bg-white p-4 rounded-lg mt-4'>
-            <p className="text-sm mt-4">
+            <p className="text-md mt-4">
               <span className="font-semibold">NETWERK / NETWORK:</span> {ssid}
             </p>
-            <p className="text-sm mt-2">
+            <p className="text-md mt-2">
               <span className="font-semibold">WACHTWOORD / PASSWORD:</span> {password}
             </p>
           </div>
         </div>
-        <div className="text-base">
-          <p className="text-sm pt-2">This QR code is valid for 7 days.</p>
-          <p className="text-sm">Please regenerate it after expiration.</p>
+        <div className="flex items-start gap-1 mt-2 text-lg text-black">
+          <p className="font-semibold">Valid</p>
+          <p className="font-semibold">
+            From: <span className="font-normal">{monday}</span>
+          </p>
+          <span className="mx-1">-</span>
+          <p className="font-semibold">
+            Till: <span className="font-normal">{sunday}</span>
+          </p>
         </div>
       </div>
     </div>

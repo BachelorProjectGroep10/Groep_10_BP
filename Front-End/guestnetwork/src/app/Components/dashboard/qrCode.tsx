@@ -26,8 +26,8 @@ export function QRCodeComponent() {
   const [showBackground, setShowBackground] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const pdfRef = React.useRef<HTMLDivElement | null>(null);
-  const [monday, setMonday] = useState<string | null>(null);
-  const [sunday, setSunday] = useState<string | null>(null);
+  const [monday, setMonday] = useState<string>();
+  const [sunday, setSunday] = useState<string >();
   const [activeView, setActiveView] = useState<'qr' | 'single' | 'group'>('qr');
   const ssid = 'BP Groep 10 - Gast Test';
 
@@ -41,13 +41,11 @@ export function QRCodeComponent() {
 
   const getWeekDates = () => {
     const today = new Date();
-    const day = today.getDay(); // Sunday = 0, Monday = 1, ..., Saturday = 6
+    const day = today.getDay();
 
-    // Calculate the date for Monday (subtract days since Monday)
     const monday = new Date(today);
-    monday.setDate(today.getDate() - ((day + 6) % 7)); // ((day + 6) % 7) turns Sunday=0 to 6, Monday=1 to 0, etc.
+    monday.setDate(today.getDate() - ((day + 6) % 7));
 
-    // Calculate the date for Sunday (add days until Sunday)
     const sunday = new Date(monday);
     sunday.setDate(monday.getDate() + 6);
 
@@ -119,18 +117,18 @@ export function QRCodeComponent() {
               )}
               <div className="mt-2 text-left w-full max-w-[300px]">
                 <p className="text-sm font-semibold">
-                  SSID: <span className="font-normal">{ssid}</span>
+                  {t('qrcode.network')}: <span className="font-normal">{ssid}</span>
                 </p>
-                <p className="text-sm font-semibold mb-4">
+                <p className="text-sm font-semibold mb-2">
                   {t('qrcode.password')}: <span className="font-normal">{password ?? t('qrcode.loading')}</span>
                 </p>
-                <div className="flex flex-col items-start gap-1 mt-2 text-sm text-black">
-                  <p className="font-semibold">Valid</p>
+                <div className="flex flex-col items-start gap-1 text-sm text-black">
+                  <p className="font-semibold">{t('qrcode.valid')}</p>
                   <p className="font-semibold">
-                    From: <span className="font-normal">{monday}</span>
+                    {t('qrcode.from')}: <span className="font-normal">{monday}</span>
                   </p>
                   <p className="font-semibold">
-                    Till: <span className="font-normal">{sunday}</span>
+                    {t('qrcode.till')}: <span className="font-normal">{sunday}</span>
                   </p>
                 </div>
                 <div className="mt-4 mx-left w-full max-w-[200px] flex flex-col gap-2">
@@ -255,7 +253,7 @@ export function QRCodeComponent() {
           style={{ width: '794px', height: '1123px' }}
           className="flex flex-col items-center justify-around"
         >
-          <QRCodePdfLayout ssid={ssid} password={password} showBackground={showBackground} />
+          <QRCodePdfLayout ssid={ssid} password={password} showBackground={showBackground} monday={monday ?? ''} sunday={sunday ?? ''} />
         </div>
       </div>
 
