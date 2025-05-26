@@ -26,19 +26,20 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
   const [expiredAt, setExpiredAt] = useState('');
   const [description, setDescription] = useState('');
   const [groupName, setGroupName] = useState<string | null>(null);
+  const [errors, setErrors] = useState<{
+    macAddress?: string;
+    email?: string;
+    uid?: string;
+    expiredAt?: string;
+    groupName?: string;
+  }>({});
   const [rows, setRows] = useState(6);
   const [isUserFormOpen, setIsUserFormOpen] = useState(false);
-
 
   const {t} = useTranslation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!expiredAt) {
-      alert('Please select an expiration date.');
-      return;
-    }
 
     const newUser: User = {
       macAddress,
@@ -52,9 +53,11 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
 
     try {
       validateUser(newUser);
+      setErrors({}); 
 
       const response = await UserService.addUser(newUser);
       const body = await response.json();
+
       if (response.ok) {
         setMessage(t('user.userRegistrationSuccess'));
         setMacAddress('');
@@ -62,12 +65,25 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
         setUid('');
         setExpiredAt('');
         setDescription('');
+        setGroupName(null);
       } else {
         console.error('API error:', body);
         setMessage(t('user.userRegistrationError'));
       }
     } catch (error: any) {
-      setMessage(error.message || t('user.userRegistrationError'));
+      console.error(error);
+      const errorMsg = error.message || '';
+
+      const newErrors: typeof errors = {};
+
+      if (errorMsg.includes('MAC')) newErrors.macAddress = errorMsg;
+      if (errorMsg.includes('email')) newErrors.email = errorMsg;
+      if (errorMsg.includes('UID')) newErrors.uid = errorMsg;
+      if (errorMsg.includes('Expiration')) newErrors.expiredAt = errorMsg;
+      if (errorMsg.includes('Group')) newErrors.groupName = errorMsg;
+
+      setErrors(newErrors);
+      setMessage(t('user.userRegistrationError'));
     }
   };
 
@@ -150,6 +166,9 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
                 className="!max-w-[250px] !text-sm !p-2 !bg-gray-800 !text-white !rounded-md shadow-md"
               />
             </div>
+            {errors.macAddress && (
+              <p className="text-sm text-red-600 font-medium">{errors.macAddress}</p>
+            )}
             <input
               type="text"
               placeholder={t('user.macAddress')} 
@@ -160,6 +179,9 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
             />
 
             <label className="text-sm font-medium">{t('user.expiredAt')} *</label>
+            {errors.expiredAt && (
+              <p className="text-sm text-red-600 font-medium">{errors.expiredAt}</p>
+            )}
             <input
               type="date"
               value={expiredAt}
@@ -169,6 +191,9 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
             />
 
             <label className="text-sm font-medium">Email</label>
+            {errors.email && (
+              <p className="text-sm text-red-600 font-medium">{errors.email}</p>
+            )}
             <input
               type="email"
               placeholder="Email"
@@ -189,6 +214,9 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
                 className="!max-w-[250px] !text-sm !p-2 !bg-gray-800 !text-white !rounded-md shadow-md"
               />
             </div>
+            {errors.uid && (
+              <p className="text-sm text-red-600 font-medium">{errors.uid}</p>
+            )}
             <input
               type="text"
               placeholder='X0000000'
@@ -201,6 +229,9 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
           {/* Right Column */}
           <div className="flex flex-col space-y-2 mt-2">
             <label className="text-sm font-medium">{t('user.selectGroup')}</label>
+            {errors.groupName && (
+              <p className="text-sm text-red-600 font-medium">{errors.groupName}</p>
+            )}
             <select
               value={groupName === null ? '' : groupName}
               onChange={(e) =>
