@@ -71,16 +71,15 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
         setMessage(t('user.userRegistrationError'));
       }
     } catch (error: any) {
+      console.error(error);
       const errorMsg = error.message || '';
 
-      console.error(errorMsg);
-
-      const newErrors: typeof errors = { ...errors };
+      const newErrors: typeof errors = {};
 
       if (errorMsg.includes('MAC')) newErrors.macAddress = errorMsg;
       if (errorMsg.includes('email')) newErrors.email = errorMsg;
       if (errorMsg.includes('UID')) newErrors.uid = errorMsg;
-      if (errorMsg.includes('expiration')) newErrors.expiredAt = errorMsg;
+      if (errorMsg.includes('Expiration')) newErrors.expiredAt = errorMsg;
       if (errorMsg.includes('Group')) newErrors.groupName = errorMsg;
 
       setErrors(newErrors);

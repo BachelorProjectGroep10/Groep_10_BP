@@ -21,7 +21,11 @@ const getAllUsers = async (): Promise<User[]> => {
 };
 
 const addUser = async (user: User): Promise<void> => {
-  validateUser(user);
+  const errors = validateUser(user);
+
+  if (Object.keys(errors).length > 0) {
+    throw new Error(`Validation errors: ${JSON.stringify(errors)}`);
+  }   
   
   const macSanitized = user.macAddress.replace(/[^a-fA-F0-9]/g, '').toLowerCase();
 
