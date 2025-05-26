@@ -11,6 +11,7 @@ import useInterval from 'use-interval';
 import useSWR, { mutate } from 'swr';
 import { Tooltip } from 'react-tooltip';
 import { FaInfoCircle } from "react-icons/fa";
+import { validateUser } from '../Utils/validation';
 
 
 interface SingleUserProps {
@@ -50,6 +51,8 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
     };
 
     try {
+      validateUser(newUser);
+
       const response = await UserService.addUser(newUser);
       const body = await response.json();
       if (response.ok) {
@@ -63,9 +66,8 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
         console.error('API error:', body);
         setMessage(t('user.userRegistrationError'));
       }
-    } catch (error) {
-      console.error(error);
-      setMessage(t('user.userRegistrationError'));
+    } catch (error: any) {
+      setMessage(error.message || t('user.userRegistrationError'));
     }
   };
 
@@ -227,7 +229,11 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
 
           {/* Message Display */}
           {message && (
-            <div className="text-sm col-span-full text-center text-black px-4 rounded-md mt-2">
+            <div
+              className={`text-sm col-span-full text-center px-4 rounded-md mt-2 ${
+                message.toLowerCase().includes('success') ? 'text-black' : 'text-red-600'
+              }`}
+            >
               {message}
             </div>
           )}

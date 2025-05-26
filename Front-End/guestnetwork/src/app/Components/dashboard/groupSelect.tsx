@@ -6,6 +6,7 @@ import { Group, Vlan } from '../../Types';
 import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa';
 import { MdGroups } from 'react-icons/md';
 import VlanService from '../../Services/VlanService';
+import { validateGroup } from '../../Utils/validation';
 
 interface GroupInterface {
   isMobile: boolean;
@@ -58,23 +59,23 @@ export default function GroupSelectComponent( {isMobile}: GroupInterface) {
       vlan: selectedVlan.vlan
     };
 
-
     try {
+      validateGroup(newGroup);
+
       const response = await GroupService.addGroup(newGroup);
       const body = await response.json();
       if (response.ok) {
-        setMessage('✅ Group added successfully!');
+        setMessage(t('group.groupRegistrationSuccess'));
         setGroupName('');
         setDescription('');
         setVlanId(null);
         setSelectedVlan(null);
       } else {
         console.error('API error:', body);
-        setMessage('❌ Error adding group.');
+        setMessage(t('group.groupRegistrationError'));
       }
-    } catch (error) {
-      console.error(error);
-      setMessage('❌ An error occurred while submitting.');
+    } catch (error: any) {
+      setMessage(error.message || t('group.groupRegistrationError'));
     }
   };
 
