@@ -4,6 +4,10 @@
         "smallMessage": "Scan QR-code voor toegang",
         "loading": "Laden...",
         "password": "Wachtwoord",
+        "network": "Netwerk",
+        "valid": "Geldig",
+        "from": "Van",
+        "till": "Tot",
         "footerMessage": "Deze QR-code is geldig voor 7 dagen.",
         "footerMessage2": "Daarna moet je deze opnieuw scannen."
     },

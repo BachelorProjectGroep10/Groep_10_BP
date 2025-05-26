@@ -1,5 +1,5 @@
+import GuestQRcode from "@/app/Components/guest/guestQRcode";
 import Background from "@/app/Components/Utils/background";
-import QRCodePdfLayout from "@/app/Components/qrCodePdfLayout";
 
 export default function GuestView() {
 
@@ -9,6 +9,7 @@ export default function GuestView() {
         <Background />
       </div>
       <div className="relative z-10 flex flex-col min-h-screen">
+        <GuestQRcode />
       </div>
     </div>
   )

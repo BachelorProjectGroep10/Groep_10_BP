@@ -1,9 +1,13 @@
 {
     "qrcode": {
-        "title": "Guest Network",
+        "title": "UCLL Guest Network",
         "smallMessage": "Scan QR code for access",
         "loading": "Loading...",
         "password": "Password",
+        "network": "Network",
+        "valid" : "Valid",
+        "from" : "From",
+        "till" : "Till",
         "footerMessage": "This QR code is valid for 7 days.",
         "footerMessage2": "After that, you will need to scan it again."
     },
