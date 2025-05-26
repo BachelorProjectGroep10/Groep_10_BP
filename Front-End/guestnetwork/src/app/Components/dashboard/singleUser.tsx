@@ -11,7 +11,7 @@ import useInterval from 'use-interval';
 import useSWR, { mutate } from 'swr';
 import { Tooltip } from 'react-tooltip';
 import { FaInfoCircle } from "react-icons/fa";
-import { validateUser } from '../Utils/validation';
+import { validateUser } from '../../Utils/validation';
 
 
 interface SingleUserProps {
