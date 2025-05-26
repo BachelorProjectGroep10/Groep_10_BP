@@ -39,28 +39,28 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
       return;
     }
 
-    // Build newUser object conditionally
     const newUser: User = {
       macAddress,
-      email,
-      uid,
+      email: email.trim() === '' ? undefined : email.trim(),
+      uid: uid.trim() === '' ? undefined : uid.trim(),
       expiredAt: new Date(expiredAt),
       active: 1,
-      description,
-      groupName
+      description: description.trim() === '' ? undefined : description.trim(),
+      groupName: groupName === null || groupName.trim() === '' ? undefined : groupName.trim(),
     };
 
     try {
       const response = await UserService.addUser(newUser);
+      const body = await response.json();
       if (response.ok) {
         setMessage(t('user.userRegistrationSuccess'));
-        // Reset form fields
         setMacAddress('');
         setEmail('');
         setUid('');
         setExpiredAt('');
         setDescription('');
       } else {
+        console.error('API error:', body);
         setMessage(t('user.userRegistrationError'));
       }
     } catch (error) {

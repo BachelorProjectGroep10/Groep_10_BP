@@ -1,5 +1,6 @@
 import { User } from '../domain/model/User';
 import { getUsers, deleteUserFromDb, insertUserWithGroup, insertUserWithoutGroup, regenUserPassword, addUserToGroup, removeUserFromGroup } from '../domain/data-access/user.db';
+import { validateUser } from '../util/validation';
 
 const getAllUsers = async (): Promise<User[]> => {
     const users = await getUsers();
@@ -20,11 +21,13 @@ const getAllUsers = async (): Promise<User[]> => {
 };
 
 const addUser = async (user: User): Promise<void> => {
+  validateUser(user);
+  
   const macSanitized = user.macAddress.replace(/[^a-fA-F0-9]/g, '').toLowerCase();
-  const macAddressRegex = /^[0-9a-f]{12}$/;
 
-  if (!macAddressRegex.test(macSanitized)) {
-    throw new Error("Invalid MAC address format");
+  const existingUsers = await getUsers();
+  if (existingUsers.some(u => u.macAddress === macSanitized)) {
+    throw new Error('A user with this MAC address already exists');
   }
 
   const newUser = new User({
@@ -53,10 +56,26 @@ const regenUserPw = async (macAddress: string): Promise<void> => {
 }
 
 const addUserToAGroup = async (macAddress: string, groupName: string): Promise<void> => {
+  if (!macAddress || typeof macAddress !== 'string') {
+    throw new Error('MAC address is required');
+  }
+
+  if (!groupName || typeof groupName !== 'string') {
+    throw new Error('Group name is required');
+  }
+
   await addUserToGroup(macAddress, groupName);
 }
 
 const removeUserFromAGroup = async (macAddress: string, groupName: string): Promise<void> => {
+  if (!macAddress || typeof macAddress !== 'string') {
+    throw new Error('MAC address is required');
+  }
+
+  if (!groupName || typeof groupName !== 'string') {
+    throw new Error('Group name is required');
+  }
+
   await removeUserFromGroup(macAddress, groupName);
 }
 
