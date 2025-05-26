@@ -1,7 +1,7 @@
 'use client';
 import "./Styles/globals.css";
-import Background from "./Components/background";
-import { HeaderComponent } from "./Components/header";
+import Background from "./Components/Utils/background";
+import { HeaderComponent } from "./Components/Utils/header";
 import LoginComponent from "./Components/login";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";

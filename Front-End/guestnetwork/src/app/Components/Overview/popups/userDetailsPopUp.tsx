@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { IoMdRefresh } from "react-icons/io";
-import { formatDate } from "./formatDate";
+import { formatDate } from "../../Utils/formatDate";
 import UserService from "@/app/Services/UserService";
 import { mutate } from "swr";
 import { User } from "@/app/Types";

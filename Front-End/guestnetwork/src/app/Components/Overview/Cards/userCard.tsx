@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { User } from "@/app/Types";
-import { formatDate } from "../../formatDate";
+import { formatDate } from "../../Utils/formatDate";
 import { useTranslation } from "react-i18next";
 import { IoMdRefresh } from "react-icons/io";
 import { FaTrash } from "react-icons/fa";

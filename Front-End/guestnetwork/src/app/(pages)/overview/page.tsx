@@ -1,7 +1,7 @@
 'use client';
 import { useRouter } from "next/navigation";
-import Background from "../../Components/background";
-import { HeaderComponent } from "../../Components/header";
+import Background from "../../Components/Utils/background";
+import { HeaderComponent } from "../../Components/Utils/header";
 import { useEffect } from "react";
 import OverviewComponent from "../../Components/Overview/Overview";
 

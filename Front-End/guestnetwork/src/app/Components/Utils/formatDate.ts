@@ -19,3 +19,4 @@ export const formatDateInput = (date?: Date | string | null): string => {
     return "";
   }
 };
+

@@ -1,14 +1,13 @@
 import { User } from "@/app/Types";
-import { formatDate, formatDateInput } from "../../formatDate";
+import { formatDate, formatDateInput } from "../../Utils/formatDate";
 import { IoMdRefresh } from "react-icons/io";
 import { useTranslation } from "react-i18next";
 import '../../../i18n';
 import { useEffect, useState } from "react";
-import UserService from "../../../Services/UserService"
 import GroupService from "@/app/Services/GroupService";
 import useInterval from "use-interval";
 import useSWR, { mutate } from "swr";
-import UserDetailsPopup from "../../userDetailsPopUp";
+import UserDetailsPopup from "../popups/userDetailsPopUp"
 
 interface UserTableProps {
   users: User[]

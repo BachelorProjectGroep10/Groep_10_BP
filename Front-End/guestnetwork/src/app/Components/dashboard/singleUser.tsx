@@ -1,8 +1,8 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import UserService from '../Services/UserService';
-import { User } from '../Types';
-import GroupService from '../Services/GroupService';
+import UserService from '../../Services/UserService';
+import { User } from '../../Types';
+import GroupService from '../../Services/GroupService';
 import { useTranslation } from "react-i18next";
 import '../i18n'; 
 import { IoPersonAddSharp } from 'react-icons/io5';

@@ -1,7 +1,7 @@
 'use client'
-import Background from "@/app/Components/background";
-import { HeaderComponent } from "@/app/Components/header";
-import QRCodeComponent from "../../Components/qrCode";
+import Background from "@/app/Components/Utils/background";
+import { HeaderComponent } from "@/app/Components/Utils/header";
+import QRCodeComponent from "../../Components/dashboard/qrCode";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 

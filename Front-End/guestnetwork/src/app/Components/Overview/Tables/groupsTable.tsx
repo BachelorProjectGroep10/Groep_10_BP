@@ -1,11 +1,11 @@
 import { Group } from "@/app/Types";
-import { formatDate } from "../../formatDate";
+import { formatDate } from "../../Utils/formatDate";
 import { useTranslation } from "react-i18next";
 import '../../../i18n';
 import { useEffect, useState } from "react";
 import GroupService from "@/app/Services/GroupService";
 import { IoMdRefresh } from "react-icons/io";
-import GroupDetailsPopup from "../../GroupDetailsPopUp";
+import GroupDetailsPopup from "../popups/GroupDetailsPopUp";
 
 interface GroupsTableProps {
   groups: Group[]

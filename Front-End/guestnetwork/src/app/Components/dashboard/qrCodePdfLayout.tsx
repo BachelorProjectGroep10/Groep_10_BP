@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import Background from './background';
+import Background from '../Utils/background';
 import { QRCode } from 'react-qrcode-logo';
 
 interface QRCodePdfLayoutProps {

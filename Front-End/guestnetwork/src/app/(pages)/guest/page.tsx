@@ -1,4 +1,4 @@
-import Background from "@/app/Components/background";
+import Background from "@/app/Components/Utils/background";
 import QRCodePdfLayout from "@/app/Components/qrCodePdfLayout";
 
 export default function GuestView() {

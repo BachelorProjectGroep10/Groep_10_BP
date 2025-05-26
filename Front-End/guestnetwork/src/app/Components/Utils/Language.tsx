@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import i18n from "../i18n";
+import i18n from "../../i18n";
 
 type LanguageComponentProps = {
   language: string;
