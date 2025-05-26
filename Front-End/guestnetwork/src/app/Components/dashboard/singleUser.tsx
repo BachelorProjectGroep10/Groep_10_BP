@@ -51,8 +51,17 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
       groupName: groupName === null || groupName.trim() === '' ? undefined : groupName.trim(),
     };
 
+    const validationErrors = validateUser(newUser);
+
+    console.log('Validation Errors:', validationErrors);
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      setMessage(t('user.userRegistrationError'));
+      return;
+    }
+
     try {
-      validateUser(newUser);
       setErrors({}); 
 
       const response = await UserService.addUser(newUser);
@@ -70,19 +79,7 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
         console.error('API error:', body);
         setMessage(t('user.userRegistrationError'));
       }
-    } catch (error: any) {
-      console.error(error);
-      const errorMsg = error.message || '';
-
-      const newErrors: typeof errors = {};
-
-      if (errorMsg.includes('MAC')) newErrors.macAddress = errorMsg;
-      if (errorMsg.includes('email')) newErrors.email = errorMsg;
-      if (errorMsg.includes('UID')) newErrors.uid = errorMsg;
-      if (errorMsg.includes('Expiration')) newErrors.expiredAt = errorMsg;
-      if (errorMsg.includes('Group')) newErrors.groupName = errorMsg;
-
-      setErrors(newErrors);
+    } catch (error) {
       setMessage(t('user.userRegistrationError'));
     }
   };
