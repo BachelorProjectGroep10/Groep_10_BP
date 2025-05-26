@@ -15,6 +15,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "UCLL Guest Network Project",
   description: "Bachelorproef UCLL Guest Network groep 10",
+  icons: {
+    icon: "/favicon.ico",
+  }
 };
 
 interface LayoutProps {
