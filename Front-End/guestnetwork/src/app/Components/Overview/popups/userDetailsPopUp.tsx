@@ -111,8 +111,8 @@ export default function UserDetailsPopup({ user, groups, isGroupsLoading, onClos
                   className="block w-full border border-gray-300 rounded-md shadow-sm p-2"
                 >
                   <option value="">No group</option>
-                  {groups?.map((g) => (
-                    <option key={g.id} value={g.groupName}>
+                  {groups?.map((g, index) => (
+                    <option key={index} value={g.groupName}>
                       {g.groupName}
                     </option>
                   ))}

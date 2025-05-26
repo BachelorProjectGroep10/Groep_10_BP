@@ -73,7 +73,7 @@ const insertUserWithoutGroup = async (user: User): Promise<User> => {
   return wrapWithTransaction(async (trx) => {
     await insertIntoRadcheck(trx, user);
     const randomPassword = generateRandomPassword();
-    await insertIntoRadReply(trx, user, randomPassword);
+    await insertIntoRadReply(trx, user, randomPassword, user.vlan || 30);
     console.log('User inserted without group');
     return user;
   });
@@ -87,7 +87,7 @@ const insertUserWithGroup = async (user: User): Promise<User> => {
     if (!group || !group.password) throw new Error('Group not valid or missing password');
 
     await insertIntoRadcheck(trx, user);
-    await insertIntoRadReply(trx, user, group.password);
+    await insertIntoRadReply(trx, user, group.password, group.vlan ?? 30);
     await insertUserIntoRadUserGroup(trx, user.macAddress, user.groupName);
 
     console.log('User inserted with group');
@@ -138,6 +138,11 @@ const addUserToGroup = async (macAddress: string, groupName: string): Promise<vo
       .andWhere('attribute', 'Cisco-AVPair')
       .andWhere('op', '+=') 
       .update({ value: `psk=${group.password}` });
+    
+    await trx('radreply')
+      .where('username', macAddress)
+      .andWhere('attribute', 'Tunnel-Private-Group-ID')
+      .update({ value: group.vlan });
 
     await insertUserIntoRadUserGroup(trx, macAddress, groupName);
     console.log('User added to group successfully');
@@ -162,6 +167,11 @@ const removeUserFromGroup = async (macAddress: string, groupName: string): Promi
       .andWhere('attribute', 'Cisco-AVPair')
       .andWhere('op', '+=') 
       .update({ value: `psk=${randomPassword}` });
+
+    await trx('radreply')
+      .where('username', macAddress)
+      .andWhere('attribute', 'Tunnel-Private-Group-ID')
+      .update({ value: 30 }); 
     
     console.log('User removed from group successfully');
   });
@@ -183,13 +193,13 @@ const insertIntoRadcheck = async (trx: any, user: User) => {
   });
 };
 
-const insertIntoRadReply = async (trx: any, user: User, password: string) => {
+const insertIntoRadReply = async (trx: any, user: User, password: string, vlan: number) => {
   await trx('radreply').insert([
     {
       username: user.macAddress,
       attribute: 'Tunnel-Private-Group-ID',
       op: ':=',
-      value: 30,
+      value: vlan,
     },
     {
       username: user.macAddress,
