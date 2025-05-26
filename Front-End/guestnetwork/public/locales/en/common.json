@@ -38,7 +38,8 @@
     },
     "header": {
         "overview": "Overview",
-        "logout": "Logout"
+        "logout": "Logout",
+        "logo": "/Images/Logo_UCLL_EN.png"
     },
     "login": {
         "login": "Login",

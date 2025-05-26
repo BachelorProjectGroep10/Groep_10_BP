@@ -40,7 +40,8 @@
     },
     "header": {
         "overview": "Overzicht",
-        "logout": "Uitloggen"
+        "logout": "Uitloggen",
+        "logo": "/Images/Logo_UCLL_NL.png"
     },
     "login": {
         "login": "Inloggen",

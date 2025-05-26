@@ -15,8 +15,6 @@ export function HeaderComponent() {
 
     const { t } = useTranslation();
 
-    const router = useRouter();
-    const logoSrc = language === "NL" ? "/Images/Logo_UCLL_NL.png" : "/Images/Logo_UCLL_EN.png";
 
     const handleLogout = () => {
         sessionStorage.removeItem("admin");
@@ -34,13 +32,16 @@ export function HeaderComponent() {
     return (
         <header className="w-full flex flex-col md:flex-row items-center justify-around pt-1">
             <div className="relative w-[120px] h-[60px] ">
-                <Image
-                    src={logoSrc}
-                    alt="UCLL Logo"
-                    fill
-                    className="object-contain"
-                    priority
-                />
+                <Link href="/dashboard" className="absolute inset-0 flex items-center justify-center">
+                    <Image
+                        src={t('header.logo')}
+                        alt="UCLL Logo"
+                        fill
+                        className="object-contain"
+                        priority
+                    />
+                </Link>
+
             </div>
             {isloggedIn && (<div className="relative">
                 <button
