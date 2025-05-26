@@ -52,9 +52,7 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
     };
 
     const validationErrors = validateUser(newUser);
-
-    console.log('Validation Errors:', validationErrors);
-
+    
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       setMessage(t('user.userRegistrationError'));
