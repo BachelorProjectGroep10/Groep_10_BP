@@ -26,7 +26,8 @@ export function QRCodeComponent() {
   const [showBackground, setShowBackground] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const pdfRef = React.useRef<HTMLDivElement | null>(null);
-
+  const [monday, setMonday] = useState<string | null>(null);
+  const [sunday, setSunday] = useState<string | null>(null);
   const [activeView, setActiveView] = useState<'qr' | 'single' | 'group'>('qr');
   const ssid = 'BP Groep 10 - Gast Test';
 
@@ -38,8 +39,30 @@ export function QRCodeComponent() {
     return fetchedPassword.password;
   };
 
+  const getWeekDates = () => {
+    const today = new Date();
+    const day = today.getDay(); // Sunday = 0, Monday = 1, ..., Saturday = 6
+
+    // Calculate the date for Monday (subtract days since Monday)
+    const monday = new Date(today);
+    monday.setDate(today.getDate() - ((day + 6) % 7)); // ((day + 6) % 7) turns Sunday=0 to 6, Monday=1 to 0, etc.
+
+    // Calculate the date for Sunday (add days until Sunday)
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+
+    const mondaydate =  monday.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' , year: 'numeric' });
+    const sundaydate =  sunday.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' , year: 'numeric' });
+
+    setMonday(mondaydate);
+    setSunday(sundaydate);
+  };
+
   const { data: password, isLoading } = useSWR('password', fetchPassword);
 
+  useEffect(() => {
+    getWeekDates();
+  }, []);
   useInterval(() => {
     mutate('password', fetchPassword);
   }, 2000);
@@ -101,6 +124,15 @@ export function QRCodeComponent() {
                 <p className="text-sm font-semibold mb-4">
                   {t('qrcode.password')}: <span className="font-normal">{password ?? t('qrcode.loading')}</span>
                 </p>
+                <div className="flex flex-col items-start gap-1 mt-2 text-sm text-black">
+                  <p className="font-semibold">Valid</p>
+                  <p className="font-semibold">
+                    From: <span className="font-normal">{monday}</span>
+                  </p>
+                  <p className="font-semibold">
+                    Till: <span className="font-normal">{sunday}</span>
+                  </p>
+                </div>
                 <div className="mt-4 mx-left w-full max-w-[200px] flex flex-col gap-2">
                   <div className="flex gap-2">
                     <button
