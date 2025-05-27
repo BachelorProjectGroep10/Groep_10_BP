@@ -68,6 +68,43 @@ const getUsers = async (macAddress: string , email: string, uid:string): Promise
   }
 };
 
+const updateUserFields = async (macAddress: string, updates: Partial<User>): Promise<void> => {
+  return wrapWithTransaction(async (trx) => {
+    const existingUser = await trx('radcheck')
+      .select('username')
+      .where('username', macAddress)
+      .first();
+
+    if (!existingUser) {
+      throw new Error('User does not exist');
+    }
+
+    const updatePayload: Record<string, any> = {};
+    if (updates.email) updatePayload.email = updates.email;
+    if (updates.uid) updatePayload.uid = updates.uid;
+    if (updates.expiredAt)
+      updatePayload.validUntil = new Date(updates.expiredAt)
+        .toISOString()
+        .slice(0, 19)
+        .replace('T', ' ');
+    if (updates.description) updatePayload.description = updates.description;
+
+    if (Object.keys(updatePayload).length > 0) {
+      await trx('radcheck')
+        .where('username', macAddress)
+        .update(updatePayload);
+    }
+
+    if (updates.groupName) {
+      await trx('radusergroup')
+        .where('username', macAddress)
+        .update({ groupname: updates.groupName });
+    }
+
+    console.log(`User ${macAddress} updated successfully`);
+  });
+};
+
 const insertUserWithoutGroup = async (user: User): Promise<User> => {
   return wrapWithTransaction(async (trx) => {
     await insertIntoRadcheck(trx, user);
@@ -244,4 +281,4 @@ const insertUserIntoRadUserGroup = async (trx: any, macAddress: string, groupNam
   });
 };
 
-export { getUsers, insertUserWithoutGroup,insertUserWithGroup, deleteUserFromDb, regenUserPassword, addUserToGroup, removeUserFromGroup };
+export { getUsers, updateUserFields, insertUserWithoutGroup, insertUserWithGroup, deleteUserFromDb, regenUserPassword, addUserToGroup, removeUserFromGroup };

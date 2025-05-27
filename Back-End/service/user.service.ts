@@ -1,5 +1,5 @@
 import { User } from '../domain/model/User';
-import { getUsers, deleteUserFromDb, insertUserWithGroup, insertUserWithoutGroup, regenUserPassword, addUserToGroup, removeUserFromGroup } from '../domain/data-access/user.db';
+import { getUsers, deleteUserFromDb, insertUserWithGroup, insertUserWithoutGroup, regenUserPassword, addUserToGroup, removeUserFromGroup, updateUserFields } from '../domain/data-access/user.db';
 import { validateUser } from '../util/validation';
 import e from 'express';
 
@@ -56,6 +56,20 @@ const addUser = async (user: User): Promise<void> => {
   }
 };
 
+const updateUserByMac = async (macAddress: string, updates: Partial<User>): Promise<void> => {
+  const macSanitized = macAddress.replace(/[^a-fA-F0-9]/g, '').toLowerCase();
+
+  if (updates.expiredAt && isNaN(Date.parse(updates.expiredAt.toString()))) {
+    throw new Error("Invalid 'expiredAt' date");
+  }
+
+  if (updates.macAddress) {
+    throw new Error('MAC address cannot be updated through this endpoint');
+  }
+
+  await updateUserFields(macSanitized, updates);
+};
+
 const deleteUser = async (macAddress: string): Promise<void> => {
   await deleteUserFromDb(macAddress);
 }
@@ -88,4 +102,4 @@ const removeUserFromAGroup = async (macAddress: string, groupName: string): Prom
   await removeUserFromGroup(macAddress, groupName);
 }
 
-export default { getAllUsers, addUser, deleteUser, regenUserPw, addUserToAGroup, removeUserFromAGroup };
+export default { getAllUsers, addUser, updateUserByMac, deleteUser, regenUserPw, addUserToAGroup, removeUserFromAGroup };

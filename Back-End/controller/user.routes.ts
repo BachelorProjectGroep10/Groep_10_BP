@@ -26,6 +26,19 @@ userRouter.post('/', async (req: Request, res: Response, next: NextFunction) => 
   }
 });
 
+userRouter.put('/:macAddress', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const macAddress = req.params.macAddress;
+    const updates = req.body; // Partial<User> or Record<string, any>
+    
+    await UserService.updateUserByMac(macAddress, updates);
+
+    res.status(200).json({ message: 'User updated successfully' });
+  } catch (error) {
+    next(error);
+  }
+});
+
 userRouter.delete('/:macAddress', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const macAddress = req.params.macAddress;
