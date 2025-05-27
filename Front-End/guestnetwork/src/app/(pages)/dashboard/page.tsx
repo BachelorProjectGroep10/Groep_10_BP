@@ -3,17 +3,16 @@ import Background from "@/app/Components/Utils/background";
 import { HeaderComponent } from "@/app/Components/Utils/header";
 import QRCodeComponent from "../../Components/dashboard/qrCode";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import NoAccess from "@/app/Components/Utils/noAccess";
 
 
 export default function Dashboard() {
-  const router = useRouter();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   useEffect(() => {
     const admin = sessionStorage.getItem("admin");
-    if (!admin) {
-      setTimeout(() => {
-        router.push("/");
-      }, 1000);
+    if (admin) {
+      setIsLoggedIn(true);
     }
   }, []);
   return (
@@ -21,10 +20,15 @@ export default function Dashboard() {
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 ">
         <Background />
       </div>
-      <div className="relative z-10 flex flex-col min-h-screen">
+      {!isLoggedIn && (
+        <div className="relative z-10 flex flex-col min-h-screen">
+          <NoAccess />
+        </div>
+      )}
+      {isLoggedIn && (<div className="relative z-10 flex flex-col min-h-screen">
         <HeaderComponent />
         <QRCodeComponent />
-      </div>
+      </div>)}
     </div>
   );
 }

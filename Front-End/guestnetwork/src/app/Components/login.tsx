@@ -66,7 +66,7 @@ export default function LoginComponent() {
             />
           </div>
 
-          <button type="submit" className="bg-[#002757] hover:bg-[#FA1651] text-white rounded p-2">
+          <button type="submit" className="bg-[#002757] hover:bg-[#FA1651] text-white rounded p-2 cursor-pointer">
             {t('login.login')}
           </button>
         </form>
