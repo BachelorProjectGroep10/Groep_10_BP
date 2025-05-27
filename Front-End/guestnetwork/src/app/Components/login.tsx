@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import AdminService from "../Services/AdminService";
 import { useTranslation } from "react-i18next";
-import { ClipLoader, DotLoader, GridLoader, HashLoader } from "react-spinners";
+import { DotLoader } from "react-spinners";
 import '../i18n'; 
 
 
