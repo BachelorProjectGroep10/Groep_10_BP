@@ -146,7 +146,7 @@ export default function UserDetailsPopup({ user, groups, isGroupsLoading, onClos
         <div className="flex justify-end gap-2 mt-6">
           <button
             onClick={handleDelete}
-            className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-800"
+            className="bg-[#FA1651] text-white px-4 py-2 rounded hover:bg-[#fa1653c6]"
           >
             Delete
           </button>
