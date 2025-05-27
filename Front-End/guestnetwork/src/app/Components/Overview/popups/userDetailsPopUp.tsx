@@ -69,9 +69,7 @@ export default function UserDetailsPopup({ user, groups, isGroupsLoading, onClos
           <p><strong>MAC Address:</strong> {user.macAddress}</p>
 
           <div>
-            <label><strong>Password:</strong></label>
-            <div className="flex items-center gap-2">
-              <span>{user.password}</span>
+            <p><strong>Password:</strong><span> {user.password}</span>
               <button
                 onClick={async () => {
                   try {
@@ -81,11 +79,11 @@ export default function UserDetailsPopup({ user, groups, isGroupsLoading, onClos
                     alert("Failed to regenerate password.");
                   }
                 }}
-                className="bg-[#003366] text-white px-2 py-1 rounded hover:bg-blue-700 text-sm"
+                className="bg-[#003366] text-white px-2 py-1 rounded hover:bg-blue-700 text-sm ml-2"
               >
                 <IoMdRefresh />
               </button>
-            </div>
+            </p>
           </div>
 
           <p><strong>Expires:</strong> {formatDate(user.expiredAt)}</p>
@@ -93,53 +91,54 @@ export default function UserDetailsPopup({ user, groups, isGroupsLoading, onClos
             <strong>Status:</strong> {isExpired ? 'Expired' : (user.active ? t('overview.active') : t('overview.disabled'))}
           </p>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-medium text-gray-700"><strong>Group:</strong></label>
-
-            {!isEditingGroup ? (
-              <div className="flex items-center gap-2">
-                <span>{user.groupName || 'No group'}</span>
-                <button
-                  onClick={() => setIsEditingGroup(true)}
-                  className="bg-[#003366] text-white px-2 py-1 rounded hover:bg-blue-700 text-sm"
-                >
-                  Change
-                </button>
-              </div>
-            ) : (
-              <div className="flex flex-col gap-2">
-                <select
-                  value={groupName ?? ''}
-                  onChange={(e) => setGroupName(e.target.value)}
-                  className="block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                >
-                  <option value="">No group</option>
-                  {groups?.map((g, index) => (
-                    <option key={index} value={g.groupName}>
-                      {g.groupName}
-                    </option>
-                  ))}
-                </select>
-
-                <div className="flex gap-2">
+          <div>
+            <p>
+              <strong>Group:</strong>
+              {!isEditingGroup ? (
+                <>
+                  <span> {user.groupName || 'No group'}</span>
                   <button
-                    onClick={handleGroupSave}
-                    className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-800 text-sm"
+                    onClick={() => setIsEditingGroup(true)}
+                    className="bg-[#003366] text-white px-2 py-1 rounded hover:bg-blue-700 text-sm ml-2"
                   >
-                    Save
+                    Change
                   </button>
-                  <button
-                    onClick={() => {
-                      setGroupName(user.groupName ?? '');
-                      setIsEditingGroup(false);
-                    }}
-                    className="bg-[#003366] text-white px-2 py-1 rounded hover:bg-blue-700 text-sm"
+                </>
+              ) : (
+                <div className="mt-2 flex flex-col gap-2">
+                  <select
+                    value={groupName ?? ''}
+                    onChange={(e) => setGroupName(e.target.value)}
+                    className="block w-full border border-gray-300 rounded-md shadow-sm p-2"
                   >
-                    Cancel
-                  </button>
+                    <option value="">No group</option>
+                    {groups?.map((g, index) => (
+                      <option key={index} value={g.groupName}>
+                        {g.groupName}
+                      </option>
+                    ))}
+                  </select>
+
+                  <div className="flex gap-2">
+                    <button
+                      onClick={handleGroupSave}
+                      className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-800 text-sm"
+                    >
+                      Save
+                    </button>
+                    <button
+                      onClick={() => {
+                        setGroupName(user.groupName ?? '');
+                        setIsEditingGroup(false);
+                      }}
+                      className="bg-[#003366] text-white px-2 py-1 rounded hover:bg-blue-700 text-sm"
+                    >
+                      Cancel
+                    </button>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </p>
           </div>
 
           <p><strong>Email:</strong> {user.email || 'N/A'}</p>
