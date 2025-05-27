@@ -18,8 +18,10 @@ import GroupSelectComponent from './groupSelect';
 import { IoQrCodeSharp } from "react-icons/io5";
 import { IoPersonAddSharp } from "react-icons/io5";
 import { MdGroups } from "react-icons/md";
+import { MdEvent } from "react-icons/md";
 import { useTranslation } from "react-i18next";
 import '../../i18n'; 
+import EventApplyComponent from './eventApply';
 
 
 export function QRCodeComponent() {
@@ -28,7 +30,7 @@ export function QRCodeComponent() {
   const pdfRef = React.useRef<HTMLDivElement | null>(null);
   const [monday, setMonday] = useState<string>();
   const [sunday, setSunday] = useState<string >();
-  const [activeView, setActiveView] = useState<'qr' | 'single' | 'group'>('qr');
+  const [activeView, setActiveView] = useState<'qr' | 'single' | 'group' | 'event'>('qr');
   const ssid = 'BP Groep 10 - Gast Test';
 
   const { t } = useTranslation();
@@ -200,6 +202,7 @@ export function QRCodeComponent() {
 
               {activeView === 'single' && <SingleUserComponent isMobile={true} />}
               {activeView === 'group' && <GroupSelectComponent isMobile={true} />}
+              {activeView === 'event' && <EventApplyComponent isMobile={true} />}
             </div>
           </div>
 
@@ -207,6 +210,7 @@ export function QRCodeComponent() {
           <div className="hidden md:flex flex-col items-center justify-center gap-4">
             <SingleUserComponent isMobile={false} />
             <GroupSelectComponent isMobile={false} />
+            <EventApplyComponent isMobile={false} />
           </div>
         </div>
 
@@ -227,7 +231,14 @@ export function QRCodeComponent() {
             }`}
           >
             <MdGroups size={30} />
-
+          </button>
+          <button
+            onClick={() => setActiveView('event')}
+            className={`bg-[#002757] text-white px-4 py-2 rounded-lg ${
+              activeView === 'group' ? 'ring-2 ring-white' : ''
+            }`}
+          >
+            <MdEvent size={25} />
           </button>
           <button
             onClick={() => setActiveView('qr')}

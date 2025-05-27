@@ -1,14 +1,14 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import UserService from "../../Services/UserService";
-import { Group, User } from "../../Types";
+import { Event, Group, User } from "../../Types";
 import { FaArrowAltCircleDown } from "react-icons/fa";
 import { FaArrowAltCircleUp } from "react-icons/fa";
 import { IoPersonAddSharp } from "react-icons/io5";
 import { MdGroups } from "react-icons/md";
+import { MdEvent } from "react-icons/md";
 import GroupService from "../../Services/GroupService";
-import { formatDate } from "../Utils/formatDate"
 import { useTranslation } from "react-i18next";
 import '../../i18n'; 
 import UsersTable from "./Tables/usersTable";
@@ -17,11 +17,15 @@ import GroupCard from "./Cards/groupCard";
 import UserCard from "./Cards/userCard";
 import useSWR, { mutate } from "swr";
 import useInterval from "use-interval";
+import EventsTable from "./Tables/eventsTable";
+import EventService from "@/app/Services/EventService";
+import EventCard from "./Cards/eventCard";
 
 
 export default function OverviewComponent() {
   const [isUserTableOpen, setIsUserTableOpen] = useState(false); 
   const [isGroupTableOpen, setIsGroupTableOpen] = useState(false); 
+  const [isEventTableOpen, setIsEventTableOpen] = useState(false);
 
   const {t} = useTranslation();
 
@@ -49,12 +53,26 @@ export default function OverviewComponent() {
     }
   }
 
+  const fetchEvents = async () => {
+    try {
+      const response = await EventService.getEvents();
+      if (response.ok) {
+        const data = await response.json();
+        return(data);
+      }
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    }
+  }
+
   const { data: users, isLoading: isUsersLoading } = useSWR('users', fetchUsers);
   const { data: groups, isLoading: isGroupsLoading } = useSWR('groups', fetchGroups);
+  const { data: events, isLoading: isEventsLoading } = useSWR('events', fetchEvents);
 
   useInterval(() => {
     mutate('users', fetchUsers);
     mutate('groups', fetchGroups);
+    mutate('events', fetchEvents);
   }, 500);
 
   return (
@@ -109,6 +127,38 @@ export default function OverviewComponent() {
             <div className="grid grid-cols-1 gap-4 w-full md:hidden">
               {groups.map((group: Group) => (
                 <GroupCard key={group.groupName} group={group} />
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+      <div className="bg-gray-50 rounded-2xl shadow-lg w-full max-w-6xl p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-3xl font-bold text-[#003366] flex items-center justify-center gap-2"> <MdEvent size={30} />Events</h1>
+          <button
+            onClick={() => setIsEventTableOpen(!isEventTableOpen)}
+            className=" text-white px-4 py-2 rounded-lg transition duration-300 ease-in-out bg-[#002757] hover:bg-[#9FDAF9] focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:ring-opacity-50"
+          >
+            {isEventTableOpen ? <FaArrowAltCircleUp /> : <FaArrowAltCircleDown />}
+          </button>
+        </div>
+        {isEventTableOpen && (
+          <> 
+            {/* Desktop view */}
+            <div className="hidden md:block">
+              {events && events.length > 0 && (
+                <EventsTable events={events} />
+              )}
+            </div>
+
+            {/* Mobile view */}
+            <div className="grid grid-cols-1 gap-4 w-full md:hidden">
+              {!isEventsLoading && events?.length === 0 && (
+                <p className="text-gray-500 text-sm">No events to display yet.</p>
+              )}
+
+              {events?.map((event: Event) => (
+                <EventCard key={event.name} event={event} />
               ))}
             </div>
           </>
