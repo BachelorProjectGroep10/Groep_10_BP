@@ -23,6 +23,15 @@ export type Group = {
     readonly vlan?: number;
 };
 
+export type Event = {
+    readonly id?: number;
+    readonly name: string;
+    readonly startDate: Date;
+    readonly endDate: Date;
+    readonly password?: string;
+    readonly description?: string;
+}
+
 export type Vlan = {
     readonly id?: number;          
     readonly vlan: number;

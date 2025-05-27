@@ -62,3 +62,21 @@ export const validateGroup = (group: { groupName: string }) => {
     throw new Error('Group name must be a non-empty string if provided');
   }
 };
+
+export const validateEvent = (event: { name: string; startDate: Date; endDate: Date }) => {
+  if (typeof event.name !== 'string' || event.name.trim() === '') {
+    throw new Error('Event name must be a non-empty string');
+  }
+  
+  if (!(event.startDate instanceof Date) || isNaN(event.startDate.getTime())) {
+    throw new Error('Invalid start date');
+  }
+
+  if (event.startDate >= event.endDate) {
+    throw new Error('End date must be after start date');
+  }
+
+  if (!(event.endDate instanceof Date) || isNaN(event.endDate.getTime())) {
+    throw new Error('Invalid end date');
+  }
+};
