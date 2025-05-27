@@ -2,9 +2,13 @@ import { User } from "../Types";
 
 const basicUrl = `${process.env.NEXT_PUBLIC_API_URL}`;
 
-const getUsers = async () => {
+const getUsers = async (params = {}) => {
     const token = sessionStorage.getItem("token") || "";
-    return fetch(`${basicUrl}/user`, {
+    const queryString = new URLSearchParams(params).toString();
+    
+    const url = `${basicUrl}/user${queryString ? `?${queryString}` : ''}`;
+
+    return fetch(url, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',

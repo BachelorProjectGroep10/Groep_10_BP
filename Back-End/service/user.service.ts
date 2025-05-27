@@ -2,8 +2,8 @@ import { User } from '../domain/model/User';
 import { getUsers, deleteUserFromDb, insertUserWithGroup, insertUserWithoutGroup, regenUserPassword, addUserToGroup, removeUserFromGroup } from '../domain/data-access/user.db';
 import { validateUser } from '../util/validation';
 
-const getAllUsers = async (): Promise<User[]> => {
-    const users = await getUsers();
+const getAllUsers = async (macAddress:string): Promise<User[]> => {
+    const users = await getUsers(macAddress);
     return users.map(user => {
         return new User({
         id: user.id,
@@ -29,7 +29,7 @@ const addUser = async (user: User): Promise<void> => {
   
   const macSanitized = user.macAddress.replace(/[^a-fA-F0-9]/g, '').toLowerCase();
 
-  const existingUsers = await getUsers();
+  const existingUsers = await getUsers(user.macAddress);
   if (existingUsers.some(u => u.macAddress === macSanitized)) {
     throw new Error('A user with this MAC address already exists');
   }

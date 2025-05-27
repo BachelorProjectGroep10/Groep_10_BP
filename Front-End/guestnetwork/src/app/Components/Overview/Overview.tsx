@@ -20,18 +20,27 @@ import useInterval from "use-interval";
 import EventsTable from "./Tables/eventsTable";
 import EventService from "@/app/Services/EventService";
 import EventCard from "./Cards/eventCard";
+import { IoSearch } from "react-icons/io5";
+import { set } from "date-fns";
+
 
 
 export default function OverviewComponent() {
   const [isUserTableOpen, setIsUserTableOpen] = useState(false); 
   const [isGroupTableOpen, setIsGroupTableOpen] = useState(false); 
   const [isEventTableOpen, setIsEventTableOpen] = useState(false);
+  const [searchMac, setSearchMac] = useState('');
+  const [searchEmail, setSearchEmail] = useState('');
+  const [searchName, setSearchName] = useState('');
 
   const {t} = useTranslation();
 
   const fetchUsers = async () => {
+    const params = {
+      macAddress: searchMac
+    }
     try {
-      const response = await UserService.getUsers();
+      const response = await UserService.getUsers(params);
       if (response.ok) {
         const data = await response.json();
         return(data);
@@ -64,7 +73,6 @@ export default function OverviewComponent() {
       console.error("Error fetching events:", error);
     }
   }
-
   const { data: users, isLoading: isUsersLoading } = useSWR('users', fetchUsers);
   const { data: groups, isLoading: isGroupsLoading } = useSWR('groups', fetchGroups);
   const { data: events, isLoading: isEventsLoading } = useSWR('events', fetchEvents);
@@ -84,12 +92,29 @@ export default function OverviewComponent() {
       <div className="bg-gray-50 rounded-2xl shadow-lg w-full max-w-6xl p-6">
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-3xl font-bold text-[#003366] flex items-center justify-center gap-2"> <IoPersonAddSharp size={25} />{t('overview.users')}</h1>
-          <button
-            onClick={() => setIsUserTableOpen(!isUserTableOpen)}
-            className=" text-white px-4 py-2 rounded-lg transition duration-300 ease-in-out bg-[#002757] hover:bg-[#9FDAF9] focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:ring-opacity-50"
-          >
-            {isUserTableOpen ? <FaArrowAltCircleUp /> : <FaArrowAltCircleDown />}
-          </button>
+          <div className="flex items-center gap-4">
+            {isUserTableOpen && (<div className="flex items-center gap-2">
+              <input
+                type="text"
+                placeholder="Search on MAC Address"
+                value={searchMac}
+                autoComplete="off"
+                className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:border-transparent"
+                onChange={(e) => {setSearchMac(e.target.value);}}
+              />
+              <button onClick={() => fetchUsers()} className="transition duration-300 ease-in-out text-[#002757] hover:text-[#9FDAF9] cursor-pointer">
+                <IoSearch size={20} />
+              </button>
+            </div>)}
+
+            <button
+              onClick={() => setIsUserTableOpen(!isUserTableOpen)}
+              className=" text-white cursor-pointer px-4 py-2 rounded-lg transition duration-300 ease-in-out bg-[#002757] hover:bg-[#9FDAF9] focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:ring-opacity-50"
+            >
+              {isUserTableOpen ? <FaArrowAltCircleUp /> : <FaArrowAltCircleDown />}
+            </button>
+          </div>
+
         </div>
         {isUserTableOpen && (
           <>
