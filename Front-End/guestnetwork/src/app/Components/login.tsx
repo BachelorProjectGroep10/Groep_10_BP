@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import AdminService from "../Services/AdminService";
 import { useTranslation } from "react-i18next";
-import { DotLoader } from "react-spinners";
+import { PulseLoader} from "react-spinners";
 import '../i18n'; 
 
 
@@ -84,10 +84,10 @@ export default function LoginComponent() {
 
           <button
             type="submit"
-            className="bg-[#002757] hover:bg-[#FA1651] text-white rounded p-2 cursor-pointer flex items-center justify-center min-w-[100px]"
+            className="bg-[#002757] hover:bg-[#FA1651] text-white rounded p-3 cursor-pointer flex items-center justify-center min-w-[100px]"
             disabled={loading}
           >
-            {loading ? <DotLoader size={20} color="#ffffff" /> : t('login.login')}
+            {loading ? <PulseLoader size={8} color="#ffffff" /> : t('login.login')}
           </button>
         </form>
       </div>
