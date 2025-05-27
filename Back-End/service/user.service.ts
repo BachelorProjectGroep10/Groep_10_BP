@@ -1,9 +1,10 @@
 import { User } from '../domain/model/User';
 import { getUsers, deleteUserFromDb, insertUserWithGroup, insertUserWithoutGroup, regenUserPassword, addUserToGroup, removeUserFromGroup } from '../domain/data-access/user.db';
 import { validateUser } from '../util/validation';
+import e from 'express';
 
-const getAllUsers = async (macAddress:string): Promise<User[]> => {
-    const users = await getUsers(macAddress);
+const getAllUsers = async (macAddress:string, email:string, uid:string): Promise<User[]> => {
+    const users = await getUsers(macAddress, email, uid);
     return users.map(user => {
         return new User({
         id: user.id,
@@ -29,7 +30,11 @@ const addUser = async (user: User): Promise<void> => {
   
   const macSanitized = user.macAddress.replace(/[^a-fA-F0-9]/g, '').toLowerCase();
 
-  const existingUsers = await getUsers(user.macAddress);
+  if (!user.macAddress || !user.email || !user.uid) {
+    throw new Error('User MAC address and email are required');
+  }
+  
+  const existingUsers = await getUsers(user.macAddress, user.email, user.uid);
   if (existingUsers.some(u => u.macAddress === macSanitized)) {
     throw new Error('A user with this MAC address already exists');
   }

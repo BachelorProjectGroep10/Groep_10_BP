@@ -7,6 +7,7 @@ import AdminService from "../Services/AdminService";
 import { useTranslation } from "react-i18next";
 import { PulseLoader} from "react-spinners";
 import '../i18n'; 
+import { set } from "date-fns";
 
 
 export default function LoginComponent() {
@@ -21,6 +22,7 @@ export default function LoginComponent() {
   const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
   const handleLogin = async (e: React.FormEvent) => {
+    setError(null);
     e.preventDefault();
     setLoading(true);
 
@@ -41,12 +43,13 @@ export default function LoginComponent() {
 
         router.push("/dashboard");
       } else {
-        console.error("Login failed");
-
-        await sleep(2000);
+        const errorData = await response.json();
+        setError(errorData.message || "Login failed. Please try again.");
+        await sleep(1000);
       }
     } catch (error) {
-      console.error("Login error:", error);
+      // console.error("Login error:", error);
+      setError(error instanceof Error ? error.message : "An unexpected error occurred");
       await sleep(2000);
     } finally {
       setLoading(false);
@@ -81,7 +84,10 @@ export default function LoginComponent() {
               className="border border-gray-300 bg-white rounded-md p-2 mb-4"
             />
           </div>
-
+          {error && (<div className="bg-white p-2 rounded-md mb-2 ">
+            <p className="text-red-500">{error}</p>
+          </div>)}
+ 
           <button
             type="submit"
             className="bg-[#002757] hover:bg-[#FA1651] text-white rounded p-3 cursor-pointer flex items-center justify-center min-w-[100px]"

@@ -2,9 +2,13 @@ import { Group } from "../Types";
 
 const basicUrl = `${process.env.NEXT_PUBLIC_API_URL}`;
 
-const getGroups = async () => {
+const getGroups = async (params = {}) => {
     const token = sessionStorage.getItem("token") || "";
-    return fetch(`${basicUrl}/group`, {
+    const queryString = new URLSearchParams(params).toString();
+
+    const url = `${basicUrl}/group${queryString ? `?${queryString}` : ''}`;
+
+    return fetch(url, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
