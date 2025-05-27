@@ -22,6 +22,7 @@ import { useState } from "react";
 export default function UserDetailsPopup({ user, groups, isGroupsLoading, onClose }: Props) {
   const { t } = useTranslation();
   const [isEditingGroup, setIsEditingGroup] = useState(false);
+  const isExpired = user.expiredAt ? new Date(user.expiredAt) < new Date() : false;
   const [groupName, setGroupName] = useState<string | null>(user.groupName ?? '');
 
   const handleDelete = async () => {
@@ -88,7 +89,9 @@ export default function UserDetailsPopup({ user, groups, isGroupsLoading, onClos
           </div>
 
           <p><strong>Expires:</strong> {formatDate(user.expiredAt)}</p>
-          <p><strong>Active:</strong> {user.active ? t('overview.yes') : t('overview.no')}</p>
+          <p>
+            <strong>Status:</strong> {isExpired ? 'Expired' : (user.active ? t('overview.active') : t('overview.disabled'))}
+          </p>
 
           <div className="flex flex-col gap-2">
             <label className="text-sm font-medium text-gray-700"><strong>Group:</strong></label>
