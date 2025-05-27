@@ -9,24 +9,12 @@ import { validateUser } from '../../util/validation';
 // The functions interact with the database using Knex.js and handle transactions where necessary.
 // The functions are designed to be reusable and modular, allowing for easy integration into the rest of the application.
 
-// helper functions
-const wrapWithTransaction = async <T>(operation: (trx: any) => Promise<T>): Promise<T> => {
-  const trx = await knex.transaction();
-  try {
-    const result = await operation(trx);
-    await trx.commit();
-    return result;
-  } catch (err) {
-    await trx.rollback();
-    console.error('Transaction failed:', err);
-    throw new Error('Database transaction failed');
-  }
-};
+
 
 // Execute DB functions
-const getUsers = async (): Promise<User[]> => {
+const getUsers = async (macAddress: string): Promise<User[]> => {
   try {
-    const rows = await knex('radcheck')
+    let query = knex('radcheck')
       .select(
         'radcheck.*',
         'psk_reply.value as psk',
@@ -46,6 +34,11 @@ const getUsers = async (): Promise<User[]> => {
       .where('radcheck.attribute', 'Cleartext-Password')
       .andWhere('radcheck.username', '!=', 'DEFAULT');
 
+    if (macAddress) {
+      query = query.andWhere('radcheck.username', macAddress);
+    }
+
+    const rows = await query;
 
     return rows.map((row) => {
       const cleanedPassword = row.psk ? row.psk.replace('psk=', '') : null;
@@ -176,6 +169,20 @@ const removeUserFromGroup = async (macAddress: string, groupName: string): Promi
     console.log('User removed from group successfully');
   });
 }
+
+// helper functions
+const wrapWithTransaction = async <T>(operation: (trx: any) => Promise<T>): Promise<T> => {
+  const trx = await knex.transaction();
+  try {
+    const result = await operation(trx);
+    await trx.commit();
+    return result;
+  } catch (err) {
+    await trx.rollback();
+    console.error('Transaction failed:', err);
+    throw new Error('Database transaction failed');
+  }
+};
 
 const insertIntoRadcheck = async (trx: any, user: User) => {
   const validUntil = new Date(user.expiredAt).toISOString().slice(0, 19).replace('T', ' ');

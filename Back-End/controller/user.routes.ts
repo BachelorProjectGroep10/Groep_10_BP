@@ -5,7 +5,7 @@ const userRouter = express.Router();
 
 userRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const users = await UserService.getAllUsers();
+    const users = await UserService.getAllUsers(req.query.macAddress as string);
     res.status(200).json(users);
   } catch (error) {
     next(error);
