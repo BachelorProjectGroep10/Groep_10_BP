@@ -87,20 +87,23 @@ export default function UserDetailsPopup({ user, groups, isGroupsLoading, onClos
           <p><strong>MAC Address:</strong> {user.macAddress}</p>
 
           <div>
-            <p><strong>Password:</strong><span> {user.password}</span>
-              <button
-                onClick={async () => {
-                  try {
-                    await UserService.regenUserPw(user.macAddress);
-                  } catch (err) {
-                    console.error("Failed to regenerate password:", err);
-                    alert("Failed to regenerate password.");
-                  }
-                }}
-                className="bg-[#003366] text-white px-2 py-1 rounded hover:bg-blue-700 text-sm ml-2"
-              >
-                <IoMdRefresh />
-              </button>
+            <p>
+              <strong>Password:</strong> <span>{user.password}</span>
+              {!user.groupName && (
+                <button
+                  onClick={async () => {
+                    try {
+                      await UserService.regenUserPw(user.macAddress);
+                    } catch (err) {
+                      console.error("Failed to regenerate password:", err);
+                      alert("Failed to regenerate password.");
+                    }
+                  }}
+                  className="bg-[#003366] text-white px-2 py-1 rounded hover:bg-blue-700 text-sm ml-2"
+                >
+                  <IoMdRefresh />
+                </button>
+              )}
             </p>
           </div>
 
