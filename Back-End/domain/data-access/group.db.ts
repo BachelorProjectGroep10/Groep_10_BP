@@ -3,9 +3,9 @@ import { Group } from '../model/Group';
 import { generateRandomPassword } from '../../util/autoPassword';
 
 // Get all groups
-const getGroups = async (): Promise<Group[]> => {
+const getGroups = async (name: string, vlan: number): Promise<Group[]> => {
   try {
-    const rows = await knex('groupname')
+    let query = knex('groupname')
       .select(
         'groupname.*', 
         'psk_reply.value as psk',
@@ -20,8 +20,16 @@ const getGroups = async (): Promise<Group[]> => {
         this.on('groupname.name', '=', 'vlan_reply.groupname')
           .andOn('vlan_reply.attribute', '=', knex.raw('?', ['Tunnel-Private-Group-ID']));
       })
-      .where('groupname.name', '!=', 'NULL')
+      .where('groupname.name', '!=', 'NULL');
 
+    if (name) {
+      query = query.andWhere('groupname.name', 'like', `%${name}%`);
+    }
+    if (vlan) {
+      query = query.andWhere('vlan_reply.value', '=', vlan);
+    }
+
+    const rows = await query;
     return rows.map((row) => {
       return new Group({
         id: row.id,

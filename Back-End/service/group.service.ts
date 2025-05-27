@@ -1,8 +1,8 @@
 import { Group } from "../domain/model/Group";
 import { deleteGroupFromDB, getGroups, insertGroup } from "../domain/data-access/group.db";
 
-const getAllGroups = async (): Promise<Group[]> => {
-    const groups = await getGroups();
+const getAllGroups = async (name:string, vlan:number): Promise<Group[]> => {
+    const groups = await getGroups(name, vlan);
     return groups.map(group => {
         return new Group({
             groupName: group.groupName,

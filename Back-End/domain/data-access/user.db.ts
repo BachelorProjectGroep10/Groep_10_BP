@@ -12,7 +12,7 @@ import { validateUser } from '../../util/validation';
 
 
 // Execute DB functions
-const getUsers = async (macAddress: string): Promise<User[]> => {
+const getUsers = async (macAddress: string , email: string, uid:string): Promise<User[]> => {
   try {
     let query = knex('radcheck')
       .select(
@@ -35,7 +35,13 @@ const getUsers = async (macAddress: string): Promise<User[]> => {
       .andWhere('radcheck.username', '!=', 'DEFAULT');
 
     if (macAddress) {
-      query = query.andWhere('radcheck.username', macAddress);
+      query = query.andWhere('radcheck.username', 'like', `%${macAddress}%`);
+    }
+    if (email) {
+      query = query.andWhere('radcheck.email', 'like', `%${email}%`);
+    }
+    if (uid) {
+      query = query.andWhere('radcheck.uid', 'like', `%${uid}%`);
     }
 
     const rows = await query;
