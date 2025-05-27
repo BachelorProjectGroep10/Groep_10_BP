@@ -18,6 +18,7 @@ import GroupSelectComponent from './groupSelect';
 import { IoQrCodeSharp } from "react-icons/io5";
 import { IoPersonAddSharp } from "react-icons/io5";
 import { MdGroups } from "react-icons/md";
+import { MdEvent } from "react-icons/md";
 import { useTranslation } from "react-i18next";
 import '../../i18n'; 
 import EventApplyComponent from './eventApply';
@@ -230,7 +231,14 @@ export function QRCodeComponent() {
             }`}
           >
             <MdGroups size={30} />
-
+          </button>
+          <button
+            onClick={() => setActiveView('event')}
+            className={`bg-[#002757] text-white px-4 py-2 rounded-lg ${
+              activeView === 'group' ? 'ring-2 ring-white' : ''
+            }`}
+          >
+            <MdEvent size={25} />
           </button>
           <button
             onClick={() => setActiveView('qr')}

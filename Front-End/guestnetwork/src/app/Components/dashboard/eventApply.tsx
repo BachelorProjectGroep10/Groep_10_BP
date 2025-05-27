@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import '../../i18n'; 
 import { Vlan, Event } from '../../Types';
 import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa';
-import { MdGroups } from 'react-icons/md';
+import { MdEvent } from "react-icons/md";
 import VlanService from '../../Services/VlanService';
 import { validateEvent } from '../../Utils/validation';
 import EventService from '@/app/Services/EventService';
@@ -75,7 +75,8 @@ export default function EventApplyComponent( {isMobile}: EventInterface) {
         <div className="col-span-full flex items-center justify-between mb-4">
           <div className="flex items-center justify-center gap-2">
             <h2 className="text-2xl font-bold text-[#002757] flex items-center justify-center gap-2 pr-4">
-              <MdGroups className="text-4xl" />
+            <MdEvent className="text-4xl" />
+
               Event Registration
             </h2>
           </div>  
