@@ -1,5 +1,5 @@
 import { User } from "@/app/Types";
-import { formatDate, formatDateInput } from "../../Utils/formatDate";
+import { formatDate } from "../../Utils/formatDate";
 import { IoMdRefresh } from "react-icons/io";
 import { useTranslation } from "react-i18next";
 import '../../../i18n';
@@ -47,7 +47,7 @@ export default function UsersTable({ users }: UserTableProps) {
       return [];
     }
   }
-  
+
   const { data: groups, isLoading: isGroupsLoading } = useSWR('groups', fetchGroups);
 
   useInterval(() => {
@@ -63,7 +63,7 @@ export default function UsersTable({ users }: UserTableProps) {
             <th className="w-1/5 p-4 font-semibold">{t('overview.macAddress')}</th>
             <th className="w-1/5 p-4 font-semibold">{t('overview.password')}</th>
             <th className="w-1/5 p-4 font-semibold">{t('overview.expirationDate')}</th>
-            <th className="w-1/5 p-4 font-semibold text-center">{t('overview.active')}</th>
+            <th className="w-1/5 p-4 font-semibold text-center">Status</th>
             <th className="w-1/5 p-4 font-semibold text-center">Extra</th>
           </tr>
         </thead>
@@ -72,33 +72,43 @@ export default function UsersTable({ users }: UserTableProps) {
       <div className="max-h-[250px] overflow-y-auto">
         <table className="min-w-full table-fixed border-collapse">
           <tbody>
-            {users.map((user: User) => (
-              <tr
-                key={user.id}
-                className="hover:bg-[#e6f3ff] text-[#003366] border-b border-gray-100 transition duration-150 text-left"
-              >
-                <td className="w-1/5 p-4 break-words">{user.macAddress}</td>
-                <td className="w-1/5 p-4 break-words">{user.password}</td>
-                <td className="w-1/5 p-4">{formatDate(user?.expiredAt)}</td>
-                <td className="w-1/5 p-4 text-center">
-                  <span
-                    className={`inline-block p-2 rounded-full text-xs font-semibold ${
-                      user.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                    }`}
-                  >
-                    {user.active ? t('overview.yes') : t('overview.no')}
-                  </span>
-                </td>
-                <td className="w-1/5 p-4 text-center">
-                  <button
-                    onClick={() => handleExtraClick(user)}
-                    className="bg-[#003366] text-white text-sm px-4 py-1 rounded-full hover:bg-[#00509e] transition duration-200"
-                  >
-                    Extra Info
-                  </button>
-                </td>
-              </tr>
-            ))}
+            {users.map((user: User) => {
+              const isExpired = user.expiredAt ? new Date(user.expiredAt) < new Date() : false;
+
+              return (
+                <tr
+                  key={user.id}
+                  className="hover:bg-[#e6f3ff] text-[#003366] border-b border-gray-100 transition duration-150 text-left"
+                >
+                  <td className="w-1/5 p-4 break-words">{user.macAddress}</td>
+                  <td className="w-1/5 p-4 break-words">{user.password}</td>
+                  <td className="w-1/5 p-4">{formatDate(user?.expiredAt)}</td>
+                  <td className="w-1/5 p-4 text-center">
+                    {isExpired ? (
+                      <span className="inline-block px-4 py-1 rounded-full text-xs font-bold bg-orange-100 text-orange-800">
+                        Expired
+                      </span>
+                    ) : (
+                      <span
+                        className={`inline-block px-4 py-1 rounded-full text-xs font-bold ${
+                          user.active ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+                        }`}
+                      >
+                        {user.active ? t('overview.active') : t('overview.disabled')}
+                      </span>
+                    )}
+                  </td>
+                  <td className="w-1/5 p-4 text-center">
+                    <button
+                      onClick={() => handleExtraClick(user)}
+                      className="bg-[#003366] text-white text-sm px-4 py-1 rounded-full hover:bg-[#00509e] transition duration-200"
+                    >
+                      Extra Info
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

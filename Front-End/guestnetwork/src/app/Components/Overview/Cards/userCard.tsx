@@ -21,6 +21,7 @@ interface UserCardProps {
 export default function UserCard({ user, groups, isGroupsLoading }: UserCardProps) {
   const { t } = useTranslation();
   const [isEditingGroup, setIsEditingGroup] = useState(false);
+  const isExpired = user.expiredAt ? new Date(user.expiredAt) < new Date() : false;
   const [groupName, setGroupName] = useState<string | null>(user.groupName ?? '');
 
   const handleDelete = async () => {
@@ -150,13 +151,19 @@ export default function UserCard({ user, groups, isGroupsLoading }: UserCardProp
         <strong>Expires At:</strong> {formatDate(user?.expiredAt)}
       </p>
 
-      <span
-        className={`inline-block px-4 py-1 rounded-full text-xs font-bold ${
-          user.active ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
-        }`}
-      >
-        {user.active ? t("overview.yes") : t("overview.no")}
-      </span>
+      {isExpired ? (
+        <span className="inline-block px-4 py-1 rounded-full text-xs font-bold bg-orange-100 text-orange-800">
+          Expired
+        </span>
+      ) : (
+        <span
+          className={`inline-block px-4 py-1 rounded-full text-xs font-bold ${
+            user.active ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+          }`}
+        >
+          {user.active ? t('overview.active') : t('overview.disabled')}
+        </span>
+      )}
     </div>
   );
 }
