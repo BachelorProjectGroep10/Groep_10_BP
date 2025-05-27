@@ -13,7 +13,7 @@ export default function NoAccess() {
           className="w-24 h-24 sm:w-40 sm:h-40 rounded-full"
         />
       </div>
-      <h1 className="text-4xl font-bold text-[#002757]  ">Access Denied</h1>
+      <h1 className="text-4xl font-bold text-[#002757]">Access Denied</h1>
       <p className="mt-4 text-lg">You do not have permission to access this page.</p>
       <button onClick={() => router.push('/')} className="mt-6 px-4 py-2 bg-[#002757] text-lg font-semibold text-white rounded hover:bg-[#FA1651] transition-colors cursor-pointer">
         Login

@@ -3,40 +3,56 @@
 import React from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { FaWifi } from "react-icons/fa";
 import AdminService from "../Services/AdminService";
 import { useTranslation } from "react-i18next";
+import { ClipLoader, DotLoader, GridLoader, HashLoader } from "react-spinners";
 import '../i18n'; 
 
 
 export default function LoginComponent() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const {t} = useTranslation();
 
   const router = useRouter();
+  const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+
     const admin = {
       username: username,
       password: password,
     };
 
-    const response = await AdminService.getAdmin(admin);
+    try {
+      const response = await AdminService.getAdmin(admin);
 
-    if (response.ok) {
-      const data = await response.json();
-      sessionStorage.setItem("admin", JSON.stringify(data));
-      sessionStorage.setItem("token", data.token);
-      setTimeout(() => {
+      if (response.ok) {
+        const data = await response.json();
+        sessionStorage.setItem("admin", JSON.stringify(data));
+        sessionStorage.setItem("token", data.token);
+
+        await sleep(2000);
+
         router.push("/dashboard");
-      }, 1000);
-    } else {
-      console.error("Login failed");
+      } else {
+        console.error("Login failed");
+
+        await sleep(2000);
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      await sleep(2000);
+    } finally {
+      setLoading(false);
     }
-  }
+  };
+
 
   return (
     <div className="flex flex-col items-center justify-center mt-10">
@@ -66,8 +82,12 @@ export default function LoginComponent() {
             />
           </div>
 
-          <button type="submit" className="bg-[#002757] hover:bg-[#FA1651] text-white rounded p-2 cursor-pointer">
-            {t('login.login')}
+          <button
+            type="submit"
+            className="bg-[#002757] hover:bg-[#FA1651] text-white rounded p-2 cursor-pointer flex items-center justify-center min-w-[100px]"
+            disabled={loading}
+          >
+            {loading ? <DotLoader size={20} color="#ffffff" /> : t('login.login')}
           </button>
         </form>
       </div>

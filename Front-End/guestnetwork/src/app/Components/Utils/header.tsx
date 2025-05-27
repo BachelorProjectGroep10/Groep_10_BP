@@ -30,7 +30,7 @@ export function HeaderComponent() {
     }, [language]);
 
     return (
-        <header className="w-full flex flex-col md:flex-row items-center justify-around pt-1">
+        <header className="w-full flex flex-col md:flex-row items-center justify-around pt-1 mt-6">
             <div className="relative w-[120px] h-[60px] ">
                 <Link href="/dashboard" className="absolute inset-0 flex items-center justify-center">
                     <Image
