@@ -25,6 +25,18 @@ const addUser = async (user: User) => {
     });
 }
 
+const updateUser = async (macAddress: string, updates: Partial<User>) => {
+    const token = sessionStorage.getItem("token") || "";
+    return fetch(`${basicUrl}/user/${macAddress}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(updates)
+    });
+}
+
 const deleteUser = async (macAddress: string) => {
     const token = sessionStorage.getItem("token") || "";
     return fetch(`${basicUrl}/user/${macAddress}`, {
@@ -74,6 +86,7 @@ const removeFromGroup = async (macAddress: string, groupName: string) => {
 const UserService = {
     getUsers,
     addUser,
+    updateUser,
     deleteUser,
     regenUserPw,
     addToGroup,
