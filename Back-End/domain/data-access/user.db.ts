@@ -12,7 +12,7 @@ import { validateUser } from '../../util/validation';
 
 
 // Execute DB functions
-const getUsers = async (macAddress: string , email: string, uid:string): Promise<User[]> => {
+const getUsers = async (macAddress: string , email?: string, uid?:string): Promise<User[]> => {
   try {
     let query = knex('radcheck')
       .select(

@@ -96,9 +96,23 @@ export default function UserCard({ user, groups, isGroupsLoading }: UserCardProp
   return (
     <div className="w-full max-w-md mx-auto bg-white text-left shadow-lg rounded-xl p-4 space-y-3 border border-gray-200">
       <div className="flex justify-between items-center">
-        <p className="text-md font-semibold text-[#003366]">
-          <strong>{user.macAddress}</strong>
-        </p>
+        <div className="flex items-center gap-2">
+          <p className="text-md font-semibold text-[#003366]">
+            <strong>{user.macAddress}</strong>
+          </p>
+          <span
+            className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${
+              isExpired
+                ? "bg-orange-100 text-orange-800"
+                : user.active
+                ? "bg-green-100 text-green-800"
+                : "bg-red-100 text-red-800"
+            }`}
+            title={isExpired ? "Expired" : user.active ? t("overview.active") : t("overview.disabled")}
+          >
+            {isExpired ? "Expired" : user.active ? t("overview.active") : t("overview.disabled")}
+          </span>
+        </div>
         <div className="flex items-center gap-3">
           <button
             onClick={() => setIsEditing(true)}
@@ -244,19 +258,6 @@ export default function UserCard({ user, groups, isGroupsLoading }: UserCardProp
           <p className="text-sm text-[#003366]"><strong>User ID:</strong> {user.uid || 'N/A'}</p>
           <p className="text-sm text-[#003366]"><strong>VLAN:</strong> {user.vlan || 'N/A'}</p>
           <p className="text-sm text-[#003366]"><strong>Description:</strong> {user.description || 'N/A'}</p>
-          <p>
-            <span
-              className={`inline-block px-4 py-1 rounded-full text-xs font-bold ${
-                isExpired
-                  ? "bg-orange-100 text-orange-800"
-                  : user.active
-                  ? "bg-green-100 text-green-800"
-                  : "bg-red-100 text-red-800"
-              }`}
-            >
-              {isExpired ? "Expired" : user.active ? t("overview.active") : t("overview.disabled")}
-            </span>
-          </p>
         </>
       )}
     </div>

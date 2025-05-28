@@ -82,7 +82,20 @@ export default function UserDetailsPopup({ user, groups, isGroupsLoading, onClos
           &times;
         </button>
 
-        <h2 className="text-lg font-bold mb-4">User Details</h2>
+        <h2 className="text-lg font-bold mb-1">User Details</h2>
+        
+        <span
+          className={`inline-block px-4 py-1 rounded-full text-xs font-bold mb-3 ${
+            isExpired
+              ? "bg-orange-100 text-orange-800"
+              : user.active
+              ? "bg-green-100 text-green-800"
+              : "bg-red-100 text-red-800"
+          }`}
+        >
+          {isExpired ? "Expired" : user.active ? t("overview.active") : t("overview.disabled")}
+        </span>
+
         <div className="text-sm text-gray-700 space-y-2">
           <p><strong>MAC Address:</strong> {user.macAddress}</p>
 
@@ -111,7 +124,6 @@ export default function UserDetailsPopup({ user, groups, isGroupsLoading, onClos
             <>
               <p><strong>Group:</strong> {user.groupName || 'No group'}</p>
               <p><strong>Expires:</strong> {formatDate(user.expiredAt)}</p>
-              <p><strong>Status:</strong> {isExpired ? 'Expired' : (user.active ? t('overview.active') : t('overview.disabled'))}</p>
               <p><strong>Email:</strong> {user.email || 'N/A'}</p>
               <p><strong>UID:</strong> {user.uid || 'N/A'}</p>
               <p><strong>VLAN:</strong> {user.vlan || 'N/A'}</p>
