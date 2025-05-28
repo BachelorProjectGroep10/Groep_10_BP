@@ -29,7 +29,7 @@ userRouter.post('/', async (req: Request, res: Response, next: NextFunction) => 
 userRouter.put('/:macAddress', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const macAddress = req.params.macAddress;
-    const updates = req.body; // Partial<User> or Record<string, any>
+    const updates = req.body; 
     
     await UserService.updateUserByMac(macAddress, updates);
 
