@@ -4,6 +4,7 @@ import { formatDate } from "../../Utils/formatDate";
 import { useTranslation } from "react-i18next";
 import { IoMdRefresh } from "react-icons/io";
 import { FaTrash } from "react-icons/fa";
+import { MdEdit } from "react-icons/md";
 import UserService from "@/app/Services/UserService";
 import { mutate } from "swr";
 
@@ -20,8 +21,16 @@ interface UserCardProps {
 
 export default function UserCard({ user, groups, isGroupsLoading }: UserCardProps) {
   const { t } = useTranslation();
-  const [isEditingGroup, setIsEditingGroup] = useState(false);
   const isExpired = user.expiredAt ? new Date(user.expiredAt) < new Date() : false;
+
+  const [isEditing, setIsEditing] = useState(false);
+
+  const [email, setEmail] = useState(user.email ?? '');
+  const [uid, setUID] = useState(user.uid ?? '');
+  const [vlan, setVlan] = useState(user.vlan ?? '');
+  const [description, setDescription] = useState(user.description ?? '');
+  const [expiredAt, setExpiredAt] = useState(user.expiredAt ? new Date(user.expiredAt).toISOString().slice(0, 10) : '');
+  const [active, setActive] = useState(user.active);
   const [groupName, setGroupName] = useState<string | null>(user.groupName ?? '');
 
   const handleDelete = async () => {
@@ -44,44 +53,88 @@ export default function UserCard({ user, groups, isGroupsLoading }: UserCardProp
     }
   };
 
-  const handleGroupSave = async () => {
+  const handleSaveChanges = async () => {
     try {
+      const updated = {
+        email,
+        uid,
+        expiredAt: expiredAt ? new Date(expiredAt) : undefined,
+        active: active ? 1 : 0,
+        vlan: vlan === '' ? undefined : Number(vlan),
+        description,
+      };
+
+      await UserService.updateUser(user.macAddress, updated);
+
       const oldGroup = user.groupName ?? '';
       const newGroup = groupName ?? '';
 
-      if (oldGroup && oldGroup !== newGroup) {
-        await UserService.removeFromGroup(user.macAddress, oldGroup);
+      if (oldGroup !== newGroup) {
+        if (oldGroup) await UserService.removeFromGroup(user.macAddress, oldGroup);
+        if (newGroup) await UserService.addToGroup(user.macAddress, newGroup);
       }
 
-      if (newGroup && oldGroup !== newGroup) {
-        await UserService.addToGroup(user.macAddress, newGroup);
-      }
-
-      setIsEditingGroup(false);
-      mutate('users');
+      setIsEditing(false);
+      mutate("users");
     } catch (err) {
-      console.error("Failed to update group:", err);
-      alert("Failed to update group.");
+      console.error("Failed to update user:", err);
+      alert("Failed to update user.");
     }
+  };
+
+  const handleCancel = () => {
+    setEmail(user.email ?? '');
+    setUID(user.uid ?? '');
+    setVlan(user.vlan ?? '');
+    setDescription(user.description ?? '');
+    setExpiredAt(user.expiredAt ? new Date(user.expiredAt).toISOString().slice(0, 10) : '');
+    setActive(user.active);
+    setGroupName(user.groupName ?? '');
+    setIsEditing(false);
   };
 
   return (
     <div className="w-full max-w-md mx-auto bg-white text-left shadow-lg rounded-xl p-4 space-y-3 border border-gray-200">
       <div className="flex justify-between items-center">
-        <div className="text-md font-semibold text-[#003366]">{user.macAddress}</div>
-        <button
-          onClick={handleDelete}
-          title="Delete user"
-          className="text-red-600 hover:text-red-800"
-        >
-          <FaTrash />
-        </button>
+        <div className="flex items-center gap-2">
+          <p className="text-md font-semibold text-[#003366]">
+            <strong>{user.macAddress}</strong>
+          </p>
+          <span
+            className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${
+              isExpired
+                ? "bg-orange-100 text-orange-800"
+                : user.active
+                ? "bg-green-100 text-green-800"
+                : "bg-red-100 text-red-800"
+            }`}
+            title={isExpired ? "Expired" : user.active ? t("overview.active") : t("overview.disabled")}
+          >
+            {isExpired ? "Expired" : user.active ? t("overview.active") : t("overview.disabled")}
+          </span>
+        </div>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setIsEditing(true)}
+            title="Edit user"
+            className="text-blue-600 hover:text-blue-800"
+          >
+            <MdEdit size={21} />
+          </button>
+          <button
+            onClick={handleDelete}
+            title="Delete user"
+            className="text-red-600 hover:text-red-800"
+          >
+            <FaTrash size={18} />
+          </button>
+        </div>
       </div>
 
-      <div className="text-sm flex items-center gap-2">
-        <span>
-          <strong className="text-black">Password:</strong> {user.password}
-        </span>
+      <div className="flex items-center gap-2 text-sm">
+        <p className="text-[#003366]">
+          <strong>Password:</strong> {user.password}
+        </p>
         <button
           onClick={handleRegeneratePassword}
           title="Regenerate password"
@@ -91,78 +144,121 @@ export default function UserCard({ user, groups, isGroupsLoading }: UserCardProp
         </button>
       </div>
 
-      <div className="text-sm text-[#003366] space-y-1">
-        <p>{user.email}</p>
-        <p className="font-semibold">{user.uid}</p>
-      </div>
-
-      <div className="text-sm text-[#003366]">
-        <p><strong>User ID:</strong> {user.id}</p>
-
-        <label className="block mt-2"><strong>Group:</strong></label>
-
-        {!isEditingGroup ? (
-          <div className="flex items-center gap-2">
-            <span>{user.groupName || 'No group'}</span>
-            <button
-              onClick={() => setIsEditingGroup(true)}
-              className="bg-[#003366] text-white px-2 py-1 rounded hover:bg-blue-700 text-sm"
-            >
-              Change
-            </button>
-          </div>
-        ) : (
-          <div className="flex flex-col gap-2">
+      {isEditing ? (
+        <>
+          <p className="text-sm text-[#003366]">
+            <strong>Group:</strong><br />
             <select
               value={groupName ?? ''}
               onChange={(e) => setGroupName(e.target.value)}
-              className="block w-full border border-gray-300 rounded-md shadow-sm p-2"
+              className="input-style mt-1 w-full border border-gray-300 rounded px-2 py-1 text-sm"
               disabled={isGroupsLoading}
             >
               <option value="">No group</option>
               {groups.map((g) => (
-                <option key={g.id} value={g.groupName}>
+                <option key={g.groupName} value={g.groupName}>
                   {g.groupName}
                 </option>
               ))}
             </select>
-            <div className="flex gap-2">
+          </p>
+
+          <p className="text-sm text-[#003366]">
+            <strong>Expires At:</strong><br />
+            <input
+              type="date"
+              value={expiredAt}
+              onChange={(e) => setExpiredAt(e.target.value)}
+              className="input-style mt-1 w-full border border-gray-300 rounded px-2 py-1 text-sm"
+            />
+          </p>
+
+          <p className="text-sm text-[#003366]">
+            <strong>Status:</strong><br />
+            <select
+              value={active ? 'true' : 'false'}
+              onChange={(e) => setActive(e.target.value === 'true' ? 1 : 0)}
+              className="input-style mt-1 w-full border border-gray-300 rounded px-2 py-1 text-sm"
+            >
+              <option value="true">{t("overview.active")}</option>
+              <option value="false">{t("overview.disabled")}</option>
+            </select>
+          </p>
+
+          <p className="text-sm text-[#003366]">
+            <strong>Email:</strong><br />
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="input-style mt-1 w-full border border-gray-300 rounded px-2 py-1 text-sm"
+              placeholder="Email"
+            />
+          </p>
+
+          <p className="text-sm text-[#003366]">
+            <strong>User ID:</strong><br />
+            <input
+              value={uid}
+              onChange={(e) => setUID(e.target.value)}
+              className="input-style mt-1 w-full border border-gray-300 rounded px-2 py-1 text-sm"
+              placeholder="UID"
+            />
+          </p>
+
+          <p className="text-sm text-[#003366]">
+            <strong>VLAN:</strong><br />
+            <input
+              value={vlan}
+              onChange={(e) => setVlan(e.target.value)}
+              className="input-style mt-1 w-full border border-gray-300 rounded px-2 py-1 text-sm"
+              placeholder="VLAN"
+            />
+          </p>
+
+          <p className="text-sm text-[#003366]">
+            <strong>Description:</strong><br />
+            <input
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="input-style mt-1 w-full border border-gray-300 rounded px-2 py-1 text-sm"
+              placeholder="Description"
+            />
+          </p>
+
+          <div className="flex gap-2 mt-4">
               <button
-                onClick={handleGroupSave}
-                className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-800 text-sm"
+                onClick={handleSaveChanges}
+                className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-800"
               >
                 Save
               </button>
               <button
                 onClick={() => {
+                  setEmail(user.email ?? '');
+                  setUID(user.uid ?? '');
+                  setVlan(user.vlan ?? '');
+                  setDescription(user.description ?? '');
+                  setExpiredAt(user.expiredAt ? new Date(user.expiredAt).toISOString().slice(0, 10) : '');
+                  setActive(user.active);
                   setGroupName(user.groupName ?? '');
-                  setIsEditingGroup(false);
+                  setIsEditing(false);
                 }}
-                className="bg-gray-400 text-white px-2 py-1 rounded hover:bg-gray-600 text-sm"
+                className="bg-[#003366] text-white px-4 py-1 rounded hover:bg-blue-700"
               >
                 Cancel
               </button>
             </div>
-          </div>
-        )}
-      </div>
-
-      <p className="text-sm text-[#003366]">
-        <strong>Expires At:</strong> {formatDate(user?.expiredAt)}
-      </p>
-
-      {isExpired ? (
-        <span className="inline-block px-4 py-1 rounded-full text-xs font-bold bg-orange-100 text-orange-800">
-          Expired
-        </span>
+        </>
       ) : (
-        <span
-          className={`inline-block px-4 py-1 rounded-full text-xs font-bold ${
-            user.active ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
-          }`}
-        >
-          {user.active ? t('overview.active') : t('overview.disabled')}
-        </span>
+        <>
+          <p className="text-sm text-[#003366]"><strong>Group:</strong> {user.groupName || 'No group'}</p>
+          <p className="text-sm text-[#003366]"><strong>Expires At:</strong> {formatDate(user?.expiredAt)}</p>
+          <p className="text-sm text-[#003366]"><strong>Email:</strong> {user.email || 'N/A'}</p>
+          <p className="text-sm text-[#003366]"><strong>User ID:</strong> {user.uid || 'N/A'}</p>
+          <p className="text-sm text-[#003366]"><strong>VLAN:</strong> {user.vlan || 'N/A'}</p>
+          <p className="text-sm text-[#003366]"><strong>Description:</strong> {user.description || 'N/A'}</p>
+        </>
       )}
     </div>
   );
