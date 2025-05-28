@@ -43,13 +43,10 @@ export default function GroupsTable( { groups }: GroupsTableProps) {
             <th className="w-1/5 p-4 font-semibold text-center">Extra</th>
           </tr>
         </thead>
-      </table>
-      <div className="max-h-[250px] overflow-y-auto">
-        <table className="min-w-full table-fixed border-collapse">
-          <tbody>
-            {groups.map((group: Group) => (
+        <tbody>
+          {groups.map((group: Group) => (
               <tr
-                key={group.groupName}
+                key={group.id}
                 className="hover:bg-[#e6f3ff] text-[#003366] border-b border-gray-100 transition duration-150 text-left"
               >
                 <td className="w-1/5 p-4 break-words">{group.groupName}</td>
@@ -66,9 +63,8 @@ export default function GroupsTable( { groups }: GroupsTableProps) {
                 </td>
               </tr>
             ))}
-          </tbody>
-        </table>
-      </div>
+        </tbody>
+      </table>
 
       {/* Pop Up */}
       {showPopUp && selectedGroup && (

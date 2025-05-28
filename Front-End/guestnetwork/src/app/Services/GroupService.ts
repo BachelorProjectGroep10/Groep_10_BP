@@ -40,11 +40,23 @@ const deleteGroup = async (groupName: string) => {
     });
 }
 
+const regengroupPw = async (groupName: string) => {
+    const token = sessionStorage.getItem("token") || "";
+    return fetch(`${basicUrl}/group/regen/${groupName}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+        }
+    });
+}
+
 
 const GroupService = {
     getGroups,
     addGroup,
-    deleteGroup
+    deleteGroup,
+    regengroupPw
 };
 
 export default GroupService;

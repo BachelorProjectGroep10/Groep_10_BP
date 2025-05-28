@@ -92,7 +92,7 @@ export default function OverviewComponent() {
     mutate('users', fetchUsers);
     mutate('groups', fetchGroups);
     mutate('events', fetchEvents);
-  }, 500);
+  }, 3500);
 
   return (
     <div className="flex flex-col items-center justify-start gap-5 w-full p-6">
@@ -162,7 +162,7 @@ export default function OverviewComponent() {
           <>
             {/* Desktop view */}
             <div className="hidden md:block">
-              <UsersTable users={users} />
+              <UsersTable users={users} groups={groups} />
             </div>
 
             <div className="grid grid-cols-1 gap-4 w-full md:hidden">

@@ -32,4 +32,14 @@ groupRouter.delete('/:groupName', async (req: Request, res: Response, next: Next
   }
 });
 
+groupRouter.post('/regen/:groupName', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const groupName = req.params.groupName;
+    await GroupService.regenGroupPW(groupName);
+    res.status(200).json({ message: 'Group password regenerated successfully' });
+  } catch (error) {
+    next(error);
+  }
+})
+
 export default groupRouter;

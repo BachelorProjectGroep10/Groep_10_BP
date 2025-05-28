@@ -200,4 +200,47 @@ const deleteGroupFromDB = async (groupname: string): Promise<void> => {
 }
 
 
-export { getGroups, insertGroup, deleteGroupFromDB, checkGroupHasUsers, getGroup };
+const getUsersInGroup = async (groupName: string): Promise<string[]> => {
+  try {
+    const users = await knex('radusergroup')
+      .select('username')
+      .where('groupname', groupName);
+
+    return users.map(user => user.username);
+  } catch (err) {
+    console.error('DB error fetching users in group:', err);
+    throw new Error('Fetch failed');
+  }
+}
+
+const regenGroupPassword = async (groupName: string): Promise<void> => {
+  const trx = await knex.transaction();
+  const randomPassword = generateRandomPassword();
+
+  try {
+    await trx('radgroupreply')
+      .where('groupname', groupName)
+      .andWhere('attribute', 'Cisco-AVPair')
+      .andWhere('op', '+=') 
+      .update({ value: `psk=${randomPassword}` });
+
+    const users = await getUsersInGroup(groupName);
+    for (const user of users) {
+      await trx('radreply')
+        .where('username', user)
+        .andWhere('attribute', 'Cisco-AVPair')
+        .andWhere('op', '+=') 
+        .update({ value: `psk=${randomPassword}` });
+    }
+
+    await trx.commit();
+    console.log('Group password regenerated successfully');
+  } catch (err) {
+    await trx.rollback();
+    console.error('DB error regenerating group password:', err);
+    throw new Error('Regeneration failed');
+  }
+}
+
+
+export { getGroups, insertGroup, deleteGroupFromDB, checkGroupHasUsers, getGroup, regenGroupPassword };

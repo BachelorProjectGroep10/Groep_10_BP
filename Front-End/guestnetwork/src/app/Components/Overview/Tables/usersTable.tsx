@@ -1,4 +1,4 @@
-import { User } from "@/app/Types";
+import { Group, User } from "@/app/Types";
 import { formatDate } from "../../Utils/formatDate";
 import { IoMdRefresh } from "react-icons/io";
 import { useTranslation } from "react-i18next";
@@ -11,9 +11,10 @@ import UserDetailsPopup from "../popups/userDetailsPopUp"
 
 interface UserTableProps {
   users: User[]
+  groups: Group[];
 }
 
-export default function UsersTable({ users }: UserTableProps) {
+export default function UsersTable({ users, groups }: UserTableProps) {
   const [showPopUp, setShowPopUp] = useState(false);
   const [selectedMac, setSelectedMac] = useState<string | null>(null);
   const selectedUser = users.find(u => u.macAddress === selectedMac) ?? null;
@@ -29,31 +30,6 @@ export default function UsersTable({ users }: UserTableProps) {
     setShowPopUp(false);
     setSelectedMac(null);
   }
-
-  async function fetchGroups(): Promise<{ id: number; groupName: string }[]> {
-    try {
-      const response = await GroupService.getGroups();
-      if (!response.ok) {
-        throw new Error('Failed to fetch groups');
-      }
-
-      const data = await response.json();
-      return data.map((g: any) => ({
-        id: g.id,          
-        groupName: g.groupName,
-      }));
-    } catch (err) {
-      console.error('Error fetching groups:', err);
-      return [];
-    }
-  }
-
-  const { data: groups, isLoading: isGroupsLoading } = useSWR('groups', fetchGroups);
-
-  useInterval(() => {
-    mutate('users');
-    mutate('groups', fetchGroups);
-  }, 2000);
 
   return (
     <div className="overflow-x-auto bg-white rounded-lg shadow border border-gray-200">
@@ -118,8 +94,7 @@ export default function UsersTable({ users }: UserTableProps) {
         <UserDetailsPopup
           key={selectedUser.id}
           user={selectedUser}
-          groups={groups ?? []}
-          isGroupsLoading={isGroupsLoading}
+          groups={(groups || []).filter((g): g is Group & { id: number } => typeof g.id === "number")}
           onClose={closePopUp}
         />
       )}

@@ -1,10 +1,11 @@
 import { Group } from "../domain/model/Group";
-import { deleteGroupFromDB, getGroups, insertGroup } from "../domain/data-access/group.db";
+import { deleteGroupFromDB, getGroups, insertGroup, regenGroupPassword } from "../domain/data-access/group.db";
 
 const getAllGroups = async (name:string, vlan:number): Promise<Group[]> => {
     const groups = await getGroups(name, vlan);
     return groups.map(group => {
         return new Group({
+            id: group.id,
             groupName: group.groupName,
             description: group.description,
             password: group.password,
@@ -26,4 +27,8 @@ const deleteGroup = async (groupName: string): Promise<void> => {
     await deleteGroupFromDB(groupName);
 }
 
-export default { getAllGroups, addGroup, deleteGroup };
+const regenGroupPW = async (groupName: string): Promise<void> => {
+    await regenGroupPassword(groupName);
+}
+
+export default { getAllGroups, addGroup, deleteGroup, regenGroupPW };
