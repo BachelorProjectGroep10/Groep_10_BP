@@ -164,6 +164,64 @@ const checkGroupHasUsers = async (groupname: string): Promise<boolean> => {
   }
 }
 
+const updateGroupFields = async (groupName: string, updates: Partial<Group>): Promise<void> => {
+  const trx = await knex.transaction();
+
+  try {
+    const existingGroup = await trx('groupname').where('name', groupName).first();
+    if (!existingGroup) {
+      throw new Error('Group does not exist');
+    }
+
+    const groupUpdatePayload: Record<string, any> = {};
+    if (updates.groupName && updates.groupName !== groupName) {
+      groupUpdatePayload.name = updates.groupName;
+    }
+    if (updates.description !== undefined) {
+      groupUpdatePayload.description = updates.description;
+    }
+
+    if (Object.keys(groupUpdatePayload).length > 0) {
+      await trx('groupname')
+        .where('name', groupName)
+        .update(groupUpdatePayload);
+    }
+
+    if (updates.vlan !== undefined) {
+      await trx('radgroupreply')
+        .where('groupname', groupName)
+        .andWhere('attribute', 'Tunnel-Private-Group-ID')
+        .update({ value: updates.vlan });
+    }
+
+    if (updates.password !== undefined) {
+      await trx('radgroupreply')
+        .where('groupname', groupName)
+        .andWhere('attribute', 'Cisco-AVPair')
+        .andWhere('op', '+=')
+        .update({ value: `psk=${updates.password}` });
+    }
+
+    if (updates.groupName && updates.groupName !== groupName) {
+      await trx('radgroupreply')
+        .where('groupname', groupName)
+        .update({ groupname: updates.groupName });
+
+      await trx('radusergroup')
+        .where('groupname', groupName)
+        .update({ groupname: updates.groupName });
+    }
+
+    await trx.commit();
+    console.log(`Group ${groupName} updated successfully`);
+  } catch (err) {
+    await trx.rollback();
+    console.error('DB error updating group:', err);
+    throw new Error('Update failed');
+  }
+};
+
+
 const deleteGroupFromDB = async (groupname: string): Promise<void> => {
   const trx = await knex.transaction();
 
@@ -243,4 +301,4 @@ const regenGroupPassword = async (groupName: string): Promise<void> => {
 }
 
 
-export { getGroups, insertGroup, deleteGroupFromDB, checkGroupHasUsers, getGroup, regenGroupPassword };
+export { getGroups, insertGroup, updateGroupFields, deleteGroupFromDB, checkGroupHasUsers, getGroup, regenGroupPassword };

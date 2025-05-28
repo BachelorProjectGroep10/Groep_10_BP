@@ -1,5 +1,5 @@
 import { Group } from "../domain/model/Group";
-import { deleteGroupFromDB, getGroups, insertGroup, regenGroupPassword } from "../domain/data-access/group.db";
+import { deleteGroupFromDB, getGroups, insertGroup, regenGroupPassword, updateGroupFields } from "../domain/data-access/group.db";
 
 const getAllGroups = async (name:string, vlan:number): Promise<Group[]> => {
     const groups = await getGroups(name, vlan);
@@ -23,6 +23,18 @@ const addGroup = async (group: Group): Promise<void> => {
     await insertGroup(newGroup);
 }
 
+const updateGroupByName = async (groupName: string, updates: Partial<Group>): Promise<void> => {
+  if (updates.vlan !== undefined && typeof updates.vlan !== 'number') {
+    throw new Error('Invalid VLAN number');
+  }
+
+  if (updates.groupName) {
+    throw new Error('Group name cannot be changed');
+  }
+
+  await updateGroupFields(groupName, updates);
+};
+
 const deleteGroup = async (groupName: string): Promise<void> => {
     await deleteGroupFromDB(groupName);
 }
@@ -31,4 +43,4 @@ const regenGroupPW = async (groupName: string): Promise<void> => {
     await regenGroupPassword(groupName);
 }
 
-export default { getAllGroups, addGroup, deleteGroup, regenGroupPW };
+export default { getAllGroups, addGroup, updateGroupByName, deleteGroup, regenGroupPW };
