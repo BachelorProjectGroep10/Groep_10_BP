@@ -92,7 +92,7 @@ export default function OverviewComponent() {
     mutate('users', fetchUsers);
     mutate('groups', fetchGroups);
     mutate('events', fetchEvents);
-  }, 3500);
+  }, 1500);
 
   return (
     <div className="flex flex-col items-center justify-start gap-5 w-full p-6">
@@ -111,29 +111,38 @@ export default function OverviewComponent() {
                   placeholder="Search on MAC Address"
                   value={searchMac}
                   autoComplete="off"
-                  className="border border-gray-300 bg-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:border-transparent"
+                  className="hidden sm:block w-50 border border-gray-300 bg-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:border-transparent"
                   onChange={(e) => setSearchMac(e.target.value)}
                 />
 
                 <div className="relative lg:static">
                   {isFilterDropdownOpen && (
                     <div
-                      className="absolute top-full right-0 mt-1 w-64 bg-white lg:bg-transparent border border-gray-300 rounded-lg shadow-lg p-3 flex flex-col gap-2 lg:static lg:mt-0 lg:w-auto lg:flex-row lg:items-center lg:border-0 lg:shadow-none"
+                      className="absolute top-full left-0 sm:left-auto sm:right-0 mt-6 bg-white lg:bg-transparent border border-gray-300 rounded-lg shadow-lg p-4 lg:p-0 lg:py-1 flex flex-col gap-2 lg:static lg:mt-0 lg:w-auto lg:flex-row lg:items-center lg:border-0 lg:shadow-none transform -translate-x-6/11 sm:translate-x-0"
                       style={{ zIndex: 9999 }}
                     >
+                      <input
+                        type="text"
+                        placeholder="Search on MAC Address"
+                        value={searchMac}
+                        autoComplete="off"
+                        className="sm:hidden w-50 border border-gray-300 bg-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:border-transparent"
+                        onChange={(e) => setSearchMac(e.target.value)}
+                      />
+
                       <span className="font-semibold hidden lg:inline"> - </span>
                       <input
                         type="text"
                         placeholder="Search by Email"
                         value={searchEmail}
-                        className="border border-gray-300 bg-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:border-transparent"
+                        className="w-50 border border-gray-300 bg-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:border-transparent"
                         onChange={(e) => setSearchEmail(e.target.value)}
                       />
                       <input
                         type="text"
                         placeholder="Search by uid"
                         value={searchName}
-                        className="border border-gray-300 bg-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:border-transparent"
+                        className="w-50 border border-gray-300 bg-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:border-transparent"
                         onChange={(e) => setSearchName(e.target.value)}
                       />
                       <span className="font-semibold hidden lg:inline"> | </span>
