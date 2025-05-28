@@ -25,7 +25,7 @@ export type Group = {
 
 export type Event = {
     readonly id?: number;
-    readonly name: string;
+    readonly eventName: string;
     readonly startDate: Date;
     readonly endDate: Date;
     readonly password?: string;

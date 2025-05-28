@@ -39,10 +39,10 @@ export default function EventsTable( { events }: EventsTableProps) {
           <tbody>
             {events.map((event: Event) => (
               <tr
-                key={event.name}
+                key={event.eventName}
                 className="hover:bg-[#e6f3ff] text-[#003366] border-b border-gray-100 transition duration-150 text-left"
               >
-                <td className="w-1/5 p-4 break-words">{event.name}</td>
+                <td className="w-1/5 p-4 break-words">{event.eventName}</td>
                 <td className="w-1/5 p-4 break-words">{event.password}</td>
                 <td className="w-1/5 p-4 break-words">{formatDate(event.startDate)}</td>
                 <td className="w-1/5 p-4 break-words">{formatDate(event.endDate)}</td>
@@ -63,7 +63,7 @@ export default function EventsTable( { events }: EventsTableProps) {
       {/* Pop Up */}
       {showPopUp && selectedEvent && (
         <EventDetailsPopup
-          key={selectedEvent.name}
+          key={selectedEvent.eventName}
           event={selectedEvent}
           onClose={() => setShowPopUp(false)}
         />

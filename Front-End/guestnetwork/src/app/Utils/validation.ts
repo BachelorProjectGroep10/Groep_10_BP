@@ -63,8 +63,8 @@ export const validateGroup = (group: { groupName: string }) => {
   }
 };
 
-export const validateEvent = (event: { name: string; startDate: Date; endDate: Date }) => {
-  if (typeof event.name !== 'string' || event.name.trim() === '') {
+export const validateEvent = (event: { eventName: string; startDate: Date; endDate: Date }) => {
+  if (typeof event.eventName !== 'string' || event.eventName.trim() === '') {
     throw new Error('Event name must be a non-empty string');
   }
   

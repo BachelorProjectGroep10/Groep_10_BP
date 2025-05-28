@@ -10,6 +10,7 @@ import helmet from 'helmet';
 import adminRouter from './controller/admin.routes';
 import vlanRouter from './controller/vlan.routes';  
 import { expressjwt } from 'express-jwt';
+import eventRouter from './controller/event.routes';
 
 const app = express();
 app.use(helmet());
@@ -40,10 +41,10 @@ app.use(expressjwt({
     })
 );
 
-
 app.use('/password', passwordRouter);
 app.use('/user', userRouter);
 app.use('/group', groupRouter);
+app.use('/event', eventRouter)
 app.use('/admin', adminRouter );
 app.use('/vlan', vlanRouter);
 

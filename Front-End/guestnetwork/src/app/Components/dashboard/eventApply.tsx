@@ -27,7 +27,7 @@ export default function EventApplyComponent( {isMobile}: EventInterface) {
     e.preventDefault();
 
     const newEvent: Event = {
-      name: eventName.trim(),
+      eventName: eventName.trim(),
       startDate: startDate!,
       endDate: endDate!,
       description: description.trim() === '' ? undefined : description.trim(),
