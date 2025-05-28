@@ -11,7 +11,7 @@ import adminRouter from './controller/admin.routes';
 import vlanRouter from './controller/vlan.routes';  
 import { expressjwt } from 'express-jwt';
 import eventRouter from './controller/event.routes';
-
+import authRouter from './controller/auth.routes';
 const app = express();
 app.use(helmet());
 dotenv.config();
@@ -47,6 +47,7 @@ app.use('/group', groupRouter);
 app.use('/event', eventRouter)
 app.use('/admin', adminRouter );
 app.use('/vlan', vlanRouter);
+app.use('/auth', authRouter);
 
 initializeCronJobs();
 
