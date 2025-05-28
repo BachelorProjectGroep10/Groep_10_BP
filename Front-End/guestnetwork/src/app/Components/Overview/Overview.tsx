@@ -83,6 +83,7 @@ export default function OverviewComponent() {
       console.error("Error fetching events:", error);
     }
   }
+
   const { data: users, isLoading: isUsersLoading } = useSWR('users', fetchUsers);
   const { data: groups, isLoading: isGroupsLoading } = useSWR('groups', fetchGroups);
   const { data: events, isLoading: isEventsLoading } = useSWR('events', fetchEvents);
@@ -282,7 +283,7 @@ export default function OverviewComponent() {
               )}
 
               {events?.map((event: Event) => (
-                <EventCard key={event.name} event={event} />
+                <EventCard key={event.eventName} event={event} />
               ))}
             </div>
           </>
