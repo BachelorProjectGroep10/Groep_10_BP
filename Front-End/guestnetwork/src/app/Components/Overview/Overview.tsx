@@ -3,11 +3,9 @@
 import { useState } from "react";
 import UserService from "../../Services/UserService";
 import { Event, Group, User } from "../../Types";
-import { FaArrowAltCircleDown } from "react-icons/fa";
-import { FaArrowAltCircleUp } from "react-icons/fa";
+import { FaArrowAltCircleDown, FaArrowAltCircleUp } from "react-icons/fa";
 import { IoPersonAddSharp } from "react-icons/io5";
-import { MdGroups } from "react-icons/md";
-import { MdEvent } from "react-icons/md";
+import { MdGroups, MdEvent } from "react-icons/md";
 import GroupService from "../../Services/GroupService";
 import { useTranslation } from "react-i18next";
 import '../../i18n'; 
@@ -22,7 +20,6 @@ import EventService from "@/app/Services/EventService";
 import EventCard from "./Cards/eventCard";
 import { PiSlidersHorizontal } from "react-icons/pi";
 
-
 export default function OverviewComponent() {
   const [isUserTableOpen, setIsUserTableOpen] = useState(false); 
   const [isGroupTableOpen, setIsGroupTableOpen] = useState(false); 
@@ -36,6 +33,7 @@ export default function OverviewComponent() {
   const [searchName, setSearchName] = useState('');
   const [searchGroup, setSearchGroup] = useState('');
   const [searchVlan, setSearchVlan] = useState('');
+  const [searchEvent, setSearchEvent] = useState('');
 
   const {t} = useTranslation();
 
@@ -100,9 +98,13 @@ export default function OverviewComponent() {
         <h1 className="text-3xl font-bold text-[#003366] flex items-center justify-center gap-2">{t('overview.title')}</h1>
         <p className="text-gray-600 mb-4">{t('overview.subtitle')}</p>
       </div>
+
+      {/* USERS */}
       <div className="bg-gray-50 rounded-2xl shadow-lg w-full max-w-6xl p-6">
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-3xl font-bold text-[#003366] flex items-center justify-center gap-2"> <IoPersonAddSharp size={25} />{t('overview.users')}</h1>
+          <h1 className="text-3xl font-bold text-[#003366] flex items-center justify-center gap-2">
+            <IoPersonAddSharp size={25} />{t('overview.users')}
+          </h1>
           <div className="flex items-center justify-center gap-4">
             {isUserTableOpen && (
               <div className="flex items-center gap-2">
@@ -129,7 +131,6 @@ export default function OverviewComponent() {
                         className="sm:hidden w-50 border border-gray-300 bg-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:border-transparent"
                         onChange={(e) => setSearchMac(e.target.value)}
                       />
-
                       <span className="font-semibold hidden lg:inline"> - </span>
                       <input
                         type="text"
@@ -149,11 +150,12 @@ export default function OverviewComponent() {
                     </div>
                   )}
                 </div>
+
                 <button
-                    onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
-                    className="transition duration-300 p-2 rounded-md ease-in-out text-white hover:text-black bg-[#002757] hover:bg-[#9FDAF9] cursor-pointer"
-                  >
-                    <PiSlidersHorizontal size={20} />
+                  onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
+                  className="transition duration-300 p-2 rounded-md ease-in-out text-white hover:text-black bg-[#002757] hover:bg-[#9FDAF9] cursor-pointer"
+                >
+                  <PiSlidersHorizontal size={20} />
                 </button>
               </div>
             )}
@@ -162,10 +164,9 @@ export default function OverviewComponent() {
               onClick={() => setIsUserTableOpen(!isUserTableOpen)}
               className=" text-white cursor-pointer px-4 py-2 rounded-lg transition duration-300 ease-in-out bg-[#002757] hover:bg-[#9FDAF9] focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:ring-opacity-50"
             >
-              {isUserTableOpen ? <FaArrowAltCircleUp /> : <FaArrowAltCircleDown  />}
+              {isUserTableOpen ? <FaArrowAltCircleUp /> : <FaArrowAltCircleDown />}
             </button>
           </div>
-
         </div>
         {isUserTableOpen && (
           <>
@@ -175,7 +176,7 @@ export default function OverviewComponent() {
             </div>
 
             <div className="grid grid-cols-1 gap-4 w-full md:hidden">
-              {users.map((user: User) => (
+              {users?.map((user: User) => (
                 <UserCard key={user.id} user={user} groups={groups} isGroupsLoading={isGroupsLoading} />
               ))}
             </div>
@@ -183,125 +184,148 @@ export default function OverviewComponent() {
         )}
       </div>
 
+      {/* GROUPS */}
       <div className="bg-gray-50 rounded-2xl shadow-lg w-full max-w-6xl p-6">
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-3xl font-bold text-[#003366] flex items-center justify-center gap-2"> <MdGroups size={35} />{t('overview.groups')}</h1>
-          <div className="flex items-center justify-center gap-8">
-            {isGroupTableOpen && (<div className="flex items-center gap-2">
-              <input
-                type="text"
-                placeholder="Search on Group Name"
-                value={searchGroup}
-                autoComplete="off"
-                className="border border-gray-300 bg-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:border-transparent"
-                onChange={(e) => {setSearchGroup(e.target.value);}}
-              />
-              {isFilterGroupDropdownOpen &&(<div className="flex items-center justify-center gap-2">
-                <span className="font-semibold"> - </span>
+          <h1 className="text-3xl font-bold text-[#003366] flex items-center justify-center gap-2">
+            <MdGroups size={35} />{t('overview.groups')}
+          </h1>
+          <div className="flex items-center justify-center gap-4">
+            {isGroupTableOpen && (
+              <div className="flex items-center gap-2">
                 <input
                   type="text"
-                  placeholder="Search by Vlan"
-                  value={searchVlan}
-                  className="border border-gray-300 bg-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:border-transparent"
-                  onChange={(e) => setSearchVlan(e.target.value)}
+                  placeholder="Search on Group Name"
+                  value={searchGroup}
+                  autoComplete="off"
+                  className="hidden sm:block w-50 border border-gray-300 bg-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:border-transparent"
+                  onChange={(e) => setSearchGroup(e.target.value)}
                 />
-                <span className="font-semibold"> | </span>
-              </div>)}
-              <button
-                onClick={() => setIsFilterGroupDropdownOpen(!isFilterGroupDropdownOpen)}
-                className="transition duration-300 p-2 rounded-md ease-in-out text-white hover:text-black bg-[#002757] hover:bg-[#9FDAF9] cursor-pointer"
-              >
-                <PiSlidersHorizontal size={20} />
-              </button>
-            </div>)} 
+
+                <div className="relative lg:static">
+                  {isFilterGroupDropdownOpen && (
+                    <div
+                      className="absolute top-full left-0 sm:left-auto sm:right-0 mt-6 bg-white lg:bg-transparent border border-gray-300 rounded-lg shadow-lg p-4 lg:p-0 lg:py-1 flex flex-col gap-2 lg:static lg:mt-0 lg:w-auto lg:flex-row lg:items-center lg:border-0 lg:shadow-none transform -translate-x-6/11 sm:translate-x-0"
+                      style={{ zIndex: 9999 }}
+                    >
+                      <input
+                        type="text"
+                        placeholder="Search on Group Name"
+                        value={searchGroup}
+                        autoComplete="off"
+                        className="sm:hidden w-50 border border-gray-300 bg-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:border-transparent"
+                        onChange={(e) => setSearchGroup(e.target.value)}
+                      />
+                      <span className="font-semibold hidden lg:inline"> - </span>
+                      <input
+                        type="text"
+                        placeholder="Search by VLAN"
+                        value={searchVlan}
+                        className="w-50 border border-gray-300 bg-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:border-transparent"
+                        onChange={(e) => setSearchVlan(e.target.value)}
+                      />
+                      <span className="font-semibold hidden lg:inline"> | </span>
+                    </div>
+                  )}
+                </div>
+
+                <button
+                  onClick={() => setIsFilterGroupDropdownOpen(!isFilterGroupDropdownOpen)}
+                  className="transition duration-300 p-2 rounded-md ease-in-out text-white hover:text-black bg-[#002757] hover:bg-[#9FDAF9] cursor-pointer"
+                >
+                  <PiSlidersHorizontal size={20} />
+                </button>
+              </div>
+            )}
+
             <button
               onClick={() => setIsGroupTableOpen(!isGroupTableOpen)}
-              className=" text-white px-4 py-2 rounded-lg transition duration-300 ease-in-out bg-[#002757] hover:bg-[#9FDAF9] focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:ring-opacity-50"
+              className=" text-white cursor-pointer px-4 py-2 rounded-lg transition duration-300 ease-in-out bg-[#002757] hover:bg-[#9FDAF9] focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:ring-opacity-50"
             >
               {isGroupTableOpen ? <FaArrowAltCircleUp /> : <FaArrowAltCircleDown />}
             </button>
           </div>
         </div>
         {isGroupTableOpen && (
-          <> 
+          <>
             {/* Desktop view */}
             <div className="hidden md:block">
               <GroupsTable groups={groups} />
             </div>
 
-            {/* Mobile view */}
             <div className="grid grid-cols-1 gap-4 w-full md:hidden">
-              {groups.map((group: Group) => (
-                <GroupCard key={group.groupName} group={group} />
+              {groups?.map((group: Group) => (
+                <GroupCard key={group.id} group={group} />
               ))}
             </div>
           </>
         )}
       </div>
 
+      {/* EVENTS */}
       <div className="bg-gray-50 rounded-2xl shadow-lg w-full max-w-6xl p-6">
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-3xl font-bold text-[#003366] flex items-center justify-center gap-2"> <MdEvent size={30} />Events</h1>
-          <div className="flex items-center justify-center gap-8">
-            {isEventTableOpen && (<div className="flex items-center gap-2">
-              <input
-                type="text"
-                placeholder="Search on MAC Address"
-                value={searchMac}
-                autoComplete="off"
-                className="border border-gray-300 bg-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:border-transparent"
-                onChange={(e) => {setSearchMac(e.target.value);}}
-              />
-              {isFilterEventDropdownOpen &&(<div className="flex items-center justify-center gap-2">
-                <span className="font-semibold"> - </span>
+          <h1 className="text-3xl font-bold text-[#003366] flex items-center justify-center gap-2">
+            <MdEvent size={35} />Events
+          </h1>
+          <div className="flex items-center justify-center gap-4">
+            {isEventTableOpen && (
+              <div className="flex items-center gap-2">
                 <input
                   type="text"
-                  placeholder="Search by Email"
-                  value={searchEmail}
-                  className="border border-gray-300 bg-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:border-transparent"
-                  onChange={(e) => setSearchEmail(e.target.value)}
+                  placeholder="Search on Event Name"
+                  value={searchEvent}
+                  autoComplete="off"
+                  className="hidden sm:block w-50 border border-gray-300 bg-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:border-transparent"
+                  onChange={(e) => setSearchEvent(e.target.value)}
                 />
-                <input
-                  type="text"
-                  placeholder="Search by uid"
-                  value={searchName}
-                  className="border border-gray-300 bg-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:border-transparent"
-                  onChange={(e) => setSearchName(e.target.value)}
-                />
-                <span className="font-semibold"> | </span>
-              </div>)}
-              <button
-                onClick={() => setIsFilterEventDropdownOpen(!isFilterEventDropdownOpen)}
-                className="transition duration-300 p-2 rounded-md ease-in-out text-white hover:text-black bg-[#002757] hover:bg-[#9FDAF9] cursor-pointer"
-              >
-                <PiSlidersHorizontal size={20} />
-              </button>
-            </div>)} 
+
+                <div className="relative lg:static">
+                  {isFilterEventDropdownOpen && (
+                    <div
+                      className="absolute top-full left-0 sm:left-auto sm:right-0 mt-6 bg-white lg:bg-transparent border border-gray-300 rounded-lg shadow-lg p-4 lg:p-0 lg:py-1 flex flex-col gap-2 lg:static lg:mt-0 lg:w-auto lg:flex-row lg:items-center lg:border-0 lg:shadow-none transform -translate-x-6/11 sm:translate-x-0"
+                      style={{ zIndex: 9999 }}
+                    >
+                      <input
+                        type="text"
+                        placeholder="Search on Event Name"
+                        value={searchEvent}
+                        autoComplete="off"
+                        className="sm:hidden w-50 border border-gray-300 bg-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:border-transparent"
+                        onChange={(e) => setSearchEvent(e.target.value)}
+                      />
+                      <span className="font-semibold hidden lg:inline"> | </span>
+                    </div>
+                  )}
+                </div>
+
+                <button
+                  onClick={() => setIsFilterEventDropdownOpen(!isFilterEventDropdownOpen)}
+                  className="transition duration-300 p-2 rounded-md ease-in-out text-white hover:text-black bg-[#002757] hover:bg-[#9FDAF9] cursor-pointer"
+                >
+                  <PiSlidersHorizontal size={20} />
+                </button>
+              </div>
+            )}
+
             <button
               onClick={() => setIsEventTableOpen(!isEventTableOpen)}
-              className=" text-white px-4 py-2 rounded-lg transition duration-300 ease-in-out bg-[#002757] hover:bg-[#9FDAF9] focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:ring-opacity-50"
+              className=" text-white cursor-pointer px-4 py-2 rounded-lg transition duration-300 ease-in-out bg-[#002757] hover:bg-[#9FDAF9] focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:ring-opacity-50"
             >
               {isEventTableOpen ? <FaArrowAltCircleUp /> : <FaArrowAltCircleDown />}
             </button>
           </div>
         </div>
         {isEventTableOpen && (
-          <> 
+          <>
             {/* Desktop view */}
             <div className="hidden md:block">
-              {events && events.length > 0 && (
-                <EventsTable events={events} />
-              )}
+              <EventsTable events={events} />
             </div>
 
-            {/* Mobile view */}
             <div className="grid grid-cols-1 gap-4 w-full md:hidden">
-              {!isEventsLoading && events?.length === 0 && (
-                <p className="text-gray-500 text-sm">No events to display yet.</p>
-              )}
-
               {events?.map((event: Event) => (
-                <EventCard key={event.eventName} event={event} />
+                <EventCard key={event.id} event={event} />
               ))}
             </div>
           </>
