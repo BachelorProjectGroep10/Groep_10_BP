@@ -103,42 +103,51 @@ export default function OverviewComponent() {
       <div className="bg-gray-50 rounded-2xl shadow-lg w-full max-w-6xl p-6">
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-3xl font-bold text-[#003366] flex items-center justify-center gap-2"> <IoPersonAddSharp size={25} />{t('overview.users')}</h1>
-          <div className="flex items-center justify-center gap-8">
-            {isUserTableOpen && (<div className="flex items-center gap-2">
-              <input
-                type="text"
-                placeholder="Search on MAC Address"
-                value={searchMac}
-                autoComplete="off"
-                className="border border-gray-300 bg-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:border-transparent"
-                onChange={(e) => {setSearchMac(e.target.value);}}
-              />
-              {isFilterDropdownOpen &&(<div className="flex items-center justify-center gap-2">
-                <span className="font-semibold"> - </span>
+          <div className="flex items-center justify-center gap-4">
+            {isUserTableOpen && (
+              <div className="flex items-center gap-2">
                 <input
                   type="text"
-                  placeholder="Search by Email"
-                  value={searchEmail}
+                  placeholder="Search on MAC Address"
+                  value={searchMac}
+                  autoComplete="off"
                   className="border border-gray-300 bg-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:border-transparent"
-                  onChange={(e) => setSearchEmail(e.target.value)}
+                  onChange={(e) => setSearchMac(e.target.value)}
                 />
-                <input
-                  type="text"
-                  placeholder="Search by uid"
-                  value={searchName}
-                  className="border border-gray-300 bg-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:border-transparent"
-                  onChange={(e) => setSearchName(e.target.value)}
-                />
-                <span className="font-semibold"> | </span>
-              </div>)}
 
-              <button
-                onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
-                className="transition duration-300 p-2 rounded-md ease-in-out text-white hover:text-black bg-[#002757] hover:bg-[#9FDAF9] cursor-pointer"
-              >
-                <PiSlidersHorizontal size={20} />
-              </button>
-            </div>)}  
+                <div className="relative lg:static">
+                  {isFilterDropdownOpen && (
+                    <div
+                      className="absolute top-full right-0 mt-1 w-64 bg-white lg:bg-transparent border border-gray-300 rounded-lg shadow-lg p-3 flex flex-col gap-2 lg:static lg:mt-0 lg:w-auto lg:flex-row lg:items-center lg:border-0 lg:shadow-none"
+                      style={{ zIndex: 9999 }}
+                    >
+                      <span className="font-semibold hidden lg:inline"> - </span>
+                      <input
+                        type="text"
+                        placeholder="Search by Email"
+                        value={searchEmail}
+                        className="border border-gray-300 bg-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:border-transparent"
+                        onChange={(e) => setSearchEmail(e.target.value)}
+                      />
+                      <input
+                        type="text"
+                        placeholder="Search by uid"
+                        value={searchName}
+                        className="border border-gray-300 bg-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:border-transparent"
+                        onChange={(e) => setSearchName(e.target.value)}
+                      />
+                      <span className="font-semibold hidden lg:inline"> | </span>
+                    </div>
+                  )}
+                </div>
+                <button
+                    onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
+                    className="transition duration-300 p-2 rounded-md ease-in-out text-white hover:text-black bg-[#002757] hover:bg-[#9FDAF9] cursor-pointer"
+                  >
+                    <PiSlidersHorizontal size={20} />
+                </button>
+              </div>
+            )}
 
             <button
               onClick={() => setIsUserTableOpen(!isUserTableOpen)}
