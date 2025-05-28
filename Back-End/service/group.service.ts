@@ -1,5 +1,5 @@
 import { Group } from "../domain/model/Group";
-import { deleteGroupFromDB, getGroups, insertGroup } from "../domain/data-access/group.db";
+import { deleteGroupFromDB, getGroups, insertGroup, regenGroupPassword } from "../domain/data-access/group.db";
 
 const getAllGroups = async (name:string, vlan:number): Promise<Group[]> => {
     const groups = await getGroups(name, vlan);
@@ -26,4 +26,8 @@ const deleteGroup = async (groupName: string): Promise<void> => {
     await deleteGroupFromDB(groupName);
 }
 
-export default { getAllGroups, addGroup, deleteGroup };
+const regenGroupPW = async (groupName: string): Promise<void> => {
+    await regenGroupPassword(groupName);
+}
+
+export default { getAllGroups, addGroup, deleteGroup, regenGroupPW };
