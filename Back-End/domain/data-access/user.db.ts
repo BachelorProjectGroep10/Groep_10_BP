@@ -12,7 +12,7 @@ import { validateUser } from '../../util/validation';
 
 
 // Execute DB functions
-const getUsers = async (macAddress: string , email: string, uid:string): Promise<User[]> => {
+const getUsers = async (macAddress: string , email?: string, uid?:string): Promise<User[]> => {
   try {
     let query = knex('radcheck')
       .select(
@@ -88,6 +88,7 @@ const updateUserFields = async (macAddress: string, updates: Partial<User>): Pro
         .slice(0, 19)
         .replace('T', ' ');
     if (updates.description) updatePayload.description = updates.description;
+    if (updates.active !== undefined) updatePayload.isDisabled = updates.active === 1 ? 0 : 1;
 
     if (Object.keys(updatePayload).length > 0) {
       await trx('radcheck')

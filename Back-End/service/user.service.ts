@@ -29,12 +29,8 @@ const addUser = async (user: User): Promise<void> => {
   }   
   
   const macSanitized = user.macAddress.replace(/[^a-fA-F0-9]/g, '').toLowerCase();
-
-  if (!user.macAddress || !user.email || !user.uid) {
-    throw new Error('User MAC address and email are required');
-  }
   
-  const existingUsers = await getUsers(user.macAddress, user.email, user.uid);
+  const existingUsers = await getUsers(macSanitized, user.email, user.uid);
   if (existingUsers.some(u => u.macAddress === macSanitized)) {
     throw new Error('A user with this MAC address already exists');
   }

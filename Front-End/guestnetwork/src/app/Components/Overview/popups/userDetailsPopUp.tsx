@@ -45,19 +45,24 @@ export default function UserDetailsPopup({ user, groups, isGroupsLoading, onClos
 
   const handleSave = async () => {
     try {
+      // Prepare expiredAt date with end of day time if expiredAt is set
+      let expiredAtDate: Date | undefined;
+      if (expiredAt) {
+        expiredAtDate = new Date(expiredAt);
+        expiredAtDate.setHours(23, 59, 59);
+      }
+
       const updated = {
         email,
         uid,
-        expiredAt: expiredAt ? new Date(expiredAt) : undefined,
+        expiredAt: expiredAtDate,
         active: active ? 1 : 0,
         vlan: vlan === '' ? undefined : Number(vlan),
         description,
       };
 
-      // Update user details
       await UserService.updateUser(user.macAddress, updated);
 
-      // Handle group update
       const oldGroup = user.groupName ?? '';
       const newGroup = groupName ?? '';
 
@@ -82,7 +87,20 @@ export default function UserDetailsPopup({ user, groups, isGroupsLoading, onClos
           &times;
         </button>
 
-        <h2 className="text-lg font-bold mb-4">User Details</h2>
+        <h2 className="text-lg font-bold mb-1">User Details</h2>
+        
+        <span
+          className={`inline-block px-4 py-1 rounded-full text-xs font-bold mb-3 ${
+            isExpired
+              ? "bg-orange-100 text-orange-800"
+              : user.active
+              ? "bg-green-100 text-green-800"
+              : "bg-red-100 text-red-800"
+          }`}
+        >
+          {isExpired ? "Expired" : user.active ? t("overview.active") : t("overview.disabled")}
+        </span>
+
         <div className="text-sm text-gray-700 space-y-2">
           <p><strong>MAC Address:</strong> {user.macAddress}</p>
 
@@ -111,15 +129,15 @@ export default function UserDetailsPopup({ user, groups, isGroupsLoading, onClos
             <>
               <p><strong>Group:</strong> {user.groupName || 'No group'}</p>
               <p><strong>Expires:</strong> {formatDate(user.expiredAt)}</p>
-              <p><strong>Status:</strong> {isExpired ? 'Expired' : (user.active ? t('overview.active') : t('overview.disabled'))}</p>
               <p><strong>Email:</strong> {user.email || 'N/A'}</p>
+              <p><strong>UID:</strong> {user.uid || 'N/A'}</p>
               <p><strong>VLAN:</strong> {user.vlan || 'N/A'}</p>
               <p><strong>Description:</strong> {user.description || 'N/A'}</p>
             </>
           ) : (
             <div className="flex flex-col gap-2 mt-2">
               <div>
-                <label className="block text-xs font-semibold">Group:</label>
+                <label className="block text-s font-semibold">Group:</label>
                 <select
                   value={groupName ?? ''}
                   onChange={(e) => setGroupName(e.target.value)}
@@ -135,7 +153,7 @@ export default function UserDetailsPopup({ user, groups, isGroupsLoading, onClos
               </div>
 
               <div>
-                <label className="block text-xs font-semibold">Expiration Date:</label>
+                <label className="block text-s font-semibold">Expiration Date:</label>
                 <input
                   type="date"
                   value={expiredAt}
@@ -145,7 +163,7 @@ export default function UserDetailsPopup({ user, groups, isGroupsLoading, onClos
               </div>
 
               <div>
-                <label className="block text-xs font-semibold">Active:</label>
+                <label className="block text-s font-semibold">Status:</label>
                 <select
                   value={active ? 'true' : 'false'}
                   onChange={(e) => setActive(e.target.value === 'true' ? 1 : 0)}
@@ -157,7 +175,7 @@ export default function UserDetailsPopup({ user, groups, isGroupsLoading, onClos
               </div>
 
               <div>
-                <label className="block text-xs font-semibold">Email:</label>
+                <label className="block text-s font-semibold">Email:</label>
                 <input
                   type="email"
                   value={email}
@@ -167,7 +185,7 @@ export default function UserDetailsPopup({ user, groups, isGroupsLoading, onClos
               </div>
 
               <div>
-                <label className="block text-xs font-semibold">UID:</label>
+                <label className="block text-s font-semibold">UID:</label>
                 <input
                   type="text"
                   value={uid}
@@ -177,7 +195,7 @@ export default function UserDetailsPopup({ user, groups, isGroupsLoading, onClos
               </div>
 
               <div>
-                <label className="block text-xs font-semibold">VLAN:</label>
+                <label className="block text-s font-semibold">VLAN:</label>
                 <input
                   type="text"
                   value={vlan}
@@ -187,7 +205,7 @@ export default function UserDetailsPopup({ user, groups, isGroupsLoading, onClos
               </div>
 
               <div>
-                <label className="block text-xs font-semibold">Description:</label>
+                <label className="block text-s font-semibold">Description:</label>
                 <input
                   type="text"
                   value={description}
@@ -240,7 +258,6 @@ export default function UserDetailsPopup({ user, groups, isGroupsLoading, onClos
             Delete
           </button>
         </div>
-
       </div>
     </div>
   );
