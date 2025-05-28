@@ -5,6 +5,7 @@ const getAllGroups = async (name:string, vlan:number): Promise<Group[]> => {
     const groups = await getGroups(name, vlan);
     return groups.map(group => {
         return new Group({
+            id: group.id,
             groupName: group.groupName,
             description: group.description,
             password: group.password,

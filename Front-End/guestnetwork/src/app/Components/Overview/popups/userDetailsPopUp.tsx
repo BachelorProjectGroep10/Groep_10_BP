@@ -14,11 +14,10 @@ interface Group {
 interface Props {
   user: User;
   groups: Group[];
-  isGroupsLoading: boolean;
   onClose: () => void;
 }
 
-export default function UserDetailsPopup({ user, groups, isGroupsLoading, onClose }: Props) {
+export default function UserDetailsPopup({ user, groups, onClose }: Props) {
   const { t } = useTranslation();
   const isExpired = user.expiredAt ? new Date(user.expiredAt) < new Date() : false;
 
@@ -80,6 +79,15 @@ export default function UserDetailsPopup({ user, groups, isGroupsLoading, onClos
     }
   };
 
+  const handleRegeneratePassword = async () => {
+    try {
+        await UserService.regenUserPw(user.macAddress);
+      } catch (err) {
+        console.error("Failed to regenerate password:", err);
+        alert("Failed to regenerate password.");
+      }
+  }
+
   return (
     <div className="fixed top-0 left-0 w-full h-full bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-50">
       <div className="relative bg-white p-6 rounded-lg shadow-lg w-full max-w-sm border border-black">
@@ -109,14 +117,7 @@ export default function UserDetailsPopup({ user, groups, isGroupsLoading, onClos
               <strong>Password:</strong> <span>{user.password}</span>
               {!user.groupName && (
                 <button
-                  onClick={async () => {
-                    try {
-                      await UserService.regenUserPw(user.macAddress);
-                    } catch (err) {
-                      console.error("Failed to regenerate password:", err);
-                      alert("Failed to regenerate password.");
-                    }
-                  }}
+                  onClick={handleRegeneratePassword}
                   className="bg-[#003366] text-white px-2 py-1 rounded hover:bg-blue-700 text-sm ml-2"
                 >
                   <IoMdRefresh />
