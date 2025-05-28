@@ -22,4 +22,17 @@ eventRouter.post('/', async (req: Request, res: Response, next: NextFunction) =>
   }
 });
 
+eventRouter.put('/:eventName', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const eventName = req.params.macAddress;
+    const updates = req.body; 
+    
+    await EventService.updateEventByName(eventName, updates);
+
+    res.status(200).json({ message: 'Event updated successfully' });
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default eventRouter;
