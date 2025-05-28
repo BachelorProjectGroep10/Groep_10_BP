@@ -41,11 +41,15 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Parse expiredAt string to Date and set time to end of day
+    const expiredDate = new Date(expiredAt);
+    expiredDate.setHours(23, 59, 59);
+
     const newUser: User = {
       macAddress,
       email: email.trim() === '' ? undefined : email.trim(),
       uid: uid.trim() === '' ? undefined : uid.trim(),
-      expiredAt: new Date(expiredAt),
+      expiredAt: expiredDate,
       active: 1,
       description: description.trim() === '' ? undefined : description.trim(),
       groupName: groupName === null || groupName.trim() === '' ? undefined : groupName.trim(),

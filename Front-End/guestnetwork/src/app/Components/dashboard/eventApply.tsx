@@ -12,24 +12,37 @@ interface EventInterface {
   isMobile: boolean;
 }
 
-export default function EventApplyComponent( {isMobile}: EventInterface) {
+export default function EventApplyComponent({ isMobile }: EventInterface) {
   const [message, setMessage] = useState('');
   const [eventName, setEventName] = useState('');
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
+  const [startDate, setStartDate] = useState(''); 
+  const [endDate, setEndDate] = useState('');     
   const [description, setDescription] = useState('');
   const [rows, setRows] = useState(4);
   const [isEventFormOpen, setIsEventFormOpen] = useState(false);
 
-  const {t} = useTranslation();
+  const { t } = useTranslation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!startDate || !endDate) {
+      setMessage("❌ Start date and end date are required.");
+      return;
+    }
+
+    // Convert startDate string to Date and set time to end of day
+    const startDateObj = new Date(startDate);
+    startDateObj.setHours(23, 59, 59);
+
+    // Convert endDate string to Date and set time to end of day
+    const endDateObj = new Date(endDate);
+    endDateObj.setHours(23, 59, 59);
+
     const newEvent: Event = {
       eventName: eventName.trim(),
-      startDate: startDate!,
-      endDate: endDate!,
+      startDate: startDateObj,
+      endDate: endDateObj,
       description: description.trim() === '' ? undefined : description.trim(),
     };
 
@@ -41,8 +54,8 @@ export default function EventApplyComponent( {isMobile}: EventInterface) {
       if (response.ok) {
         setMessage("✅ Event registered successfully!");
         setEventName('');
-        setStartDate(null);
-        setEndDate(null);
+        setStartDate('');
+        setEndDate('');
         setDescription('');
       } else {
         console.error('API error:', body);
@@ -54,7 +67,7 @@ export default function EventApplyComponent( {isMobile}: EventInterface) {
   };
 
   useEffect(() => {
-    if(isMobile) {
+    if (isMobile) {
       setIsEventFormOpen(true);
     }
     const handleResize = () => {
@@ -75,18 +88,19 @@ export default function EventApplyComponent( {isMobile}: EventInterface) {
         <div className="col-span-full flex items-center justify-between mb-4">
           <div className="flex items-center justify-center gap-2">
             <h2 className="text-2xl font-bold text-[#002757] flex items-center justify-center gap-2 pr-4">
-            <MdEvent className="text-4xl" />
-
+              <MdEvent className="text-4xl" />
               Event Registration
             </h2>
-          </div>  
-          {!isMobile && (<button
-            type="button"
-            onClick={() => setIsEventFormOpen(!isEventFormOpen)}
-            className=" text-white px-4 py-2 rounded-lg transition duration-300 ease-in-out bg-[#002757] hover:bg-[#9FDAF9] focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:ring-opacity-50"
-          >
-            {isEventFormOpen ? <FaArrowAltCircleUp /> : <FaArrowAltCircleDown />}
-          </button>)}
+          </div>
+          {!isMobile && (
+            <button
+              type="button"
+              onClick={() => setIsEventFormOpen(!isEventFormOpen)}
+              className="text-white px-4 py-2 rounded-lg transition duration-300 ease-in-out bg-[#002757] hover:bg-[#9FDAF9] focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:ring-opacity-50"
+            >
+              {isEventFormOpen ? <FaArrowAltCircleUp /> : <FaArrowAltCircleDown />}
+            </button>
+          )}
         </div>
 
         <div className={`col-span-full ${isEventFormOpen ? 'block' : 'hidden'}`}>
@@ -106,8 +120,8 @@ export default function EventApplyComponent( {isMobile}: EventInterface) {
             <label className="text-sm font-medium">Start Date *</label>
             <input
               type="date"
-              value={startDate ? startDate.toISOString().split('T')[0] : ''}
-              onChange={(e) => setStartDate(e.target.value ? new Date(e.target.value) : null)}
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
               className="bg-gray-300 text-black rounded-lg px-3 py-2 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
               required
             />
@@ -117,8 +131,8 @@ export default function EventApplyComponent( {isMobile}: EventInterface) {
             <label className="text-sm font-medium">End Date *</label>
             <input
               type="date"
-              value={endDate ? endDate.toISOString().split('T')[0] : ''}
-              onChange={(e) => setEndDate(e.target.value ? new Date(e.target.value) : null)}
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
               className="bg-gray-300 text-black rounded-lg px-3 py-2 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
               required
             />
@@ -152,8 +166,7 @@ export default function EventApplyComponent( {isMobile}: EventInterface) {
             </button>
           </div>
         </div>
-
       </form>
     </div>
   );
-} 
+}

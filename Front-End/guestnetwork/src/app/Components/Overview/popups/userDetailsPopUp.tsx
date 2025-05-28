@@ -45,19 +45,24 @@ export default function UserDetailsPopup({ user, groups, isGroupsLoading, onClos
 
   const handleSave = async () => {
     try {
+      // Prepare expiredAt date with end of day time if expiredAt is set
+      let expiredAtDate: Date | undefined;
+      if (expiredAt) {
+        expiredAtDate = new Date(expiredAt);
+        expiredAtDate.setHours(23, 59, 59);
+      }
+
       const updated = {
         email,
         uid,
-        expiredAt: expiredAt ? new Date(expiredAt) : undefined,
+        expiredAt: expiredAtDate,
         active: active ? 1 : 0,
         vlan: vlan === '' ? undefined : Number(vlan),
         description,
       };
 
-      // Update user details
       await UserService.updateUser(user.macAddress, updated);
 
-      // Handle group update
       const oldGroup = user.groupName ?? '';
       const newGroup = groupName ?? '';
 
@@ -253,7 +258,6 @@ export default function UserDetailsPopup({ user, groups, isGroupsLoading, onClos
             Delete
           </button>
         </div>
-
       </div>
     </div>
   );
