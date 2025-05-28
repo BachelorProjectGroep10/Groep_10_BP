@@ -11,9 +11,12 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const admin = sessionStorage.getItem("admin");
-    if (admin) {
-      setIsLoggedIn(true);
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+
+    if (token) {
+      localStorage.setItem('jwt', token);
+      console.log('JWT saved!');
     }
     setLoading(false);
   }, []);

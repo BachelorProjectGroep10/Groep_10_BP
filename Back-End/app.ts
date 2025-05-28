@@ -12,6 +12,10 @@ import vlanRouter from './controller/vlan.routes';
 import { expressjwt } from 'express-jwt';
 import eventRouter from './controller/event.routes';
 import authRouter from './controller/auth.routes';
+import jwt, { SignOptions } from 'jsonwebtoken';
+import { Issuer, generators } from 'openid-client';
+
+
 const app = express();
 app.use(helmet());
 dotenv.config();
@@ -37,9 +41,29 @@ app.use(expressjwt({
     secret: process.env.JWT_SECRET || '',
     algorithms: ['HS256'],
     }).unless({ 
-        path: ['/admin/login', '/password']
+        path: ['/admin/login', '/password', '/login', '/']
     })
 );
+
+
+let client: any;
+let nonce: string;
+
+const tenantId = process.env.AZURE_TENANT_ID!;
+const clientId = process.env.AZURE_CLIENT_ID!;
+const clientSecret = process.env.AZURE_CLIENT_SECRET!;
+const redirectUri = 'https://localhost:3000/';
+
+(async () => {
+  const microsoftIssuer = await Issuer.discover(`https://login.microsoftonline.com/${tenantId}/v2.0/.well-known/openid-configuration`);
+
+  client = new microsoftIssuer.Client({
+    client_id: clientId,
+    client_secret: clientSecret,
+    redirect_uris: [redirectUri],
+    response_types: ['code'],
+  });
+})();
 
 app.use('/password', passwordRouter);
 app.use('/user', userRouter);
@@ -47,7 +71,35 @@ app.use('/group', groupRouter);
 app.use('/event', eventRouter)
 app.use('/admin', adminRouter );
 app.use('/vlan', vlanRouter);
-app.use('/auth', authRouter);
+
+
+
+app.get('/login', (req, res) => {
+  nonce = generators.nonce();
+  const authUrl = client.authorizationUrl({
+    scope: 'openid email profile',
+    nonce,
+  });
+  res.redirect(authUrl);
+});
+
+// This is your registered redirect URL: https://localhost:3000/
+app.get('/', async (req, res) => {
+  const params = client.callbackParams(req);
+
+  try {
+    const tokenSet = await client.callback(redirectUri, params, { nonce });
+    const userinfo = await client.userinfo(tokenSet.access_token!);
+
+    const token = jwt.sign(userinfo, process.env.JWT_SECRET!, { expiresIn: '1h' });
+
+    // Redirect back to frontend with token
+    res.redirect(`https://localhost:8080/?token=${token}`);
+  } catch (err) {
+    console.error('Callback error:', err);
+    res.status(500).send('Authentication error');
+  }
+});
 
 initializeCronJobs();
 

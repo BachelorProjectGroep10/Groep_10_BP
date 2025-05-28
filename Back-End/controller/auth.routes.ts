@@ -1,5 +1,6 @@
 import express from 'express';
 import { Issuer, generators, TokenSet } from 'openid-client';
+import jwt, { SignOptions } from 'jsonwebtoken';
 
 
 const router = express.Router();
@@ -7,7 +8,7 @@ const router = express.Router();
 const tenantId = process.env.AZURE_TENANT_ID!;
 const clientId = process.env.AZURE_CLIENT_ID!;
 const clientSecret = process.env.AZURE_CLIENT_SECRET!;
-const redirectUri = 'http://localhost:3000/auth/redirect'; 
+const redirectUri = 'http://localhost:3000/'; 
 
 let client: any;
 
@@ -32,21 +33,21 @@ router.get('/login', (req, res) => {
         state,
     });
 
+    console.log('Redirecting to:', url);
+
     res.redirect(url);
 });
 
-router.get('/redirect', async (req, res) => {
+router.get('/callback', async (req, res) => {
     const params = client.callbackParams(req);
-
+    console.log('Callback params:', params);
     try {
-        const tokenSet: TokenSet = await client.callback(redirectUri, params, {
-            nonce,
-            state,
-        });
+        const tokenSet = await client.callback(redirectUri, params, { nonce });
 
         const userinfo = await client.userinfo(tokenSet.access_token!);
-        // TODO: Set session or issue a JWT here
-        res.redirect(`http://localhost:8080/dashboard`); // send to frontend
+        const token = jwt.sign(userinfo, process.env.JWT_SECRET!, { expiresIn: '1h' });
+
+        res.redirect(`http://localhost:8080/dashboard/?token=${token}`);
     } catch (error) {
         console.error('Login error:', error);
         res.status(500).send('Authentication failed');

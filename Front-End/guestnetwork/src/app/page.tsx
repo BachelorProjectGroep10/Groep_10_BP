@@ -12,15 +12,8 @@ import './i18n';
 export default function Home() {
   const router = useRouter();
 
-  useEffect(() => {
-    const isAuthenticated = sessionStorage.getItem("user"); 
-    if (isAuthenticated) {
-      router.push("/dashboard");
-    }
-  }, [router]);
-
   const handleMicrosoftLogin = () => {
-    window.location.href = "http://localhost:3000/auth/login";
+    window.location.href = "http://localhost:3000/login";
   };
 
   return (
