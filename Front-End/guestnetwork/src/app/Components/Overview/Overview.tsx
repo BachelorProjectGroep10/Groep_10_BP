@@ -193,12 +193,12 @@ export default function OverviewComponent() {
           <>
             {/* Desktop view */}
             <div className="hidden md:block">
-              <UsersTable users={users} groups={groups} />
+              <UsersTable users={users} groups={groups} vlans={vlans} />
             </div>
 
             <div className="grid grid-cols-1 gap-4 w-full md:hidden">
               {users?.map((user: User) => (
-                <UserCard key={user.id} user={user} groups={groups} isGroupsLoading={isGroupsLoading} />
+                <UserCard key={user.id} user={user} groups={groups} vlans={vlans} isGroupsLoading={isGroupsLoading} />
               ))}
             </div>
           </>
