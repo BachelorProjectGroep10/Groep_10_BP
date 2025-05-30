@@ -1,5 +1,5 @@
 import GroupService from "@/app/Services/GroupService";
-import { Group } from "@/app/Types";
+import { Group, Vlan } from "@/app/Types";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { IoMdRefresh } from "react-icons/io";
@@ -7,21 +7,22 @@ import { mutate } from "swr";
 
 interface Props {
   group: Group;
+  vlans: Vlan[];
   onClose: () => void;
   onDelete: (groupName: string) => void;
 }
 
-export default function GroupDetailsPopup({ group, onClose, onDelete }: Props) {
+export default function GroupDetailsPopup({ group, vlans, onClose, onDelete }: Props) {
   const { t } = useTranslation();
 
   const [isEditingDetails, setIsEditingDetails] = useState(false);
-  const [vlan, setVlan] = useState(group.vlan ?? '');
+  const [vlanId, setVlanId] = useState<number | null>(group.vlan ?? null);
   const [description, setDescription] = useState(group.description ?? '');
 
   const handleSave = async () => {
     try {
       const updated = {
-        vlan: vlan === '' ? undefined : Number(vlan),
+        vlan: vlanId ?? undefined,
         description,
       };
 
@@ -81,12 +82,24 @@ export default function GroupDetailsPopup({ group, onClose, onDelete }: Props) {
             <div className="flex flex-col gap-4 mt-2">
               <div>
                 <label className="block text-s font-semibold">VLAN:</label>
-                <input
-                  type="text"
-                  value={vlan}
-                  onChange={(e) => setVlan(e.target.value)}
-                  className="w-full border border-gray-300 rounded-md p-2"
-                />
+                <select
+                  value={vlanId === null ? '' : vlanId}
+                  onChange={(e) => {
+                    const selectedId = parseInt(e.target.value);
+                    const vlan = vlans.find((v) => v.id === selectedId) || null;
+                    setVlanId(selectedId);
+                  }}
+                  className="w-full border border-gray-300 rounded-md p-2 bg-white text-black shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
+                >
+                  <option value="" disabled>
+                    --- Select ---
+                  </option>
+                  {vlans.map((vlan, index) => (
+                    <option key={vlan.vlan} value={vlan.vlan}>
+                      {vlan.vlan} - {vlan.name}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div>
@@ -113,7 +126,7 @@ export default function GroupDetailsPopup({ group, onClose, onDelete }: Props) {
               </button>
               <button
                 onClick={() => {
-                  setVlan(group.vlan ?? '');
+                  setVlanId(group.vlan ?? null);
                   setDescription(group.description ?? '');
                   setIsEditingDetails(false);
                 }}
@@ -132,7 +145,6 @@ export default function GroupDetailsPopup({ group, onClose, onDelete }: Props) {
           )}
 
           <button
-            // You can implement onDelete handler here or pass as prop
             onClick={() => onDelete(group.groupName)}
             className="bg-[#FA1651] text-white px-4 py-2 rounded hover:bg-[#fa1653c6]"
           >
