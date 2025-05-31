@@ -13,7 +13,7 @@ export default function Home() {
   const router = useRouter();
 
   const handleMicrosoftLogin = () => {
-    window.location.href = "http://localhost:3000/login";
+    window.location.href = "http://localhost:3000/auth/login";
   };
 
   return (

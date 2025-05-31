@@ -1,6 +1,6 @@
 import express from 'express';
 import { Issuer, generators, TokenSet } from 'openid-client';
-import jwt, { SignOptions } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 
 
 const router = express.Router();
@@ -8,7 +8,7 @@ const router = express.Router();
 const tenantId = process.env.AZURE_TENANT_ID!;
 const clientId = process.env.AZURE_CLIENT_ID!;
 const clientSecret = process.env.AZURE_CLIENT_SECRET!;
-const redirectUri = 'http://localhost:3000/'; 
+const redirectUri = 'http://localhost:3000/auth/callback'; 
 
 let client: any;
 
@@ -33,8 +33,6 @@ router.get('/login', (req, res) => {
         state,
     });
 
-    console.log('Redirecting to:', url);
-
     res.redirect(url);
 });
 
@@ -45,6 +43,7 @@ router.get('/callback', async (req, res) => {
         const tokenSet = await client.callback(redirectUri, params, { nonce });
 
         const userinfo = await client.userinfo(tokenSet.access_token!);
+        console.log('User Info:', userinfo);
         const token = jwt.sign(userinfo, process.env.JWT_SECRET!, { expiresIn: '1h' });
 
         res.redirect(`http://localhost:8080/dashboard/?token=${token}`);
