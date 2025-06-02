@@ -74,8 +74,11 @@ export default function OverviewComponent() {
   }
 
   const fetchEvents = async () => {
+    const params = {
+      name: searchEvent
+    }
     try {
-      const response = await EventService.getEvents();
+      const response = await EventService.getEvents(params);
       if (response.ok) {
         const data = await response.json();
         return(data);

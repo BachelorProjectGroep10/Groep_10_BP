@@ -51,13 +51,20 @@ const updateGroup = async (groupName: string, updates: Partial<Group>) => {
 
 const deleteGroup = async (groupName: string) => {
     const token = sessionStorage.getItem("token") || "";
-    return fetch(`${basicUrl}/group/${groupName}`, {
+    const response = await fetch(`${basicUrl}/group/${groupName}`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
         }
     });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to delete group.');
+    }
+
+    return response;
 }
 
 const regengroupPw = async (groupName: string) => {

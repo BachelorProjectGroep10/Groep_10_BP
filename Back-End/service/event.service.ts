@@ -1,7 +1,7 @@
 import { deleteEventFromDB, getEvents, insertEvent } from "../domain/data-access/event.db";
 import { Event } from "../domain/model/Event";
 
-const getAllEvents = async (name:string): Promise<Event[]> => {
+const getAllEvents = async (name: string): Promise<Event[]> => {
     const events = await getEvents(name);
     return events.map(event => {
         return new Event({

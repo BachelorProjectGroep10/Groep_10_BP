@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import GroupService from "@/app/Services/GroupService";
 import { IoMdRefresh } from "react-icons/io";
 import GroupDetailsPopup from "../popups/GroupDetailsPopUp";
+import { mutate } from "swr";
 
 interface GroupsTableProps {
   groups: Group[]
@@ -15,23 +16,26 @@ interface GroupsTableProps {
 export default function GroupsTable( { groups, vlans }: GroupsTableProps) {
   const {t} = useTranslation();
   const [showPopUp, setShowPopUp] = useState(false);
-  const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
+  const [selectedGroupName, setSelectedGroupName] = useState<string | null>(null);
+  const selectedGroup = groups.find(u => u.groupName === selectedGroupName) ?? null;
+
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const handleExtraClick = (group: Group) => {
-    setSelectedGroup(group);
+    setSelectedGroupName(group.groupName);
     setShowPopUp(true);
   };
 
   const deleteGroup = async (groupName: string) => {
     try {
       await GroupService.deleteGroup(groupName);
+      setDeleteError(null);
       setShowPopUp(false);
-    } catch (error) {
-      console.error("Error deleting group:", error);
-      alert("Failed to delete group.");
+    } catch (error: any) {
+      setDeleteError(error.message || "Failed to delete group.");
     }
   };
-  
+
   return (
     <div className="overflow-x-auto bg-white rounded-lg shadow border border-gray-200">
       <table className="min-w-full table-fixed border-collapse">
@@ -73,8 +77,12 @@ export default function GroupsTable( { groups, vlans }: GroupsTableProps) {
           key={selectedGroup.groupName}
           group={selectedGroup}
           vlans={vlans}
-          onClose={() => setShowPopUp(false)}
+          onClose={() => {
+            setShowPopUp(false);
+            setDeleteError(null);
+          }}
           onDelete={deleteGroup}
+          deleteError={deleteError}  
         />
       )}
     </div>

@@ -10,9 +10,10 @@ interface Props {
   vlans: Vlan[];
   onClose: () => void;
   onDelete: (groupName: string) => void;
+  deleteError?: string | null
 }
 
-export default function GroupDetailsPopup({ group, vlans, onClose, onDelete }: Props) {
+export default function GroupDetailsPopup({ group, vlans, onClose, onDelete, deleteError = null }: Props) {
   const { t } = useTranslation();
 
   const [isEditingDetails, setIsEditingDetails] = useState(false);
@@ -117,6 +118,7 @@ export default function GroupDetailsPopup({ group, vlans, onClose, onDelete }: P
           )}
         </div>
 
+        {/* Buttons container */}
         <div className="flex justify-between items-center mt-6">
           {isEditingDetails ? (
             <div className="flex gap-2">
@@ -153,6 +155,13 @@ export default function GroupDetailsPopup({ group, vlans, onClose, onDelete }: P
             Delete
           </button>
         </div>
+
+        {/* Error message below buttons */}
+        {deleteError && (
+          <p className="mt-4 text-red-600 text-sm font-semibold text-center">
+            {deleteError}
+          </p>
+        )}
       </div>
     </div>
   );

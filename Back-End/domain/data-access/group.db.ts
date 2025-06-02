@@ -229,7 +229,7 @@ const deleteGroupFromDB = async (groupname: string): Promise<void> => {
     const hasUsers = await checkGroupHasUsers(groupname);
     if (hasUsers) {
       await trx.rollback();
-      throw new Error('Group has users, cannot delete');
+      throw new Error('Group has users, cannot delete.');
     }
 
     await trx('radgroupreply')
