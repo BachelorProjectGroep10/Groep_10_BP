@@ -102,6 +102,13 @@ const updateUserFields = async (macAddress: string, updates: Partial<User>): Pro
         .update({ groupname: updates.groupName });
     }
 
+    if (updates.vlan !== undefined) {
+      await trx('radreply')
+        .where('username', macAddress)
+        .andWhere('attribute', 'Tunnel-Private-Group-ID')
+        .update({ value: updates.vlan });
+    }
+
     console.log(`User ${macAddress} updated successfully`);
   });
 };

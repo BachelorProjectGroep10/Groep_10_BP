@@ -1,4 +1,4 @@
-import { Group } from "@/app/Types";
+import { Group, Vlan } from "@/app/Types";
 import { formatDate } from "../../Utils/formatDate";
 import { useTranslation } from "react-i18next";
 import '../../../i18n';
@@ -9,9 +9,10 @@ import GroupDetailsPopup from "../popups/GroupDetailsPopUp";
 
 interface GroupsTableProps {
   groups: Group[]
+  vlans: Vlan[]
 }
 
-export default function GroupsTable( { groups }: GroupsTableProps) {
+export default function GroupsTable( { groups, vlans }: GroupsTableProps) {
   const {t} = useTranslation();
   const [showPopUp, setShowPopUp] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
@@ -71,6 +72,7 @@ export default function GroupsTable( { groups }: GroupsTableProps) {
         <GroupDetailsPopup
           key={selectedGroup.groupName}
           group={selectedGroup}
+          vlans={vlans}
           onClose={() => setShowPopUp(false)}
           onDelete={deleteGroup}
         />

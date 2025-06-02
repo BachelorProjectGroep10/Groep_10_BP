@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { User } from "@/app/Types";
+import { User, Vlan } from "@/app/Types";
 import { formatDate } from "../../Utils/formatDate";
 import { useTranslation } from "react-i18next";
 import { IoMdRefresh } from "react-icons/io";
@@ -16,10 +16,11 @@ interface Group {
 interface UserCardProps {
   user: User;
   groups: Group[];
+  vlans: Vlan[];
   isGroupsLoading: boolean;
 }
 
-export default function UserCard({ user, groups, isGroupsLoading }: UserCardProps) {
+export default function UserCard({ user, groups, vlans, isGroupsLoading }: UserCardProps) {
   const { t } = useTranslation();
   const isExpired = user.expiredAt ? new Date(user.expiredAt) < new Date() : false;
 
@@ -27,7 +28,7 @@ export default function UserCard({ user, groups, isGroupsLoading }: UserCardProp
 
   const [email, setEmail] = useState(user.email ?? '');
   const [uid, setUID] = useState(user.uid ?? '');
-  const [vlan, setVlan] = useState(user.vlan ?? '');
+  const [vlanId, setVlanId] = useState<number | null>(user.vlan ?? null);
   const [description, setDescription] = useState(user.description ?? '');
   const [expiredAt, setExpiredAt] = useState(user.expiredAt ? new Date(user.expiredAt).toISOString().slice(0, 10) : '');
   const [active, setActive] = useState(user.active);
@@ -60,7 +61,7 @@ export default function UserCard({ user, groups, isGroupsLoading }: UserCardProp
         uid,
         expiredAt: expiredAt ? new Date(expiredAt) : undefined,
         active: active ? 1 : 0,
-        vlan: vlan === '' ? undefined : Number(vlan),
+        vlan: vlanId === null ? undefined : vlanId,
         description,
       };
 
@@ -85,7 +86,7 @@ export default function UserCard({ user, groups, isGroupsLoading }: UserCardProp
   const handleCancel = () => {
     setEmail(user.email ?? '');
     setUID(user.uid ?? '');
-    setVlan(user.vlan ?? '');
+    setVlanId(user.vlan ?? null);
     setDescription(user.description ?? '');
     setExpiredAt(user.expiredAt ? new Date(user.expiredAt).toISOString().slice(0, 10) : '');
     setActive(user.active);
@@ -208,12 +209,24 @@ export default function UserCard({ user, groups, isGroupsLoading }: UserCardProp
 
           <p className="text-sm text-[#003366]">
             <strong>VLAN:</strong><br />
-            <input
-              value={vlan}
-              onChange={(e) => setVlan(e.target.value)}
-              className="input-style mt-1 w-full border border-gray-300 rounded px-2 py-1 text-sm"
-              placeholder="VLAN"
-            />
+            <select
+              value={vlanId === null ? '' : vlanId}
+              onChange={(e) => {
+                const selectedId = parseInt(e.target.value);
+                const vlan = vlans.find((v) => v.id === selectedId) || null;
+                setVlanId(selectedId);
+              }}
+              className="w-full border border-gray-300 rounded-md p-2 bg-white text-black shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
+            >
+              <option value="" disabled>
+                --- Select ---
+              </option>
+              {vlans.map((vlan, index) => (
+                <option key={vlan.vlan} value={vlan.vlan}>
+                  {vlan.vlan} - {vlan.name}
+                </option>
+              ))}
+            </select>
           </p>
 
           <p className="text-sm text-[#003366]">
@@ -234,16 +247,7 @@ export default function UserCard({ user, groups, isGroupsLoading }: UserCardProp
                 Save
               </button>
               <button
-                onClick={() => {
-                  setEmail(user.email ?? '');
-                  setUID(user.uid ?? '');
-                  setVlan(user.vlan ?? '');
-                  setDescription(user.description ?? '');
-                  setExpiredAt(user.expiredAt ? new Date(user.expiredAt).toISOString().slice(0, 10) : '');
-                  setActive(user.active);
-                  setGroupName(user.groupName ?? '');
-                  setIsEditing(false);
-                }}
+                onClick={() => {handleCancel}}
                 className="bg-[#003366] text-white px-4 py-1 rounded hover:bg-blue-700"
               >
                 Cancel

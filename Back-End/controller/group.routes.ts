@@ -24,7 +24,7 @@ groupRouter.post('/', async (req: Request, res: Response, next: NextFunction) =>
 
 groupRouter.put('/:groupName', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const groupName = req.params.macAddress;
+    const groupName = req.params.groupName;
     const updates = req.body; 
     
     await GroupService.updateGroupByName(groupName, updates);

@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import UserService from "../../Services/UserService";
-import { Event, Group, User } from "../../Types";
+import { Event, Group, User, Vlan } from "../../Types";
 import { FaArrowAltCircleDown, FaArrowAltCircleUp } from "react-icons/fa";
 import { IoPersonAddSharp } from "react-icons/io5";
 import { MdGroups, MdEvent } from "react-icons/md";
@@ -19,8 +19,11 @@ import EventsTable from "./Tables/eventsTable";
 import EventService from "@/app/Services/EventService";
 import EventCard from "./Cards/eventCard";
 import { PiSlidersHorizontal } from "react-icons/pi";
+import VlanService from "@/app/Services/VlanService";
 
 export default function OverviewComponent() {
+  const [vlans, setVlans] = useState<Vlan[]>([]);
+  
   const [isUserTableOpen, setIsUserTableOpen] = useState(false); 
   const [isGroupTableOpen, setIsGroupTableOpen] = useState(false); 
   const [isEventTableOpen, setIsEventTableOpen] = useState(false);
@@ -81,6 +84,24 @@ export default function OverviewComponent() {
       console.error("Error fetching events:", error);
     }
   }
+
+  const fetchVlans = async () => {
+    try {
+      const response = await VlanService.getVlans();
+      if (response.ok) {
+        const data: Vlan[] = await response.json();
+        setVlans(data);
+      } else {
+        console.error('Failed to fetch VLANs');
+      }
+    } catch (error) {
+      console.error('Error fetching VLANs:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchVlans();
+  })
 
   const { data: users, isLoading: isUsersLoading } = useSWR('users', fetchUsers);
   const { data: groups, isLoading: isGroupsLoading } = useSWR('groups', fetchGroups);
@@ -172,12 +193,12 @@ export default function OverviewComponent() {
           <>
             {/* Desktop view */}
             <div className="hidden md:block">
-              <UsersTable users={users} groups={groups} />
+              <UsersTable users={users} groups={groups} vlans={vlans} />
             </div>
 
             <div className="grid grid-cols-1 gap-4 w-full md:hidden">
               {users?.map((user: User) => (
-                <UserCard key={user.id} user={user} groups={groups} isGroupsLoading={isGroupsLoading} />
+                <UserCard key={user.id} user={user} groups={groups} vlans={vlans} isGroupsLoading={isGroupsLoading} />
               ))}
             </div>
           </>
@@ -250,7 +271,7 @@ export default function OverviewComponent() {
           <>
             {/* Desktop view */}
             <div className="hidden md:block">
-              <GroupsTable groups={groups} />
+              <GroupsTable groups={groups} vlans={vlans} />
             </div>
 
             <div className="grid grid-cols-1 gap-4 w-full md:hidden">
