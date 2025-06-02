@@ -2,8 +2,12 @@ import { Event } from "../Types";
 
 const basicUrl = `${process.env.NEXT_PUBLIC_API_URL}`;
 
-const getEvents = async () => {
-    return fetch(`${basicUrl}/event`, {
+const getEvents = async (params = {}) => {
+    const queryString = new URLSearchParams(params).toString();
+
+    const url = `${basicUrl}/event${queryString ? `?${queryString}` : ''}`;
+
+    return fetch(url, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
