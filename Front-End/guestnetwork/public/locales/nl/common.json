@@ -47,7 +47,9 @@
         "login": "Inloggen",
         "subtitle": "Log in om toegang te krijgen tot het UCLL-gastnetwerk",
         "username": "Gebruikersnaam",
-        "password": "Wachtwoord"
+        "password": "Wachtwoord",
+        "microsoftLogin": "Inloggen met Microsoft",
+        "or": "of"
     },
     "overview": {
         "title": "Overzicht",

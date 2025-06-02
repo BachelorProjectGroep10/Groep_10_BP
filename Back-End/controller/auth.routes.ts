@@ -3,6 +3,7 @@ import { Issuer, generators, Client } from 'openid-client';
 import jwt from 'jsonwebtoken';
 import cookieParser from 'cookie-parser';
 import authService from '../service/auth.service';
+import { promises } from 'dns';
 
 const authRouter = express.Router();
 authRouter.use(cookieParser());
@@ -40,7 +41,7 @@ async function initializeClient() {
 initializeClient();
 
 // === Microsoft Login ===
-authRouter.get('/microsoft/login', (req, res) => {
+authRouter.get('/microsoft/login', (req:Request, res:Response) => {
     const state = generators.state();
     const nonce = generators.nonce();
 
@@ -57,13 +58,37 @@ authRouter.get('/microsoft/login', (req, res) => {
     res.redirect(url);
 });
 
-// === Callback ===
-authRouter.get('/callback', async(req:Request, res:Response, next:NextFunction) => {
+authRouter.post('/login', async (req: Request, res: Response, next:NextFunction): Promise<void> => {
+    try {
+        const { username, password } = req.body;
+        if (!username || !password) {
+            res.status(400).json({ message: 'Username and password are required.' });
+        }
+        const staff = await authService.simpleAuthenticate({username, password})
+        if (!staff) {
+            res.status(401).json({ message: 'Invalid username or password.' });
+            return;
+        }
+        const userPayload = {
+            id: staff.id,
+            email: staff.email,
+            name: staff.username,
+            role: staff.role,
+        }
+        const token = jwt.sign(userPayload, jwtSecret, { expiresIn: '1h' });
+        res.cookie(AUTH_TOKEN_COOKIE, token, { httpOnly: true, sameSite: 'lax', secure: false });
+    } catch (error) {
+        console.error('Authentication error:', error);
+        next(error);
+    }
+});
+
+authRouter.get('/callback', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const state = req.cookies[AUTH_STATE_COOKIE];
     const nonce = req.cookies[AUTH_NONCE_COOKIE];
 
     if (!state || !nonce) {
-        return res.status(400).send('Missing authentication state.');
+        res.status(400).send('Missing authentication state.');
     }
 
     try {
@@ -72,12 +97,12 @@ authRouter.get('/callback', async(req:Request, res:Response, next:NextFunction) 
 
         const userinfo = await client.userinfo(tokenSet.access_token!);
         if (!userinfo || !userinfo.email) {
-            return res.status(500).send('Failed to retrieve user information.');
+           res.status(500).send('Failed to retrieve user information.');
         }
 
-        const existingUser = await authService.checkUser(userinfo.email);
+        const existingUser = await authService.checkUser(userinfo.email as string);
         if (!existingUser) {
-            return res.status(401).send('Unauthorized: User not found.');
+             res.status(401).send('Unauthorized: User not found.');
         }
 
         const userPayload = {
@@ -94,13 +119,36 @@ authRouter.get('/callback', async(req:Request, res:Response, next:NextFunction) 
         res.clearCookie(AUTH_STATE_COOKIE);
         res.clearCookie(AUTH_NONCE_COOKIE);
 
-        res.cookie(AUTH_TOKEN_COOKIE, token, { httpOnly: true, sameSite: 'lax' });
+        res.cookie(AUTH_TOKEN_COOKIE, token, { httpOnly: true, sameSite: 'lax', secure: false });
 
-        res.redirect(`${dashboardRedirectUri}?token=${token}`);
+        res.redirect(`${dashboardRedirectUri}`);
     } catch (error) {
         console.error('Authentication error:', error);
         next(error);
     }
+})
+
+
+authRouter.get('/me', (req: Request, res: Response) => {
+    const token = req.cookies[AUTH_TOKEN_COOKIE];
+    if (!token) {
+        res.status(401).json({ message: 'Not authenticated' });
+        return;
+    }
+
+    try {
+        const userData = jwt.verify(token, jwtSecret);
+        res.json(userData); 
+    } catch (err) {
+        res.status(401).json({ message: 'Invalid token' });
+    }
+});
+
+authRouter.get('/logout', (req: Request, res: Response) => {
+    res.clearCookie(AUTH_TOKEN_COOKIE);
+    res.clearCookie(AUTH_STATE_COOKIE);
+    res.clearCookie(AUTH_NONCE_COOKIE);
+    res.redirect(`${dashboardRedirectUri}`);
 });
 
 export default authRouter;

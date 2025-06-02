@@ -11,11 +11,15 @@ import vlanRouter from './controller/vlan.routes';
 import { expressjwt } from 'express-jwt';
 import eventRouter from './controller/event.routes';
 import authRouter from './controller/auth.routes';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 app.use(helmet());
 dotenv.config();
 const port = process.env.APP_PORT || 3000;
+
+app.use(cookieParser());
+
 
 const allowedOrigins = (process.env.FRONTEND_URLS || '')
   .split(',')
@@ -29,6 +33,7 @@ app.use(cors({
             callback(new Error('Not allowed by CORS'));
         }
     },
+    credentials: true,
 }));
 
 app.use(bodyParser.json());
@@ -36,8 +41,9 @@ app.use(bodyParser.json());
 app.use(expressjwt({
     secret: process.env.JWT_SECRET || '',
     algorithms: ['HS256'],
+    getToken: req => req.cookies.auth_token,
     }).unless({ 
-        path: ['/admin/login', '/password', '/auth/login','/auth/microsoft/login', '/auth/callback']
+        path: ['/admin/login', '/password', '/auth/login','/auth/microsoft/login', '/auth/callback', '/auth/me']
     })
 );
 

@@ -3,7 +3,6 @@ import { User } from "../Types";
 const basicUrl = `${process.env.NEXT_PUBLIC_API_URL}`;
 
 const getUsers = async (params = {}) => {
-    const token = sessionStorage.getItem("token") || "";
     const queryString = new URLSearchParams(params).toString();
     
     const url = `${basicUrl}/user${queryString ? `?${queryString}` : ''}`;
@@ -12,77 +11,71 @@ const getUsers = async (params = {}) => {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
-        }
+        },
+        credentials: 'include'
     });
 }
 
 const addUser = async (user: User) => {
-    const token = sessionStorage.getItem("token") || "";
     return fetch(`${basicUrl}/user`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
         },
+        credentials: 'include',
         body: JSON.stringify(user)
     });
 }
 
 const updateUser = async (macAddress: string, updates: Partial<User>) => {
-    const token = sessionStorage.getItem("token") || "";
     return fetch(`${basicUrl}/user/${macAddress}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
         },
+        credentials: 'include',
         body: JSON.stringify(updates)
     });
 }
 
 const deleteUser = async (macAddress: string) => {
-    const token = sessionStorage.getItem("token") || "";
     return fetch(`${basicUrl}/user/${macAddress}`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
-        }
+        },
+        credentials: 'include'
     });
 }
 
 const regenUserPw = async (macAddress: string) => {
-    const token = sessionStorage.getItem("token") || "";
     return fetch(`${basicUrl}/user/regen/${macAddress}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
-        }
+        },
+        credentials: 'include'
     });
 };
 
 const addToGroup = async (macAddress: string, groupName: string) => {
-    const token = sessionStorage.getItem("token") || "";
     return fetch(`${basicUrl}/user/addToGroup/${macAddress}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
         },
+        credentials: 'include',
         body: JSON.stringify({ groupName })
     });
 };
 
 const removeFromGroup = async (macAddress: string, groupName: string) => {
-    const token = sessionStorage.getItem("token") || "";
     return fetch(`${basicUrl}/user/removeFromGroup/${macAddress}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
         },
+        credentials: 'include',
         body: JSON.stringify({ groupName })
     });
 };

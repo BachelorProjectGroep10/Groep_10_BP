@@ -4,28 +4,47 @@ import Background from "@/app/Components/Utils/background";
 import { HeaderComponent } from "@/app/Components/Utils/header";
 import QRCodeComponent from "../../Components/dashboard/qrCode";
 import NoAccess from "@/app/Components/Utils/noAccess";
+import AdminService from "@/app/Services/StaffService";
+import { LoginResponse } from "@/app/Types";
 
 export default function Dashboard() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [loggedInUser, setLoggedInUser] = useState<LoginResponse | null>(null);
+
+  const fetchUser = async () => {
+    try {
+      const response = await AdminService.getUserData();
+      if (!response.ok) throw new Error("Unauthorized");
+
+      const data = await response.json();
+
+      const user: LoginResponse = {
+        username: data.username,
+        email: data.email,
+        role: data.role,
+      };
+
+      setLoggedInUser(user);
+      setIsLoggedIn(true);
+    }catch (error) {
+      console.error("Error fetching user data:", error);
+      setIsLoggedIn(false);
+    }
+  }
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const tokenFromUrl = urlParams.get('token');
+    const checkLoginStatus = async () => {
+      try {
+        await fetchUser();
+      } catch (error) {
+        console.error("Error checking login status:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    if (tokenFromUrl) {
-      console.log("Token from URL:", tokenFromUrl);
-      localStorage.setItem('auth_token', tokenFromUrl);
-      window.history.replaceState({}, document.title, "/dashboard");
-    }
-
-    const storedToken = localStorage.getItem('auth_token');
-
-    if (storedToken) {
-      setIsLoggedIn(true);
-    }
-
-    setLoading(false);
+    checkLoginStatus();
   }, []);
 
   if (loading) {
