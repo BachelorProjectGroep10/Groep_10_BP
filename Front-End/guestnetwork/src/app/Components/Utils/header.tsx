@@ -17,11 +17,12 @@ export function HeaderComponent() {
 
 
     const handleLogout = () => {
-        sessionStorage.removeItem("admin");
+        localStorage.removeItem("auth_token");
     }
 
     useEffect(() => {
-        const admin = sessionStorage.getItem("admin");
+        const admin = localStorage.getItem("auth_token");
+        console.log("Admin token:", admin);
         if (admin) {
             setIsLoggedIn(true);
         } else {

@@ -1,10 +1,9 @@
 'use client'
+import { useEffect, useState } from "react";
 import Background from "@/app/Components/Utils/background";
 import { HeaderComponent } from "@/app/Components/Utils/header";
 import QRCodeComponent from "../../Components/dashboard/qrCode";
-import { useEffect, useState } from "react";
 import NoAccess from "@/app/Components/Utils/noAccess";
-import dynamic from 'next/dynamic';
 
 export default function Dashboard() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -12,21 +11,27 @@ export default function Dashboard() {
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get('token');
+    const tokenFromUrl = urlParams.get('token');
 
-    if (token) {
-      localStorage.setItem('jwt', token);
-      console.log('JWT saved!');
+    if (tokenFromUrl) {
+      console.log("Token from URL:", tokenFromUrl);
+      localStorage.setItem('auth_token', tokenFromUrl);
+      window.history.replaceState({}, document.title, "/dashboard");
     }
+
+    const storedToken = localStorage.getItem('auth_token');
+
+    if (storedToken) {
+      setIsLoggedIn(true);
+    }
+
     setLoading(false);
   }, []);
-
-
 
   if (loading) {
     return (
       <div className="relative w-full min-h-screen overflow-x-hidden">
-        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 ">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
           <Background />
         </div>
         <div className="relative z-10 flex flex-col items-center justify-center min-h-screen">
@@ -48,7 +53,7 @@ export default function Dashboard() {
 
   return (
     <div className="relative w-full min-h-screen overflow-x-hidden">
-      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 ">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
         <Background />
       </div>
       {!isLoggedIn ? (

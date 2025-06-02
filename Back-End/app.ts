@@ -7,7 +7,6 @@ import userRouter from './controller/user.routes';
 import groupRouter from './controller/group.routes';
 import initializeCronJobs from './util/provider/cronjobs';
 import helmet from 'helmet';
-import adminRouter from './controller/admin.routes';
 import vlanRouter from './controller/vlan.routes';  
 import { expressjwt } from 'express-jwt';
 import eventRouter from './controller/event.routes';
@@ -38,7 +37,7 @@ app.use(expressjwt({
     secret: process.env.JWT_SECRET || '',
     algorithms: ['HS256'],
     }).unless({ 
-        path: ['/admin/login', '/password', '/auth/login', '/auth/callback']
+        path: ['/admin/login', '/password', '/auth/login','/auth/microsoft/login', '/auth/callback']
     })
 );
 
@@ -46,10 +45,8 @@ app.use('/password', passwordRouter);
 app.use('/user', userRouter);
 app.use('/group', groupRouter);
 app.use('/event', eventRouter)
-app.use('/admin', adminRouter );
 app.use('/vlan', vlanRouter);
 app.use('/auth', authRouter);
-
 
 initializeCronJobs();
 

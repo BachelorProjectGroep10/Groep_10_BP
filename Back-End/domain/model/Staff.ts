@@ -1,4 +1,4 @@
-export class Admin {
+export class Staff {
     readonly id?: number;          
     readonly username: string;
     readonly password: string;
