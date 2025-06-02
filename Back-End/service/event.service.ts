@@ -25,4 +25,21 @@ const addEvent = async (event: Event): Promise<void> => {
     await insertEvent(newEvent);
 }
 
-export default { getAllEvents, addEvent };
+const updateEventByName = async (eventName: string, updates: Partial<Event>): Promise<void> => {
+  if (updates.eventName) {
+    throw new Error('Group name cannot be changed');
+  }
+
+  if (updates.startDate && isNaN(new Date(updates.startDate).getTime())) {
+    throw new Error("Invalid startDate");
+  }
+
+  if (updates.endDate && isNaN(new Date(updates.endDate).getTime())) {
+    throw new Error("Invalid endDate");
+  }
+
+  await updateEventByName(eventName, updates);
+};
+
+
+export default { getAllEvents, addEvent, updateEventByName };

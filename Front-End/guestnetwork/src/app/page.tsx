@@ -10,11 +10,18 @@ import { useTranslation } from "react-i18next";
 import './i18n';
 
 export default function Home() {
-  const router = useRouter();
+  // const router = useRouter();
 
-  const handleMicrosoftLogin = () => {
-    window.location.href = "http://localhost:3000/auth/login";
-  };
+  // useEffect(() => {
+  //   const isAuthenticated = sessionStorage.getItem("user"); 
+  //   if (isAuthenticated) {
+  //     router.push("/dashboard");
+  //   }
+  // }, [router]);
+
+  // const handleMicrosoftLogin = () => {
+  //   window.location.href = "http://localhost:3000/auth/login";
+  // };
 
   return (
     <div className="relative w-screen overflow-x-hidden overflow-y-auto md:h-screen md:overflow-hidden">
@@ -27,7 +34,7 @@ export default function Home() {
         {/* Existing login component */}
         <LoginComponent />
 
-        {/* Microsoft Login Button */}
+        {/* Microsoft Login Button
         <div className="flex justify-center mt-4">
           <button
             onClick={handleMicrosoftLogin}
@@ -35,7 +42,7 @@ export default function Home() {
           >
             Sign in with Microsoft
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );

@@ -69,4 +69,68 @@ const insertEvent = async (event: Event): Promise<Event> => {
   }
 };
 
-export { getEvents, insertEvent };
+const updateEventFields = async (eventName: string, updates: Partial<Event>): Promise<void> => {
+  // Placeholder transaction object for simulation
+  const trx = {}; // Placeholder
+
+  try {
+    console.log(`Simulating update for event: ${eventName} with data:`, updates);
+
+    // Validate date fields if present
+    if (updates.startDate && isNaN(new Date(updates.startDate).getTime())) {
+      throw new Error("Invalid 'startDate'");
+    }
+    if (updates.endDate && isNaN(new Date(updates.endDate).getTime())) {
+      throw new Error("Invalid 'endDate'");
+    }
+
+    // Simulate event existence check
+    if (eventName === 'nonexistent') {
+      throw new Error('Event does not exist');
+    }
+
+    // If DB were set up, you'd do something like:
+    /*
+    const trx = await knex.transaction();
+
+    const existingEvent = await trx('events').where('eventName', eventName).first();
+    if (!existingEvent) {
+      await trx.rollback();
+      throw new Error('Event does not exist');
+    }
+
+    const updatePayload: Partial<Event> = {};
+    if (updates.eventName && updates.eventName !== eventName) {
+      updatePayload.eventName = updates.eventName;
+    }
+    if (updates.password !== undefined) {
+      updatePayload.password = updates.password;
+    }
+    if (updates.startDate !== undefined) {
+      updatePayload.startDate = updates.startDate;
+    }
+    if (updates.endDate !== undefined) {
+      updatePayload.endDate = updates.endDate;
+    }
+    if (updates.description !== undefined) {
+      updatePayload.description = updates.description;
+    }
+
+    if (Object.keys(updatePayload).length > 0) {
+      await trx('events')
+        .where('eventName', eventName)
+        .update(updatePayload);
+    }
+
+    // If eventName changed, you might also want to update related tables here
+
+    await trx.commit();
+    */
+
+  } catch (err) {
+    console.error('Simulated error updating event:', err);
+    throw new Error('Update failed');
+  }
+};
+
+export { getEvents, insertEvent, updateEventFields };

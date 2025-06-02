@@ -22,6 +22,19 @@ groupRouter.post('/', async (req: Request, res: Response, next: NextFunction) =>
   }
 });
 
+groupRouter.put('/:groupName', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const groupName = req.params.groupName;
+    const updates = req.body; 
+    
+    await GroupService.updateGroupByName(groupName, updates);
+
+    res.status(200).json({ message: 'Group updated successfully' });
+  } catch (error) {
+    next(error);
+  }
+});
+
 groupRouter.delete('/:groupName', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const groupName = req.params.groupName;

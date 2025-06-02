@@ -22,7 +22,7 @@ export default function EventDetailsPopup({ event, onClose }: Props) {
 
         <h2 className="text-lg font-bold mb-4">Event Details</h2>
         <div className="text-sm text-gray-700 space-y-2">
-          <p><strong>Event Name:</strong> {event.name}</p>
+          <p><strong>Event Name:</strong> {event.eventName}</p>
           <p><strong>Password:</strong> {event.password}</p>
           <p><strong>Start Date:</strong> {formatDate(event.startDate)}</p>
           <p><strong>End Date:</strong> {formatDate(event.startDate)}</p>

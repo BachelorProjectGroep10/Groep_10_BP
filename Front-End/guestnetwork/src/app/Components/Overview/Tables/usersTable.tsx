@@ -1,4 +1,4 @@
-import { Group, User } from "@/app/Types";
+import { Group, User, Vlan } from "@/app/Types";
 import { formatDate } from "../../Utils/formatDate";
 import { IoMdRefresh } from "react-icons/io";
 import { useTranslation } from "react-i18next";
@@ -12,9 +12,10 @@ import UserDetailsPopup from "../popups/userDetailsPopUp"
 interface UserTableProps {
   users: User[]
   groups: Group[];
+  vlans: Vlan[];
 }
 
-export default function UsersTable({ users, groups }: UserTableProps) {
+export default function UsersTable({ users, groups, vlans }: UserTableProps) {
   const [showPopUp, setShowPopUp] = useState(false);
   const [selectedMac, setSelectedMac] = useState<string | null>(null);
   const selectedUser = users.find(u => u.macAddress === selectedMac) ?? null;
@@ -95,6 +96,7 @@ export default function UsersTable({ users, groups }: UserTableProps) {
           key={selectedUser.id}
           user={selectedUser}
           groups={(groups || []).filter((g): g is Group & { id: number } => typeof g.id === "number")}
+          vlans={vlans}
           onClose={closePopUp}
         />
       )}

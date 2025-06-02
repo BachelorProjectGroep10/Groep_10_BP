@@ -3,7 +3,7 @@ import { IoMdRefresh } from "react-icons/io";
 import { formatDate } from "../../Utils/formatDate";
 import UserService from "@/app/Services/UserService";
 import { mutate } from "swr";
-import { User } from "@/app/Types";
+import { User, Vlan } from "@/app/Types";
 import { useState } from "react";
 
 interface Group {
@@ -14,17 +14,18 @@ interface Group {
 interface Props {
   user: User;
   groups: Group[];
+  vlans: Vlan[];
   onClose: () => void;
 }
 
-export default function UserDetailsPopup({ user, groups, onClose }: Props) {
+export default function UserDetailsPopup({ user, groups, vlans, onClose }: Props) {
   const { t } = useTranslation();
   const isExpired = user.expiredAt ? new Date(user.expiredAt) < new Date() : false;
 
   const [isEditingDetails, setIsEditingDetails] = useState(false);
   const [email, setEmail] = useState(user.email ?? '');
   const [uid, setUID] = useState(user.uid ?? '');
-  const [vlan, setVlan] = useState(user.vlan ?? '');
+  const [vlanId, setVlanId] = useState<number | null>(user.vlan ?? null);
   const [description, setDescription] = useState(user.description ?? '');
   const [expiredAt, setExpiredAt] = useState(
     user.expiredAt ? new Date(user.expiredAt).toISOString().slice(0, 10) : ''
@@ -56,7 +57,7 @@ export default function UserDetailsPopup({ user, groups, onClose }: Props) {
         uid,
         expiredAt: expiredAtDate,
         active: active ? 1 : 0,
-        vlan: vlan === '' ? undefined : Number(vlan),
+        vlan: vlanId ?? undefined,
         description,
       };
 
@@ -197,12 +198,24 @@ export default function UserDetailsPopup({ user, groups, onClose }: Props) {
 
               <div>
                 <label className="block text-s font-semibold">VLAN:</label>
-                <input
-                  type="text"
-                  value={vlan}
-                  onChange={(e) => setVlan(e.target.value)}
-                  className="w-full border border-gray-300 rounded-md p-2"
-                />
+                <select
+                  value={vlanId === null ? '' : vlanId}
+                  onChange={(e) => {
+                    const selectedId = parseInt(e.target.value);
+                    const vlan = vlans.find((v) => v.id === selectedId) || null;
+                    setVlanId(selectedId);
+                  }}
+                  className="w-full border border-gray-300 rounded-md p-2 bg-white text-black shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
+                >
+                  <option value="" disabled>
+                    --- Select ---
+                  </option>
+                  {vlans.map((vlan, index) => (
+                    <option key={vlan.vlan} value={vlan.vlan}>
+                      {vlan.vlan} - {vlan.name}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div>
@@ -231,7 +244,7 @@ export default function UserDetailsPopup({ user, groups, onClose }: Props) {
                 onClick={() => {
                   setEmail(user.email ?? '');
                   setUID(user.uid ?? '');
-                  setVlan(user.vlan ?? '');
+                  setVlanId(user.vlan ?? null);
                   setDescription(user.description ?? '');
                   setExpiredAt(user.expiredAt ? new Date(user.expiredAt).toISOString().slice(0, 10) : '');
                   setActive(user.active);

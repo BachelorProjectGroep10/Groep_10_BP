@@ -180,7 +180,6 @@ export default function GroupSelectComponent( {isMobile}: GroupInterface) {
             </button>
           </div>
         </div>
-
       </form>
     </div>
   );

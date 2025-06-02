@@ -29,6 +29,18 @@ const addGroup = async (group: Group) => {
     });
 }
 
+const updateGroup = async (groupName: string, updates: Partial<Group>) => {
+    const token = sessionStorage.getItem("token") || "";
+    return fetch(`${basicUrl}/group/${groupName}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(updates)
+    });
+}
+
 const deleteGroup = async (groupName: string) => {
     const token = sessionStorage.getItem("token") || "";
     return fetch(`${basicUrl}/group/${groupName}`, {
@@ -55,6 +67,7 @@ const regengroupPw = async (groupName: string) => {
 const GroupService = {
     getGroups,
     addGroup,
+    updateGroup,
     deleteGroup,
     regengroupPw
 };
