@@ -2,29 +2,23 @@ import { Event } from "../Types";
 
 const basicUrl = `${process.env.NEXT_PUBLIC_API_URL}`;
 
-const getEvents = async (params = {}) => {
-    const token = sessionStorage.getItem("token") || "";
-    const queryString = new URLSearchParams(params).toString();
-
-    const url = `${basicUrl}/event${queryString ? `?${queryString}` : ''}`;
-
-    return fetch(url, {
+const getEvents = async () => {
+    return fetch(`${basicUrl}/event`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`       
-        }
+        },
+        credentials: 'include'
     });
 }
 
 const addEvent = async (event: Event) => {
-    const token = sessionStorage.getItem("token") || "";
     return fetch(`${basicUrl}/event`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
         },
+        credentials: 'include',
         body: JSON.stringify(event)
     });
 }

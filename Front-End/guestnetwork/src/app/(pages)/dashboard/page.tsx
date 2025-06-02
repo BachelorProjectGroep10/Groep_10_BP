@@ -1,29 +1,56 @@
 'use client'
+import { useEffect, useState } from "react";
 import Background from "@/app/Components/Utils/background";
 import { HeaderComponent } from "@/app/Components/Utils/header";
 import QRCodeComponent from "../../Components/dashboard/qrCode";
-import { useEffect, useState } from "react";
 import NoAccess from "@/app/Components/Utils/noAccess";
-import dynamic from 'next/dynamic';
+import AdminService from "@/app/Services/StaffService";
+import { LoginResponse } from "@/app/Types";
 
 export default function Dashboard() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [loggedInUser, setLoggedInUser] = useState<LoginResponse | null>(null);
+
+  const fetchUser = async () => {
+    try {
+      const response = await AdminService.getUserData();
+      if (!response.ok) throw new Error("Unauthorized");
+
+      const data = await response.json();
+
+      const user: LoginResponse = {
+        username: data.username,
+        email: data.email,
+        role: data.role,
+      };
+
+      setLoggedInUser(user);
+      setIsLoggedIn(true);
+    }catch (error) {
+      console.error("Error fetching user data:", error);
+      setIsLoggedIn(false);
+    }
+  }
 
   useEffect(() => {
-    const admin = sessionStorage.getItem("admin");
-    if (admin) {
-      setIsLoggedIn(true);
-    }
-    setLoading(false);
+    const checkLoginStatus = async () => {
+      try {
+        await fetchUser();
+      } catch (error) {
+        console.error("Error checking login status:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkLoginStatus();
   }, []);
-
-
 
   if (loading) {
     return (
       <div className="relative w-full min-h-screen overflow-x-hidden">
-        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 ">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
           <Background />
         </div>
         <div className="relative z-10 flex flex-col items-center justify-center min-h-screen">
@@ -45,7 +72,7 @@ export default function Dashboard() {
 
   return (
     <div className="relative w-full min-h-screen overflow-x-hidden">
-      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 ">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
         <Background />
       </div>
       {!isLoggedIn ? (

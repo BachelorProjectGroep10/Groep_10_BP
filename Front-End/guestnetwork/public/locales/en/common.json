@@ -60,7 +60,9 @@
         "login": "Login",
         "subtitle": "Log in to get access to the UCLL Guest Network",
         "username": "Username",
-        "password": "Password"
+        "password": "Password",
+        "microsoftLogin" : "Login with Microsoft",
+        "or": "or"
     },
     "overview": {
         "title": "Overview",

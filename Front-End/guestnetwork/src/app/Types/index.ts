@@ -39,7 +39,13 @@ export type Vlan = {
     readonly isDefault: number;
 }
 
-export type Admin = {
+export type Staff = {
     readonly username: string;
     readonly password: string;
+};
+
+export type LoginResponse = {
+    readonly username: string;
+    readonly email: string;
+    readonly role: string;
 };

@@ -1,46 +1,35 @@
 'use client';
 
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import AdminService from "../Services/AdminService";
+import AdminService from "../Services/StaffService";
 import { useTranslation } from "react-i18next";
-import { PulseLoader} from "react-spinners";
+import { PulseLoader } from "react-spinners";
 import '../i18n'; 
-import { set } from "date-fns";
-
+import { FcGoogle } from "react-icons/fc";
+import { FaMicrosoft } from "react-icons/fa";
 
 export default function LoginComponent() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const {t} = useTranslation();
-
+  const { t } = useTranslation();
   const router = useRouter();
-  const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+  const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
   const handleLogin = async (e: React.FormEvent) => {
-    setError(null);
     e.preventDefault();
+    setError(null);
     setLoading(true);
 
-    const admin = {
-      username: username,
-      password: password,
-    };
+    const staff = { username, password };
 
     try {
-      const response = await AdminService.getAdmin(admin);
-
+      const response = await AdminService.simpleLogin(staff);
       if (response.ok) {
-        const data = await response.json();
-        sessionStorage.setItem("admin", JSON.stringify(data));
-        sessionStorage.setItem("token", data.token);
-
-        await sleep(2000);
-
+        await sleep(1000);
         router.push("/dashboard");
       } else {
         const errorData = await response.json();
@@ -48,52 +37,81 @@ export default function LoginComponent() {
         await sleep(1000);
       }
     } catch (error) {
-      // console.error("Login error:", error);
       setError(error instanceof Error ? error.message : "An unexpected error occurred");
-      await sleep(2000);
+      await sleep(1000);
     } finally {
       setLoading(false);
     }
   };
 
+  const handleMicrosoftLogin = () => {
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/microsoft/login`;
+  };
 
   return (
-    <div className="flex flex-col items-center justify-center mt-10">
-      <div className="bg-[#9FDAF9] p-5 rounded-lg shadow-lg"> 
-        <form onSubmit={handleLogin} className="flex flex-col items-center justify-center">
-          <h1 className="text-2xl font-bold mb-4">{t('login.login')}</h1>
-          <p className="text-gray-600 mb-4">{t('login.subtitle')}</p>    
-          <div className="mb-4 flex flex-col">
-            <label className="font-semibold"  htmlFor="username">{t('login.username')}:</label>
+    <div className="flex items-start justify-center min-h-screen px-4 mt-6">
+      <div className="w-full max-w-md bg-[#9FDAF9] p-8 rounded-2xl shadow-xl">
+        <form onSubmit={handleLogin} className="space-y-6">
+          <div className="text-center">
+            <h1 className="text-3xl font-bold text-gray-800">{t('login.login')}</h1>
+            <p className="text-gray-500 text-sm mt-2">{t('login.subtitle')}</p>
+          </div>
+
+          <div>
+            <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+              {t('login.username')}
+            </label>
             <input
+              id="username"
               type="text"
-              placeholder={t('login.username')}
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="border border-gray-300 bg-white rounded-md p-2 mb-4"
+              placeholder={t('login.username')}
+              className="mt-1 block w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
             />
           </div>
-          
-          <div className="mb-4 flex flex-col">
-            <label className="font-semibold" htmlFor="password">{t('login.password')}:</label>
+
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              {t('login.password')}
+            </label>
             <input
+              id="password"
               type="password"
-              placeholder={t('login.password')}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="border border-gray-300 bg-white rounded-md p-2 mb-4"
+              placeholder={t('login.password')}
+              className="mt-1 block w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
             />
           </div>
-          {error && (<div className="bg-white p-2 rounded-md mb-2 ">
-            <p className="text-red-500">{error}</p>
-          </div>)}
- 
+
+          {error && (
+            <div className="bg-red-100 text-red-700 p-2 rounded-md text-sm text-center">
+              {error}
+            </div>
+          )}
+
           <button
             type="submit"
-            className="bg-[#002757] hover:bg-[#FA1651] text-white rounded p-3 cursor-pointer flex items-center justify-center min-w-[100px]"
+            className="w-full flex justify-center items-center bg-[#002757] hover:bg-blue-800 text-white font-semibold py-2 rounded-lg transition duration-300"
             disabled={loading}
           >
             {loading ? <PulseLoader size={8} color="#ffffff" /> : t('login.login')}
+          </button>
+
+          <div className="flex items-center justify-center text-gray-500 text-sm py-2">
+            — {t('login.or')} —
+          </div>
+
+          <button
+            type="button"
+            onClick={handleMicrosoftLogin}
+            className="w-full flex items-center justify-center gap-3 bg-gray-50 hover:bg-gray-200 text-gray-800 font-medium py-2 rounded-lg transition duration-300"
+          >
+            <FaMicrosoft className="text-xl" />
+            {t('login.microsoftLogin') || "Login with Microsoft"}
           </button>
         </form>
       </div>

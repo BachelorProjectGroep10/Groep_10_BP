@@ -4,6 +4,7 @@ import GroupService from '../service/group.service';
 const groupRouter = express.Router();
 
 groupRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
+  
   try {
     const groups = await GroupService.getAllGroups(req.query.name as string, req.query.vlan as unknown as number);
     res.status(200).json(groups);

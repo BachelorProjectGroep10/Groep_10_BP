@@ -8,20 +8,26 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import './i18n';
+import AdminService from "./Services/StaffService";
 
 export default function Home() {
-  // const router = useRouter();
+  const router = useRouter();
 
-  // useEffect(() => {
-  //   const isAuthenticated = sessionStorage.getItem("user"); 
-  //   if (isAuthenticated) {
-  //     router.push("/dashboard");
-  //   }
-  // }, [router]);
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const res = await AdminService.getUserData(); // Make sure this hits /auth/me with credentials
+        if (res.ok) {
+          router.push('/dashboard');
+        }
+      } catch (err) {
+        // Not logged in — stay on the page
+        console.error("Not logged in or error fetching user data:", err);
+      }
+    };
 
-  // const handleMicrosoftLogin = () => {
-  //   window.location.href = "http://localhost:3000/auth/login";
-  // };
+    checkLoginStatus();
+  }, []);
 
   return (
     <div className="relative w-screen overflow-x-hidden overflow-y-auto md:h-screen md:overflow-hidden">
@@ -33,16 +39,6 @@ export default function Home() {
 
         {/* Existing login component */}
         <LoginComponent />
-
-        {/* Microsoft Login Button
-        <div className="flex justify-center mt-4">
-          <button
-            onClick={handleMicrosoftLogin}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          >
-            Sign in with Microsoft
-          </button>
-        </div> */}
       </div>
     </div>
   );
