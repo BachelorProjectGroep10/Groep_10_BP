@@ -20,6 +20,16 @@ export default function EventsTable( { events }: EventsTableProps) {
     setSelectedEvent(event);
     setShowPopUp(true);
   };
+
+  const deleteEvent = async (eventName: string) => {
+    try {
+      await EventService.deleteEvent(eventName);
+      setShowPopUp(false);
+    } catch (error) {
+      console.error("Error deleting event:", error);
+      alert("Failed to delete event.");
+    }
+  };
   
   return (
     <div className="overflow-x-auto bg-white rounded-lg shadow border border-gray-200">
@@ -66,6 +76,7 @@ export default function EventsTable( { events }: EventsTableProps) {
           key={selectedEvent.eventName}
           event={selectedEvent}
           onClose={() => setShowPopUp(false)}
+          onDelete={deleteEvent}
         />
       )}
     </div>

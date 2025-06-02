@@ -1,4 +1,4 @@
-import { getEvents, insertEvent } from "../domain/data-access/event.db";
+import { deleteEventFromDB, getEvents, insertEvent } from "../domain/data-access/event.db";
 import { Event } from "../domain/model/Event";
 
 const getAllEvents = async (name:string): Promise<Event[]> => {
@@ -41,5 +41,9 @@ const updateEventByName = async (eventName: string, updates: Partial<Event>): Pr
   await updateEventByName(eventName, updates);
 };
 
+const deleteEvent = async (eventName: string): Promise<void> => {
+    await deleteEventFromDB(eventName);
+}
 
-export default { getAllEvents, addEvent, updateEventByName };
+
+export default { getAllEvents, addEvent, updateEventByName, deleteEvent };

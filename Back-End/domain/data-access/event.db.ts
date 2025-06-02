@@ -157,4 +157,39 @@ const updateEventFields = async (eventName: string, updates: Partial<Event>): Pr
   }
 };
 
-export { getEvents, insertEvent, updateEventFields };
+// Delete event by eventName
+const deleteEventFromDB = async (eventName: string): Promise<void> => {
+  try {
+    const index = testEvents.findIndex(e => e.eventName === eventName);
+    if (index === -1) {
+      throw new Error('Event does not exist');
+    }
+    
+    // Remove the event from the in-memory array
+    testEvents.splice(index, 1);
+    
+    console.log(`Deleted event '${eventName}' successfully`);
+
+    // When DB is ready, use something like this:
+    /*
+    const trx = await knex.transaction();
+
+    const existingEvent = await trx('events').where('eventName', eventName).first();
+    if (!existingEvent) {
+      await trx.rollback();
+      throw new Error('Event does not exist');
+    }
+
+    await trx('events').where('eventName', eventName).del();
+
+    await trx.commit();
+    console.log(`Deleted event '${eventName}' from DB successfully`);
+    */
+  } catch (err) {
+    console.error('Simulated error deleting event:', err);
+    throw new Error('Delete failed');
+  }
+};
+
+
+export { getEvents, insertEvent, updateEventFields, deleteEventFromDB };

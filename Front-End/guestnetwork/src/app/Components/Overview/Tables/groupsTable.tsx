@@ -27,8 +27,8 @@ export default function GroupsTable( { groups, vlans }: GroupsTableProps) {
       await GroupService.deleteGroup(groupName);
       setShowPopUp(false);
     } catch (error) {
-      console.error("Error deleting user:", error);
-      alert("Failed to delete user.");
+      console.error("Error deleting group:", error);
+      alert("Failed to delete group.");
     }
   };
   
