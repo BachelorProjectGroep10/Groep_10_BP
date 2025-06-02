@@ -1,15 +1,39 @@
 import { Event } from '../model/Event';
 
+// In-memory test data
+let testEvents: Event[] = [
+  new Event({
+    id: 1,
+    eventName: 'Sample Event',
+    password: 'abc123',
+    startDate: new Date('2025-06-01'),
+    endDate: new Date('2025-06-02'),
+    description: 'A sample test event',
+  }),
+  new Event({
+    id: 2,
+    eventName: 'Hackathon 2025',
+    password: 'secure456',
+    startDate: new Date('2025-07-10'),
+    endDate: new Date('2025-07-12'),
+    description: 'Annual tech hackathon for students and professionals.',
+  }),
+];
+
 // Get all events
 const getEvents = async (name?: string): Promise<Event[]> => {
   try {
-    // Placeholder: Return empty array until database is ready
-    return [];
-    
+    // Return filtered in-memory test data
+    if (name) {
+      return testEvents.filter(e =>
+        e.eventName.toLowerCase().includes(name.toLowerCase())
+      );
+    }
+    return testEvents;
+
     // Once DB is ready, structure will look like this:
     /*
-    let query = knex('events')
-      .select('*');
+    let query = knex('events').select('*');
 
     if (name) {
       query = query.where('eventName', 'like', `%${name}%`);
@@ -25,7 +49,6 @@ const getEvents = async (name?: string): Promise<Event[]> => {
       description: row.description,
     }));
     */
-    
   } catch (err) {
     console.error('DB error fetching events:', err);
     throw new Error('Fetch failed');
@@ -34,11 +57,15 @@ const getEvents = async (name?: string): Promise<Event[]> => {
 
 // Insert an event
 const insertEvent = async (event: Event): Promise<Event> => {
-  // Simulate a transaction object
-  const trx = {}; // Placeholder
-
   try {
-    console.log('Simulating insert for event:', event.eventName);
+    // Simulate uniqueness check
+    const exists = testEvents.some(e => e.eventName === event.eventName);
+    if (exists) throw new Error('Event already exists');
+
+    testEvents.push(event);
+    console.log('Inserted test event:', event);
+
+    return event;
 
     // If DB were set up, you'd use something like:
     /*
@@ -60,23 +87,21 @@ const insertEvent = async (event: Event): Promise<Event> => {
 
     await trx.commit();
     */
-
-    return event;
-
   } catch (err) {
     console.error('Simulated insert failed:', err);
     throw new Error('Insert failed');
   }
 };
 
+// Update event fields
 const updateEventFields = async (eventName: string, updates: Partial<Event>): Promise<void> => {
-  // Placeholder transaction object for simulation
-  const trx = {}; // Placeholder
-
   try {
-    console.log(`Simulating update for event: ${eventName} with data:`, updates);
+    const index = testEvents.findIndex(e => e.eventName === eventName);
+    if (index === -1) throw new Error('Event does not exist');
 
-    // Validate date fields if present
+    const existing = testEvents[index];
+
+    // Validate date fields
     if (updates.startDate && isNaN(new Date(updates.startDate).getTime())) {
       throw new Error("Invalid 'startDate'");
     }
@@ -84,10 +109,12 @@ const updateEventFields = async (eventName: string, updates: Partial<Event>): Pr
       throw new Error("Invalid 'endDate'");
     }
 
-    // Simulate event existence check
-    if (eventName === 'nonexistent') {
-      throw new Error('Event does not exist');
-    }
+    testEvents[index] = new Event({
+      ...existing,
+      ...updates,
+    });
+
+    console.log(`Updated test event '${eventName}' with:`, updates);
 
     // If DB were set up, you'd do something like:
     /*
@@ -122,11 +149,8 @@ const updateEventFields = async (eventName: string, updates: Partial<Event>): Pr
         .update(updatePayload);
     }
 
-    // If eventName changed, you might also want to update related tables here
-
     await trx.commit();
     */
-
   } catch (err) {
     console.error('Simulated error updating event:', err);
     throw new Error('Update failed');

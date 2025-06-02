@@ -198,7 +198,7 @@ export default function OverviewComponent() {
 
             <div className="grid grid-cols-1 gap-4 w-full md:hidden">
               {users?.map((user: User) => (
-                <UserCard key={user.id} user={user} groups={groups} vlans={vlans} isGroupsLoading={isGroupsLoading} />
+                <UserCard key={user.macAddress} user={user} groups={groups} vlans={vlans} isGroupsLoading={isGroupsLoading} />
               ))}
             </div>
           </>
@@ -276,7 +276,7 @@ export default function OverviewComponent() {
 
             <div className="grid grid-cols-1 gap-4 w-full md:hidden">
               {groups?.map((group: Group) => (
-                <GroupCard key={group.id} group={group} />
+                <GroupCard key={group.groupName} group={group} vlans={vlans} />
               ))}
             </div>
           </>
@@ -346,7 +346,7 @@ export default function OverviewComponent() {
 
             <div className="grid grid-cols-1 gap-4 w-full md:hidden">
               {events?.map((event: Event) => (
-                <EventCard key={event.id} event={event} />
+                <EventCard key={event.eventName} event={event} />
               ))}
             </div>
           </>

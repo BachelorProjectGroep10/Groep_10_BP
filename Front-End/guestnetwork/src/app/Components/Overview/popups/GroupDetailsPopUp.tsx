@@ -21,8 +21,10 @@ export default function GroupDetailsPopup({ group, vlans, onClose, onDelete }: P
 
   const handleSave = async () => {
     try {
+      const updatedVlan = Number(vlanId);
+
       const updated = {
-        vlan: vlanId ?? undefined,
+        vlan: updatedVlan,
         description,
       };
 
@@ -86,7 +88,7 @@ export default function GroupDetailsPopup({ group, vlans, onClose, onDelete }: P
                   value={vlanId === null ? '' : vlanId}
                   onChange={(e) => {
                     const selectedId = parseInt(e.target.value);
-                    const vlan = vlans.find((v) => v.id === selectedId) || null;
+                    const vlan = vlans.find((v) => v.vlan === selectedId) || null;
                     setVlanId(selectedId);
                   }}
                   className="w-full border border-gray-300 rounded-md p-2 bg-white text-black shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
@@ -94,7 +96,7 @@ export default function GroupDetailsPopup({ group, vlans, onClose, onDelete }: P
                   <option value="" disabled>
                     --- Select ---
                   </option>
-                  {vlans.map((vlan, index) => (
+                  {vlans.map((vlan) => (
                     <option key={vlan.vlan} value={vlan.vlan}>
                       {vlan.vlan} - {vlan.name}
                     </option>
