@@ -36,10 +36,10 @@ export default function EventsTable( { events }: EventsTableProps) {
       <table className="min-w-full table-fixed border-collapse">
         <thead className="sticky top-0 z-10 bg-[#f0f4f8] text-[#003366] text-left shadow-sm">
           <tr>
-            <th className="w-1/5 p-4 font-semibold">Event Name</th>
-            <th className="w-1/5 p-4 font-semibold">Password</th>
-            <th className="w-1/5 p-4 font-semibold">Start Date</th>
-            <th className="w-1/5 p-4 font-semibold">End Date</th>
+            <th className="w-1/5 p-4 font-semibold">{t('overview.eventName')}</th>
+            <th className="w-1/5 p-4 font-semibold">{t('overview.password')}</th>
+            <th className="w-1/5 p-4 font-semibold">{t('overview.startDate')}</th>
+            <th className="w-1/5 p-4 font-semibold">{t('overview.endDate')}</th>
             <th className="w-1/5 p-4 font-semibold text-center">Extra</th>
           </tr>
         </thead>

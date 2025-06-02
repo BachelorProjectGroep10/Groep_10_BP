@@ -177,7 +177,7 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
               required
             />
 
-            <label className="text-sm font-medium">{t('user.expiredAt')} *</label>
+            <label className="text-sm font-medium">{t('user.expirationDate')} *</label>
             {errors.expiredAt && (
               <p className="text-sm text-red-600 font-medium">{errors.expiredAt}</p>
             )}

@@ -63,7 +63,7 @@ export default function UsersTable({ users, groups, vlans }: UserTableProps) {
                   <td className="w-1/5 p-4 text-center">
                     {isExpired ? (
                       <span className="inline-block px-4 py-1 rounded-full text-xs font-bold bg-orange-100 text-orange-800">
-                        Expired
+                        {t('overview.expired')}
                       </span>
                     ) : (
                       <span

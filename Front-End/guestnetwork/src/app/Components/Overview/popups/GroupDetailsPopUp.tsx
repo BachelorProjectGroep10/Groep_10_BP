@@ -59,14 +59,14 @@ export default function GroupDetailsPopup({ group, vlans, onClose, onDelete, del
           &times;
         </button>
 
-        <h2 className="text-lg font-bold mb-4">Group Details</h2>
+        <h2 className="text-lg font-bold mb-4">{t('pop-up.groupDetails')}</h2>
 
         <div className="text-sm text-gray-700 space-y-2">
-          <p><strong>Groupname:</strong> {group.groupName}</p>
+          <p><strong>{t('pop-up.groupName')}:</strong> {group.groupName}</p>
 
           <div>
             <p>
-              <strong>Password:</strong> <span>{group.password}</span>
+              <strong>{t('pop-up.password')}:</strong> <span>{group.password}</span>
               <button
                 onClick={handleRegeneratePassword}
                 className="bg-[#003366] text-white px-2 py-1 rounded hover:bg-blue-700 text-sm ml-2"
@@ -79,7 +79,7 @@ export default function GroupDetailsPopup({ group, vlans, onClose, onDelete, del
           {!isEditingDetails ? (
             <>
               <p><strong>VLAN:</strong> {group.vlan || 'N/A'}</p>
-              <p><strong>Description:</strong> {group.description || 'N/A'}</p>
+              <p><strong>{t('pop-up.description')}:</strong> {group.description || 'N/A'}</p>
             </>
           ) : (
             <div className="flex flex-col gap-4 mt-2">
@@ -95,7 +95,7 @@ export default function GroupDetailsPopup({ group, vlans, onClose, onDelete, del
                   className="w-full border border-gray-300 rounded-md p-2 bg-white text-black shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
                 >
                   <option value="" disabled>
-                    --- Select ---
+                    --- {t('pop-up.select')} ---
                   </option>
                   {vlans.map((vlan) => (
                     <option key={vlan.vlan} value={vlan.vlan}>
@@ -106,7 +106,7 @@ export default function GroupDetailsPopup({ group, vlans, onClose, onDelete, del
               </div>
 
               <div>
-                <label className="block text-s font-semibold">Description:</label>
+                <label className="block text-s font-semibold">{t('pop-up.description')}:</label>
                 <input
                   type="text"
                   value={description}
@@ -126,7 +126,7 @@ export default function GroupDetailsPopup({ group, vlans, onClose, onDelete, del
                 onClick={handleSave}
                 className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-800"
               >
-                Save
+                {t('pop-up.save')}
               </button>
               <button
                 onClick={() => {
@@ -136,7 +136,7 @@ export default function GroupDetailsPopup({ group, vlans, onClose, onDelete, del
                 }}
                 className="bg-[#003366] text-white px-4 py-2 rounded hover:bg-blue-700"
               >
-                Cancel
+                {t('pop-up.cancel')}
               </button>
             </div>
           ) : (
@@ -144,7 +144,7 @@ export default function GroupDetailsPopup({ group, vlans, onClose, onDelete, del
               onClick={() => setIsEditingDetails(true)}
               className="bg-[#003366] text-white px-4 py-2 rounded hover:bg-blue-700"
             >
-              Update
+              {t('pop-up.update')}
             </button>
           )}
 
@@ -152,7 +152,7 @@ export default function GroupDetailsPopup({ group, vlans, onClose, onDelete, del
             onClick={() => onDelete(group.groupName)}
             className="bg-[#FA1651] text-white px-4 py-2 rounded hover:bg-[#fa1653c6]"
           >
-            Delete
+            {t('pop-up.delete')}
           </button>
         </div>
 

@@ -80,12 +80,12 @@ export default function EventCard({ event }: EventCardProps) {
 
       {/* Password always visible */}
       <p className="text-sm text-[#003366]">
-        <strong>Password:</strong> {event.password}
+        <strong>{t('overview.password')}:</strong> {event.password}
       </p>
 
       {/* Start Date toggle */}
       <p className="text-sm text-[#003366]">
-        <strong>Start Date:</strong>{" "}
+        <strong>{t('overview.startDate')}:</strong>{" "}
         {isEditing ? (
           <input
             type="date"
@@ -100,7 +100,7 @@ export default function EventCard({ event }: EventCardProps) {
 
       {/* End Date toggle */}
       <p className="text-sm text-[#003366]">
-        <strong>End Date:</strong>{" "}
+        <strong>{t('overview.endDate')}:</strong>{" "}
         {isEditing ? (
           <input
             type="date"
@@ -120,13 +120,13 @@ export default function EventCard({ event }: EventCardProps) {
             onClick={handleSaveChanges}
             className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-800"
           >
-            Save
+            {t('overview.save')}
           </button>
           <button
             onClick={handleCancel}
             className="bg-[#003366] text-white px-4 py-1 rounded hover:bg-blue-700"
           >
-            Cancel
+            {t('overview.cancel')}
           </button>
         </div>
       )}

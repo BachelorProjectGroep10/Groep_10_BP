@@ -134,7 +134,7 @@ export default function OverviewComponent() {
               <div className="flex items-center gap-2">
                 <input
                   type="text"
-                  placeholder="Search on MAC Address"
+                  placeholder={t('overview.searchMacAddress')}
                   value={searchMac}
                   autoComplete="off"
                   className="hidden sm:block w-50 border border-gray-300 bg-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:border-transparent"
@@ -149,7 +149,7 @@ export default function OverviewComponent() {
                     >
                       <input
                         type="text"
-                        placeholder="Search on MAC Address"
+                        placeholder={t('overview.searchMacAddress')}
                         value={searchMac}
                         autoComplete="off"
                         className="sm:hidden w-50 border border-gray-300 bg-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:border-transparent"
@@ -158,14 +158,14 @@ export default function OverviewComponent() {
                       <span className="font-semibold hidden lg:inline"> - </span>
                       <input
                         type="text"
-                        placeholder="Search by Email"
+                        placeholder={t('overview.searchEmail')}
                         value={searchEmail}
                         className="w-50 border border-gray-300 bg-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:border-transparent"
                         onChange={(e) => setSearchEmail(e.target.value)}
                       />
                       <input
                         type="text"
-                        placeholder="Search by uid"
+                        placeholder={t('overview.searchUid')}
                         value={searchName}
                         className="w-50 border border-gray-300 bg-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:border-transparent"
                         onChange={(e) => setSearchName(e.target.value)}
@@ -219,7 +219,7 @@ export default function OverviewComponent() {
               <div className="flex items-center gap-2">
                 <input
                   type="text"
-                  placeholder="Search on Group Name"
+                  placeholder={t('overview.searchGroupName')}
                   value={searchGroup}
                   autoComplete="off"
                   className="hidden sm:block w-50 border border-gray-300 bg-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:border-transparent"
@@ -234,7 +234,7 @@ export default function OverviewComponent() {
                     >
                       <input
                         type="text"
-                        placeholder="Search on Group Name"
+                        placeholder={t('overview.searchGroupName')}
                         value={searchGroup}
                         autoComplete="off"
                         className="sm:hidden w-50 border border-gray-300 bg-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:border-transparent"
@@ -243,7 +243,7 @@ export default function OverviewComponent() {
                       <span className="font-semibold hidden lg:inline"> - </span>
                       <input
                         type="text"
-                        placeholder="Search by VLAN"
+                        placeholder={t('overview.searchVlan')}
                         value={searchVlan}
                         className="w-50 border border-gray-300 bg-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:border-transparent"
                         onChange={(e) => setSearchVlan(e.target.value)}
@@ -290,14 +290,14 @@ export default function OverviewComponent() {
       <div className="bg-gray-50 rounded-2xl shadow-lg w-full max-w-6xl p-6">
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-3xl font-bold text-[#003366] flex items-center justify-center gap-2">
-            <MdEvent size={35} />Events
+            <MdEvent size={35} />{t('overview.events')}
           </h1>
           <div className="flex items-center justify-center gap-4">
             {isEventTableOpen && (
               <div className="flex items-center gap-2">
                 <input
                   type="text"
-                  placeholder="Search on Event Name"
+                  placeholder={t('overview.searchEventName')}
                   value={searchEvent}
                   autoComplete="off"
                   className="hidden sm:block w-50 border border-gray-300 bg-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:border-transparent"
@@ -312,7 +312,7 @@ export default function OverviewComponent() {
                     >
                       <input
                         type="text"
-                        placeholder="Search on Event Name"
+                        placeholder={t('overview.searchEventName')}
                         value={searchEvent}
                         autoComplete="off"
                         className="sm:hidden w-50 border border-gray-300 bg-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00509e] focus:border-transparent"

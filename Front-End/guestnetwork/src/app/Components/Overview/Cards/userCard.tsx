@@ -109,22 +109,22 @@ export default function UserCard({ user, groups, vlans, isGroupsLoading }: UserC
                 ? "bg-green-100 text-green-800"
                 : "bg-red-100 text-red-800"
             }`}
-            title={isExpired ? "Expired" : user.active ? t("overview.active") : t("overview.disabled")}
+            title={isExpired ? t('overview.expired') : user.active ? t("overview.active") : t("overview.disabled")}
           >
-            {isExpired ? "Expired" : user.active ? t("overview.active") : t("overview.disabled")}
+            {isExpired ? t('overview.expired') : user.active ? t("overview.active") : t("overview.disabled")}
           </span>
         </div>
         <div className="flex items-center gap-3">
           <button
             onClick={() => setIsEditing(true)}
-            title="Edit user"
+            title={t('overview.editUser')}
             className="text-blue-600 hover:text-blue-800"
           >
             <MdEdit size={21} />
           </button>
           <button
             onClick={handleDelete}
-            title="Delete user"
+            title={t('overview.deleteUser')}
             className="text-red-600 hover:text-red-800"
           >
             <FaTrash size={18} />
@@ -134,7 +134,7 @@ export default function UserCard({ user, groups, vlans, isGroupsLoading }: UserC
 
       <div className="flex items-center gap-2 text-sm">
         <p className="text-[#003366]">
-          <strong>Password:</strong> {user.password}
+          <strong>{t('overview.password')}:</strong> {user.password}
         </p>
         <button
           onClick={handleRegeneratePassword}
@@ -148,14 +148,14 @@ export default function UserCard({ user, groups, vlans, isGroupsLoading }: UserC
       {isEditing ? (
         <>
           <p className="text-sm text-[#003366]">
-            <strong>Group:</strong><br />
+            <strong>{t('overview.group')}:</strong><br />
             <select
               value={groupName ?? ''}
               onChange={(e) => setGroupName(e.target.value)}
               className="input-style mt-1 w-full border border-gray-300 rounded px-2 py-1 text-sm"
               disabled={isGroupsLoading}
             >
-              <option value="">No group</option>
+              <option value="">{t('overview.noGroup')}</option>
               {groups.map((g) => (
                 <option key={g.groupName} value={g.groupName}>
                   {g.groupName}
@@ -165,7 +165,7 @@ export default function UserCard({ user, groups, vlans, isGroupsLoading }: UserC
           </p>
 
           <p className="text-sm text-[#003366]">
-            <strong>Expires At:</strong><br />
+            <strong>{t('overview.expirationDate')}:</strong><br />
             <input
               type="date"
               value={expiredAt}
@@ -198,7 +198,7 @@ export default function UserCard({ user, groups, vlans, isGroupsLoading }: UserC
           </p>
 
           <p className="text-sm text-[#003366]">
-            <strong>User ID:</strong><br />
+            <strong>{t('overview.uid')}:</strong><br />
             <input
               value={uid}
               onChange={(e) => setUID(e.target.value)}
@@ -219,7 +219,7 @@ export default function UserCard({ user, groups, vlans, isGroupsLoading }: UserC
               className="w-full border border-gray-300 rounded-md p-2 bg-white text-black shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
             >
               <option value="" disabled>
-                --- Select ---
+                --- {t('overview.select')} ---
               </option>
               {vlans.map((vlan, index) => (
                 <option key={vlan.vlan} value={vlan.vlan}>
@@ -230,7 +230,7 @@ export default function UserCard({ user, groups, vlans, isGroupsLoading }: UserC
           </p>
 
           <p className="text-sm text-[#003366]">
-            <strong>Description:</strong><br />
+            <strong>{t('overview.description')}:</strong><br />
             <input
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -244,24 +244,24 @@ export default function UserCard({ user, groups, vlans, isGroupsLoading }: UserC
                 onClick={handleSaveChanges}
                 className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-800"
               >
-                Save
+                {t('overview.save')}
               </button>
               <button
-                onClick={() => {handleCancel}}
+                onClick={handleCancel}
                 className="bg-[#003366] text-white px-4 py-1 rounded hover:bg-blue-700"
               >
-                Cancel
+                {t('overview.cancel')}
               </button>
             </div>
         </>
       ) : (
         <>
-          <p className="text-sm text-[#003366]"><strong>Group:</strong> {user.groupName || 'No group'}</p>
-          <p className="text-sm text-[#003366]"><strong>Expires At:</strong> {formatDate(user?.expiredAt)}</p>
+          <p className="text-sm text-[#003366]"><strong>{t('overview.group')}:</strong> {user.groupName || 'No group'}</p>
+          <p className="text-sm text-[#003366]"><strong>{t('overview.expirationDate')}:</strong> {formatDate(user?.expiredAt)}</p>
           <p className="text-sm text-[#003366]"><strong>Email:</strong> {user.email || 'N/A'}</p>
-          <p className="text-sm text-[#003366]"><strong>User ID:</strong> {user.uid || 'N/A'}</p>
+          <p className="text-sm text-[#003366]"><strong>{t('overview.uid')}:</strong> {user.uid || 'N/A'}</p>
           <p className="text-sm text-[#003366]"><strong>VLAN:</strong> {user.vlan || 'N/A'}</p>
-          <p className="text-sm text-[#003366]"><strong>Description:</strong> {user.description || 'N/A'}</p>
+          <p className="text-sm text-[#003366]"><strong>{t('overview.description')}:</strong> {user.description || 'N/A'}</p>
         </>
       )}
     </div>

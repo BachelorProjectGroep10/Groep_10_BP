@@ -58,21 +58,21 @@ export default function EventDetailsPopup({ event, onClose, onDelete }: Props) {
           &times;
         </button>
 
-        <h2 className="text-lg font-bold mb-4">Event Details</h2>
+        <h2 className="text-lg font-bold mb-4">{t('pop-up.eventDetails')}</h2>
 
         <div className="text-sm text-gray-700 space-y-2">
-          <p><strong>Event Name:</strong> {event.eventName}</p>
-          <p><strong>Password:</strong> {event.password}</p>
+          <p><strong>{t('pop-up.eventName')}:</strong> {event.eventName}</p>
+          <p><strong>{t('pop-up.password')}:</strong> {event.password}</p>
 
           {!isEditingDetails ? (
             <>
-              <p><strong>Start Date:</strong> {formatDate(event.startDate)}</p>
-              <p><strong>End Date:</strong> {formatDate(event.endDate)}</p>
+              <p><strong>{t('pop-up.startDate')}:</strong> {formatDate(event.startDate)}</p>
+              <p><strong>{t('pop-up.endDate')}:</strong> {formatDate(event.endDate)}</p>
             </>
           ) : (
             <>
               <div>
-                <label className="block text-sm font-semibold">Start Date:</label>
+                <label className="block text-sm font-semibold">{t('pop-up.startDate')}:</label>
                 <input
                   type="date"
                   value={startDate}
@@ -81,7 +81,7 @@ export default function EventDetailsPopup({ event, onClose, onDelete }: Props) {
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold">End Date:</label>
+                <label className="block text-sm font-semibold">{t('pop-up.endDate')}:</label>
                 <input
                   type="date"
                   value={endDate}
@@ -100,13 +100,13 @@ export default function EventDetailsPopup({ event, onClose, onDelete }: Props) {
                 onClick={handleSaveChanges}
                 className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-800"
               >
-                Save
+                {t('pop-up.save')}
               </button>
               <button
                 onClick={handleCancel}
                 className="bg-[#003366] text-white px-4 py-2 rounded hover:bg-blue-700"
               >
-                Cancel
+                {t('pop-up.cancel')}
               </button>
             </div>
           ) : (
@@ -114,7 +114,7 @@ export default function EventDetailsPopup({ event, onClose, onDelete }: Props) {
               onClick={() => setIsEditingDetails(true)}
               className="bg-[#003366] text-white px-4 py-2 rounded hover:bg-blue-700"
             >
-              Update
+              {t('pop-up.update')}
             </button>
           )}
 
@@ -122,7 +122,7 @@ export default function EventDetailsPopup({ event, onClose, onDelete }: Props) {
             onClick={handleDelete}
             className="bg-[#FA1651] text-white px-4 py-2 rounded hover:bg-[#fa1653c6]"
           >
-            Delete
+            {t('pop-up.delete')}
           </button>
         </div>
       </div>

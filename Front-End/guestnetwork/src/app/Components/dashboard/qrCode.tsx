@@ -272,7 +272,7 @@ export function QRCodeComponent() {
       {showModal && (
         <div className="fixed top-0 left-0 w-full h-full bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
-            <h2 className="text-lg font-bold mb-4">Customize PDF Layout</h2>
+            <h2 className="text-lg font-bold mb-4">{t('qrcode.customizeLayout')}</h2>
 
             <label className="flex items-center mb-4 cursor-pointer text-gray-800">
               <input
@@ -281,7 +281,7 @@ export function QRCodeComponent() {
                 onChange={(e) => setShowBackground(e.target.checked)}
                 className="form-checkbox h-5 w-5 text-[#002757] rounded border-gray-300 focus:ring-[#002757] focus:ring-2"
               />
-              <span className="ml-2 select-none">Show background ("rounds")</span>
+              <span className="ml-2 select-none">{t('qrcode.showBackground')}</span>
             </label>
 
             <div className="flex justify-end gap-2">
@@ -289,13 +289,13 @@ export function QRCodeComponent() {
                 className="bg-gray-300 px-4 py-2 rounded"
                 onClick={() => setShowModal(false)}
               >
-                Cancel
+                {t('qrcode.cancel')}
               </button>
               <button
                 className="bg-[#002757] text-white px-4 py-2 rounded"
                 onClick={() => setShowModal(false)}
               >
-                Apply
+                {t('qrcode.apply')}
               </button>
             </div>
           </div>

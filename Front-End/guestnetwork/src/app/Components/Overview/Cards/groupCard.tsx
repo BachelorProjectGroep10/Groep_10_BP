@@ -94,7 +94,7 @@ export default function GroupCard({ group, vlans }: GroupCardProps) {
       {/* Always show password + regenerate button */}
       <div className="flex items-center gap-2 text-sm">
         <p className="text-[#003366]">
-          <strong>Password:</strong> {group.password}
+          <strong>{t('overview.password')}:</strong> {group.password}
         </p>
         <button
           onClick={handleRegeneratePassword}
@@ -118,7 +118,7 @@ export default function GroupCard({ group, vlans }: GroupCardProps) {
             className="mt-1 w-full border border-gray-300 rounded px-2 py-1 text-sm bg-white shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
           >
             <option value="" disabled>
-              --- Select ---
+              --- {t('overview.select')} ---
             </option>
             {vlans.map((vlan) => (
               <option key={vlan.vlan} value={vlan.vlan}>
@@ -133,7 +133,7 @@ export default function GroupCard({ group, vlans }: GroupCardProps) {
 
       {/* Description: toggle between text and input */}
       <p className="text-sm text-[#003366]">
-        <strong>Description:</strong>{" "}
+        <strong>{t('overview.description')}:</strong>{" "}
         {isEditing ? (
           <input
             type="text"
@@ -153,13 +153,13 @@ export default function GroupCard({ group, vlans }: GroupCardProps) {
             onClick={handleSaveChanges}
             className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-800"
           >
-            Save
+            {t('overview.save')}
           </button>
           <button
             onClick={handleCancel}
             className="bg-[#003366] text-white px-4 py-1 rounded hover:bg-blue-700"
           >
-            Cancel
+            {t('overview.cancel')}
           </button>
         </div>
       )}
