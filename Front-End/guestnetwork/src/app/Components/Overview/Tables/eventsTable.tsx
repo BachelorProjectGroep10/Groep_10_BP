@@ -20,16 +20,26 @@ export default function EventsTable( { events }: EventsTableProps) {
     setSelectedEvent(event);
     setShowPopUp(true);
   };
+
+  const deleteEvent = async (eventName: string) => {
+    try {
+      await EventService.deleteEvent(eventName);
+      setShowPopUp(false);
+    } catch (error) {
+      console.error("Error deleting event:", error);
+      alert("Failed to delete event.");
+    }
+  };
   
   return (
     <div className="overflow-x-auto bg-white rounded-lg shadow border border-gray-200">
       <table className="min-w-full table-fixed border-collapse">
         <thead className="sticky top-0 z-10 bg-[#f0f4f8] text-[#003366] text-left shadow-sm">
           <tr>
-            <th className="w-1/5 p-4 font-semibold">Event Name</th>
-            <th className="w-1/5 p-4 font-semibold">Password</th>
-            <th className="w-1/5 p-4 font-semibold">Start Date</th>
-            <th className="w-1/5 p-4 font-semibold">End Date</th>
+            <th className="w-1/5 p-4 font-semibold">{t('overview.eventName')}</th>
+            <th className="w-1/5 p-4 font-semibold">{t('overview.password')}</th>
+            <th className="w-1/5 p-4 font-semibold">{t('overview.startDate')}</th>
+            <th className="w-1/5 p-4 font-semibold">{t('overview.endDate')}</th>
             <th className="w-1/5 p-4 font-semibold text-center">Extra</th>
           </tr>
         </thead>
@@ -66,6 +76,7 @@ export default function EventsTable( { events }: EventsTableProps) {
           key={selectedEvent.eventName}
           event={selectedEvent}
           onClose={() => setShowPopUp(false)}
+          onDelete={deleteEvent}
         />
       )}
     </div>

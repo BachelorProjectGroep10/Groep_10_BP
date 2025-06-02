@@ -2,9 +2,13 @@ import { Event } from "../Types";
 
 const basicUrl = `${process.env.NEXT_PUBLIC_API_URL}`;
 
-const getEvents = async () => {
+const getEvents = async (params = {}) => {
     const token = sessionStorage.getItem("token") || "";
-    return fetch(`${basicUrl}/event`, {
+    const queryString = new URLSearchParams(params).toString();
+
+    const url = `${basicUrl}/event${queryString ? `?${queryString}` : ''}`;
+
+    return fetch(url, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -25,10 +29,41 @@ const addEvent = async (event: Event) => {
     });
 }
 
+const updateEvent = async (eventName: string, updates: Partial<Event>) => {
+  const token = sessionStorage.getItem("token") || "";
+  const response = await fetch(`${basicUrl}/event/${eventName}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify(updates)
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Update failed (${response.status}): ${errorText}`);
+  }
+
+  return response.json();
+};
+
+const deleteEvent = async (eventName: string) => {
+    const token = sessionStorage.getItem("token") || "";
+    return fetch(`${basicUrl}/event/${eventName}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+        }
+    });
+}
 
 const EventService = {
     getEvents,
-    addEvent
+    addEvent,
+    updateEvent,
+    deleteEvent
 };
 
 export default EventService;

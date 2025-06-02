@@ -35,4 +35,14 @@ eventRouter.put('/:eventName', async (req: Request, res: Response, next: NextFun
   }
 });
 
+eventRouter.delete('/:eventName', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const eventName = req.params.groupName;
+    await EventService.deleteEvent(eventName);
+    res.status(200).json({ message: 'Event deleted successfully' });
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default eventRouter;

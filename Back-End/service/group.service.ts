@@ -24,6 +24,7 @@ const addGroup = async (group: Group): Promise<void> => {
 }
 
 const updateGroupByName = async (groupName: string, updates: Partial<Group>): Promise<void> => {
+  
   if (updates.vlan !== undefined && typeof updates.vlan !== 'number') {
     throw new Error('Invalid VLAN number');
   }

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Group } from "@/app/Types";
+import { Group, Vlan } from "@/app/Types";
 import GroupService from "@/app/Services/GroupService";
 import { mutate } from "swr";
 import { MdEdit } from "react-icons/md";
@@ -9,16 +9,16 @@ import { IoMdRefresh } from "react-icons/io";
 
 interface GroupCardProps {
   group: Group;
+  vlans: Vlan[];
 }
 
-export default function GroupCard({ group }: GroupCardProps) {
+export default function GroupCard({ group, vlans }: GroupCardProps) {
   const { t } = useTranslation();
 
   const [isEditing, setIsEditing] = useState(false);
 
-  const [groupName, setGroupName] = useState(group.groupName);
+  const [vlanId, setVlanId] = useState<number | null>(group.vlan ?? null);
   const [description, setDescription] = useState(group.description ?? "");
-  const [password, setPassword] = useState(group.password ?? "");
 
   const handleDelete = async () => {
     try {
@@ -42,10 +42,11 @@ export default function GroupCard({ group }: GroupCardProps) {
 
   const handleSaveChanges = async () => {
     try {
+      const updatedVlan = Number(vlanId);
+
       const updatedGroup = {
-        groupName,
+        vlan: updatedVlan,
         description,
-        password,
       };
 
       await GroupService.updateGroup(group.groupName, updatedGroup);
@@ -59,9 +60,8 @@ export default function GroupCard({ group }: GroupCardProps) {
   };
 
   const handleCancel = () => {
-    setGroupName(group.groupName);
     setDescription(group.description ?? "");
-    setPassword(group.password ?? "");
+    setVlanId(group.vlan ?? null);
     setIsEditing(false);
   };
 
@@ -94,7 +94,7 @@ export default function GroupCard({ group }: GroupCardProps) {
       {/* Always show password + regenerate button */}
       <div className="flex items-center gap-2 text-sm">
         <p className="text-[#003366]">
-          <strong>Password:</strong> {group.password}
+          <strong>{t('overview.password')}:</strong> {group.password}
         </p>
         <button
           onClick={handleRegeneratePassword}
@@ -105,9 +105,35 @@ export default function GroupCard({ group }: GroupCardProps) {
         </button>
       </div>
 
+      {/* VLAN: toggle between text and selector */}
+      <p className="text-sm text-[#003366]">
+        <strong>VLAN:</strong>{" "}
+        {isEditing ? (
+          <select
+            value={vlanId === null ? "" : vlanId}
+            onChange={(e) => {
+              const selectedId = parseInt(e.target.value);
+              setVlanId(selectedId);
+            }}
+            className="mt-1 w-full border border-gray-300 rounded px-2 py-1 text-sm bg-white shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
+          >
+            <option value="" disabled>
+              --- {t('overview.select')} ---
+            </option>
+            {vlans.map((vlan) => (
+              <option key={vlan.vlan} value={vlan.vlan}>
+                {vlan.vlan} - {vlan.name}
+              </option>
+            ))}
+          </select>
+        ) : (
+          group.vlan
+        )}
+      </p>
+
       {/* Description: toggle between text and input */}
       <p className="text-sm text-[#003366]">
-        <strong>Description:</strong>{" "}
+        <strong>{t('overview.description')}:</strong>{" "}
         {isEditing ? (
           <input
             type="text"
@@ -127,13 +153,13 @@ export default function GroupCard({ group }: GroupCardProps) {
             onClick={handleSaveChanges}
             className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-800"
           >
-            Save
+            {t('overview.save')}
           </button>
           <button
             onClick={handleCancel}
             className="bg-[#003366] text-white px-4 py-1 rounded hover:bg-blue-700"
           >
-            Cancel
+            {t('overview.cancel')}
           </button>
         </div>
       )}

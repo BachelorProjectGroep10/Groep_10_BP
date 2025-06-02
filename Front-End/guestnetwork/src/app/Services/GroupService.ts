@@ -30,26 +30,41 @@ const addGroup = async (group: Group) => {
 }
 
 const updateGroup = async (groupName: string, updates: Partial<Group>) => {
-    const token = sessionStorage.getItem("token") || "";
-    return fetch(`${basicUrl}/group/${groupName}`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify(updates)
-    });
-}
+  const token = sessionStorage.getItem("token") || "";
+  const response = await fetch(`${basicUrl}/group/${groupName}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify(updates)
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Update failed (${response.status}): ${errorText}`);
+  }
+
+  return response.json();
+};
+
 
 const deleteGroup = async (groupName: string) => {
     const token = sessionStorage.getItem("token") || "";
-    return fetch(`${basicUrl}/group/${groupName}`, {
+    const response = await fetch(`${basicUrl}/group/${groupName}`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
         }
     });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to delete group.');
+    }
+
+    return response;
 }
 
 const regengroupPw = async (groupName: string) => {

@@ -52,17 +52,17 @@ export default function EventApplyComponent({ isMobile }: EventInterface) {
       const response = await EventService.addEvent(newEvent);
       const body = await response.json();
       if (response.ok) {
-        setMessage("✅ Event registered successfully!");
+        setMessage(t('event.eventRegistrationSuccess'));
         setEventName('');
         setStartDate('');
         setEndDate('');
         setDescription('');
       } else {
         console.error('API error:', body);
-        setMessage(`❌ Event registration failed`);
+        setMessage(t('event.eventRegistrationError'));
       }
     } catch (error: any) {
-      setMessage(error.message || `❌ Event registration failed`);
+      setMessage(error.message || t('event.eventRegistrationError'));
     }
   };
 
@@ -89,7 +89,7 @@ export default function EventApplyComponent({ isMobile }: EventInterface) {
           <div className="flex items-center justify-center gap-2">
             <h2 className="text-2xl font-bold text-[#002757] flex items-center justify-center gap-2 pr-4">
               <MdEvent className="text-4xl" />
-              Event Registration
+              {t('event.eventRegistration')}
             </h2>
           </div>
           {!isMobile && (
@@ -105,10 +105,10 @@ export default function EventApplyComponent({ isMobile }: EventInterface) {
 
         <div className={`col-span-full ${isEventFormOpen ? 'block' : 'hidden'}`}>
           <div className="flex flex-col space-y-2">
-            <label className="text-sm font-medium">Event Name *</label>
+            <label className="text-sm font-medium">{t('event.eventName')} *</label>
             <input
               type="text"
-              placeholder={"Event Name"}
+              placeholder={t('event.eventName')}
               value={eventName}
               onChange={(e) => setEventName(e.target.value)}
               className="bg-gray-300 text-black rounded-lg px-3 py-2 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
@@ -117,7 +117,7 @@ export default function EventApplyComponent({ isMobile }: EventInterface) {
           </div>
 
           <div className="flex flex-col space-y-2 mt-2">
-            <label className="text-sm font-medium">Start Date *</label>
+            <label className="text-sm font-medium">{t('event.startDate')} *</label>
             <input
               type="date"
               value={startDate}
@@ -128,7 +128,7 @@ export default function EventApplyComponent({ isMobile }: EventInterface) {
           </div>
 
           <div className="flex flex-col space-y-2 mt-2">
-            <label className="text-sm font-medium">End Date *</label>
+            <label className="text-sm font-medium">{t('event.endDate')} *</label>
             <input
               type="date"
               value={endDate}
@@ -139,9 +139,9 @@ export default function EventApplyComponent({ isMobile }: EventInterface) {
           </div>
 
           <div className="flex flex-col space-y-2 mt-2">
-            <label className="text-sm font-medium">Description</label>
+            <label className="text-sm font-medium">{t('event.description')}</label>
             <textarea
-              placeholder={"Description"}
+              placeholder={t('event.optionalDescription')}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               className="bg-gray-300 text-black rounded-lg px-3 py-2 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300 resize-none"
@@ -162,7 +162,7 @@ export default function EventApplyComponent({ isMobile }: EventInterface) {
               type="submit"
               className="bg-[#002757] hover:bg-[#FA1651] text-white py-1 px-4 rounded-md text-sm"
             >
-              Submit
+              {t('event.submit')}
             </button>
           </div>
         </div>

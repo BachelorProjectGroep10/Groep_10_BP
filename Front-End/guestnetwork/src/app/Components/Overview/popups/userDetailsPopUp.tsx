@@ -96,7 +96,7 @@ export default function UserDetailsPopup({ user, groups, vlans, onClose }: Props
           &times;
         </button>
 
-        <h2 className="text-lg font-bold mb-1">User Details</h2>
+        <h2 className="text-lg font-bold mb-1">{t('pop-up.userDetails')}</h2>
         
         <span
           className={`inline-block px-4 py-1 rounded-full text-xs font-bold mb-3 ${
@@ -107,15 +107,15 @@ export default function UserDetailsPopup({ user, groups, vlans, onClose }: Props
               : "bg-red-100 text-red-800"
           }`}
         >
-          {isExpired ? "Expired" : user.active ? t("overview.active") : t("overview.disabled")}
+          {isExpired ? t('pop-up.expired') : user.active ? t("pop-up.active") : t("pop-up.disabled")}
         </span>
 
         <div className="text-sm text-gray-700 space-y-2">
-          <p><strong>MAC Address:</strong> {user.macAddress}</p>
+          <p><strong>{t('pop-up.macAddress')}:</strong> {user.macAddress}</p>
 
           <div>
             <p>
-              <strong>Password:</strong> <span>{user.password}</span>
+              <strong>{t('pop-up.password')}:</strong> <span>{user.password}</span>
               {!user.groupName && (
                 <button
                   onClick={handleRegeneratePassword}
@@ -129,23 +129,23 @@ export default function UserDetailsPopup({ user, groups, vlans, onClose }: Props
 
           {!isEditingDetails ? (
             <>
-              <p><strong>Group:</strong> {user.groupName || 'No group'}</p>
-              <p><strong>Expires:</strong> {formatDate(user.expiredAt)}</p>
-              <p><strong>Email:</strong> {user.email || 'N/A'}</p>
-              <p><strong>UID:</strong> {user.uid || 'N/A'}</p>
+              <p><strong>{t('pop-up.group')}:</strong> {user.groupName || 'No group'}</p>
+              <p><strong>{t('pop-up.expirationDate')}:</strong> {formatDate(user.expiredAt)}</p>
+              <p><strong>{t('pop-up.email')}:</strong> {user.email || 'N/A'}</p>
+              <p><strong>{t('pop-up.uid')}:</strong> {user.uid || 'N/A'}</p>
               <p><strong>VLAN:</strong> {user.vlan || 'N/A'}</p>
-              <p><strong>Description:</strong> {user.description || 'N/A'}</p>
+              <p><strong>{t('pop-up.description')}:</strong> {user.description || 'N/A'}</p>
             </>
           ) : (
             <div className="flex flex-col gap-2 mt-2">
               <div>
-                <label className="block text-s font-semibold">Group:</label>
+                <label className="block text-s font-semibold">{t('pop-up.group')}:</label>
                 <select
                   value={groupName ?? ''}
                   onChange={(e) => setGroupName(e.target.value)}
                   className="block w-full border border-gray-300 rounded-md shadow-sm p-2"
                 >
-                  <option value="">No group</option>
+                  <option value="">{t('pop-up.noGroup')}</option>
                   {groups?.map((g, index) => (
                     <option key={index} value={g.groupName}>
                       {g.groupName}
@@ -155,7 +155,7 @@ export default function UserDetailsPopup({ user, groups, vlans, onClose }: Props
               </div>
 
               <div>
-                <label className="block text-s font-semibold">Expiration Date:</label>
+                <label className="block text-s font-semibold">{t('pop-up.expirationDate')}:</label>
                 <input
                   type="date"
                   value={expiredAt}
@@ -167,17 +167,17 @@ export default function UserDetailsPopup({ user, groups, vlans, onClose }: Props
               <div>
                 <label className="block text-s font-semibold">Status:</label>
                 <select
-                  value={active ? 'true' : 'false'}
+                  value={active ? "true" : "false"}
                   onChange={(e) => setActive(e.target.value === 'true' ? 1 : 0)}
                   className="w-full border border-gray-300 rounded-md p-2"
                 >
-                  <option value="true">Active</option>
-                  <option value="false">Inactive</option>
+                  <option value="true">{t('pop-up.active')}</option>
+                  <option value="false">{t('pop-up.disabled')}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-s font-semibold">Email:</label>
+                <label className="block text-s font-semibold">{t('pop-up.email')}:</label>
                 <input
                   type="email"
                   value={email}
@@ -187,7 +187,7 @@ export default function UserDetailsPopup({ user, groups, vlans, onClose }: Props
               </div>
 
               <div>
-                <label className="block text-s font-semibold">UID:</label>
+                <label className="block text-s font-semibold">{t('pop-up.uid')}:</label>
                 <input
                   type="text"
                   value={uid}
@@ -208,7 +208,7 @@ export default function UserDetailsPopup({ user, groups, vlans, onClose }: Props
                   className="w-full border border-gray-300 rounded-md p-2 bg-white text-black shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
                 >
                   <option value="" disabled>
-                    --- Select ---
+                    --- {t('pop-up.select')} ---
                   </option>
                   {vlans.map((vlan, index) => (
                     <option key={vlan.vlan} value={vlan.vlan}>
@@ -219,7 +219,7 @@ export default function UserDetailsPopup({ user, groups, vlans, onClose }: Props
               </div>
 
               <div>
-                <label className="block text-s font-semibold">Description:</label>
+                <label className="block text-s font-semibold">{t('pop-up.description')}:</label>
                 <input
                   type="text"
                   value={description}
@@ -238,7 +238,7 @@ export default function UserDetailsPopup({ user, groups, vlans, onClose }: Props
                 onClick={handleSave}
                 className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-800"
               >
-                Save
+                {t('pop-up.save')}
               </button>
               <button
                 onClick={() => {
@@ -253,7 +253,7 @@ export default function UserDetailsPopup({ user, groups, vlans, onClose }: Props
                 }}
                 className="bg-[#003366] text-white px-4 py-2 rounded hover:bg-blue-700"
               >
-                Cancel
+                {t('pop-up.cancel')}
               </button>
             </div>
           ) : (
@@ -261,7 +261,7 @@ export default function UserDetailsPopup({ user, groups, vlans, onClose }: Props
               onClick={() => setIsEditingDetails(true)}
               className="bg-[#003366] text-white px-4 py-2 rounded hover:bg-blue-700"
             >
-              Update
+              {t('pop-up.update')}
             </button>
           )}
 
@@ -269,7 +269,7 @@ export default function UserDetailsPopup({ user, groups, vlans, onClose }: Props
             onClick={handleDelete}
             className="bg-[#FA1651] text-white px-4 py-2 rounded hover:bg-[#fa1653c6]"
           >
-            Delete
+            {t('pop-up.delete')}
           </button>
         </div>
       </div>
