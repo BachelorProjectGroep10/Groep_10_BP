@@ -110,8 +110,10 @@ export default function OverviewComponent( { loggedInUser }: OverviewProps ) {
   };
 
   useEffect(() => {
-    fetchVlans();
-  })
+    if (role === 'Admin') {
+      fetchVlans();
+    }
+  }, [role])
 
   const { data: users, isLoading: isUsersLoading } = useSWR('users', fetchUsers);
   const { data: groups, isLoading: isGroupsLoading } = useSWR('groups', fetchGroups);

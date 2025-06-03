@@ -207,7 +207,7 @@ export function QRCodeComponent( { loggedInUser }: QrCodeProps ) {
               )}
 
               {activeView === 'single' && role === 'Admin' && <SingleUserComponent isMobile={true} />}
-              {activeView === 'group' && role === 'Admin' && <GroupSelectComponent isMobile={true} />}
+              {activeView === 'group' && role === 'Admin' && <GroupSelectComponent isMobile={true} loggedInUser={loggedInUser} />}
               {activeView === 'event' && (role === 'Admin' || role === 'Personnel') && <EventApplyComponent isMobile={true} />}
             </div>
           </div>
@@ -217,7 +217,7 @@ export function QRCodeComponent( { loggedInUser }: QrCodeProps ) {
             {role === 'Admin' ? (
               <>
                 <SingleUserComponent isMobile={false} />
-                <GroupSelectComponent isMobile={false} />
+                <GroupSelectComponent isMobile={false} loggedInUser={loggedInUser} />
               </>
             ) : null}
             {role === 'Admin' || role === 'Personnel' ? (
