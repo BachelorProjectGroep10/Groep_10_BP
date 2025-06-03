@@ -12,8 +12,8 @@ const tenantId = process.env.AZURE_TENANT_ID!;
 const clientId = process.env.AZURE_CLIENT_ID!;
 const clientSecret = process.env.AZURE_CLIENT_SECRET!;
 const jwtSecret = process.env.JWT_SECRET!;
-const redirectUri = process.env.REDIRECT_URI!;
-const dashboardRedirectUri = 'http://localhost:8080/dashboard/';
+const redirectUrl = process.env.REDIRECT_URL!;
+const frontendRedirect = process.env.FRONTEND_REDIRECT_URL!;
 
 const AUTH_STATE_COOKIE = 'auth_state';
 const AUTH_NONCE_COOKIE = 'auth_nonce';
@@ -28,7 +28,7 @@ async function initializeClient() {
         client = new issuer.Client({
             client_id: clientId,
             client_secret: clientSecret,
-            redirect_uris: [redirectUri],
+            redirect_uris: [redirectUrl],
             response_types: ['code'],
         });
         console.log('OIDC client initialized');
@@ -77,7 +77,7 @@ authRouter.post('/login', async (req: Request, res: Response, next:NextFunction)
         }
 
         const token = jwt.sign(userPayload, jwtSecret, { expiresIn: '1h' });
-        res.cookie(AUTH_TOKEN_COOKIE, token, { httpOnly: true, sameSite: 'lax', secure: false });
+        res.cookie(AUTH_TOKEN_COOKIE, token, { httpOnly: true, sameSite: 'lax', secure: true });
 
         res.status(200).json({userPayload});
     } catch (error) {
@@ -96,7 +96,7 @@ authRouter.get('/callback', async (req: Request, res: Response, next: NextFuncti
 
     try {
         const params = client.callbackParams(req);
-        const tokenSet = await client.callback(redirectUri, params, { state, nonce });
+        const tokenSet = await client.callback(redirectUrl, params, { state, nonce });
 
         const userinfo = await client.userinfo(tokenSet.access_token!);
         if (!userinfo || !userinfo.email) {
@@ -105,7 +105,7 @@ authRouter.get('/callback', async (req: Request, res: Response, next: NextFuncti
 
         const existingUser = await authService.checkUser(userinfo.email as string);
         if (!existingUser) {
-            res.redirect('http://localhost:8080/');
+            res.redirect(`${frontendRedirect}/unauthorized`);
             return;
         }
 
@@ -123,9 +123,9 @@ authRouter.get('/callback', async (req: Request, res: Response, next: NextFuncti
         res.clearCookie(AUTH_STATE_COOKIE);
         res.clearCookie(AUTH_NONCE_COOKIE);
 
-        res.cookie(AUTH_TOKEN_COOKIE, token, { httpOnly: true, sameSite: 'lax', secure: false });
+        res.cookie(AUTH_TOKEN_COOKIE, token, { httpOnly: true, sameSite: 'lax', secure: true });
 
-        res.redirect(`${dashboardRedirectUri}`);
+        res.redirect(`${frontendRedirect}/dashboard`);
     } catch (error) {
         console.error('Authentication error:', error);
         next(error);
@@ -152,7 +152,7 @@ authRouter.get('/logout', (req: Request, res: Response) => {
     res.clearCookie(AUTH_TOKEN_COOKIE);
     res.clearCookie(AUTH_STATE_COOKIE);
     res.clearCookie(AUTH_NONCE_COOKIE);
-    res.redirect(`${dashboardRedirectUri}`);
+    res.redirect(`${frontendRedirect}`);
 });
 
 export default authRouter;
