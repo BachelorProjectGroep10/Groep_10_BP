@@ -84,7 +84,7 @@ export default function Overview() {
       )}
       {isLoggedIn && (<div className="relative z-10 flex flex-col min-h-screen">
         <HeaderComponent />
-        <OverviewComponent />
+        <OverviewComponent loggedInUser={loggedInUser} />
       </div>)}
     </div>
   )
