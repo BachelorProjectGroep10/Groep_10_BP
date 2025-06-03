@@ -12,7 +12,7 @@ const tenantId = process.env.AZURE_TENANT_ID!;
 const clientId = process.env.AZURE_CLIENT_ID!;
 const clientSecret = process.env.AZURE_CLIENT_SECRET!;
 const jwtSecret = process.env.JWT_SECRET!;
-const redirectUri = process.env.REDIRECT_URI!;
+const redirectUrl = process.env.REDIRECT_URL!;
 const frontendRedirect = process.env.FRONTEND_REDIRECT_URL!;
 
 const AUTH_STATE_COOKIE = 'auth_state';
@@ -28,7 +28,7 @@ async function initializeClient() {
         client = new issuer.Client({
             client_id: clientId,
             client_secret: clientSecret,
-            redirect_uris: [redirectUri],
+            redirect_uris: [redirectUrl],
             response_types: ['code'],
         });
         console.log('OIDC client initialized');
@@ -44,8 +44,8 @@ authRouter.get('/microsoft/login', (req:Request, res:Response) => {
     const state = generators.state();
     const nonce = generators.nonce();
 
-    res.cookie(AUTH_STATE_COOKIE, state, { httpOnly: true, sameSite: 'lax', secure: true });
-    res.cookie(AUTH_NONCE_COOKIE, nonce, { httpOnly: true, sameSite: 'lax', secure: true });
+    res.cookie(AUTH_STATE_COOKIE, state, { httpOnly: true, sameSite: 'lax' });
+    res.cookie(AUTH_NONCE_COOKIE, nonce, { httpOnly: true, sameSite: 'lax' });
 
     const url = client.authorizationUrl({
         scope: 'openid profile email',
@@ -96,7 +96,7 @@ authRouter.get('/callback', async (req: Request, res: Response, next: NextFuncti
 
     try {
         const params = client.callbackParams(req);
-        const tokenSet = await client.callback(redirectUri, params, { state, nonce });
+        const tokenSet = await client.callback(redirectUrl, params, { state, nonce });
 
         const userinfo = await client.userinfo(tokenSet.access_token!);
         if (!userinfo || !userinfo.email) {
