@@ -1,10 +1,11 @@
 import express, { Request, Response, NextFunction } from 'express';
 import GroupService from '../service/group.service';
+import { authorize } from '../util/authorize';
+import { decodeToken } from '../util/jwt';
 
 const groupRouter = express.Router();
 
-groupRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
-  
+groupRouter.get('/', authorize('Admin'), async (req, res, next) => {
   try {
     const groups = await GroupService.getAllGroups(req.query.name as string, req.query.vlan as unknown as number);
     res.status(200).json(groups);
@@ -13,7 +14,7 @@ groupRouter.get('/', async (req: Request, res: Response, next: NextFunction) => 
   }
 });
 
-groupRouter.post('/', async (req: Request, res: Response, next: NextFunction) => {
+groupRouter.post('/',  authorize('Admin'), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const group = req.body;
     await GroupService.addGroup(group);
@@ -23,7 +24,7 @@ groupRouter.post('/', async (req: Request, res: Response, next: NextFunction) =>
   }
 });
 
-groupRouter.put('/:groupName', async (req: Request, res: Response, next: NextFunction) => {
+groupRouter.put('/:groupName',  authorize('Admin'), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const groupName = req.params.groupName;
     const updates = req.body; 
@@ -36,7 +37,7 @@ groupRouter.put('/:groupName', async (req: Request, res: Response, next: NextFun
   }
 });
 
-groupRouter.delete('/:groupName', async (req: Request, res: Response, next: NextFunction) => {
+groupRouter.delete('/:groupName', authorize('Admin'), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const groupName = req.params.groupName;
     await GroupService.deleteGroup(groupName);
@@ -46,7 +47,7 @@ groupRouter.delete('/:groupName', async (req: Request, res: Response, next: Next
   }
 });
 
-groupRouter.post('/regen/:groupName', async (req: Request, res: Response, next: NextFunction) => {
+groupRouter.post('/regen/:groupName', authorize('Admin'), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const groupName = req.params.groupName;
     await GroupService.regenGroupPW(groupName);

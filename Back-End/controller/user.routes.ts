@@ -1,9 +1,10 @@
 import express, { Request, Response, NextFunction } from 'express';
 import UserService from '../service/user.service';
+import { authorize } from '../util/authorize';
 
 const userRouter = express.Router();
 
-userRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
+userRouter.get('/', authorize('Admin'), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const users = await UserService.getAllUsers(
       req.query.macAddress as string, 
@@ -16,7 +17,7 @@ userRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
   }
 });
 
-userRouter.post('/', async (req: Request, res: Response, next: NextFunction) => {
+userRouter.post('/', authorize('Admin'), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = req.body;
     await UserService.addUser(user);
@@ -26,7 +27,7 @@ userRouter.post('/', async (req: Request, res: Response, next: NextFunction) => 
   }
 });
 
-userRouter.put('/:macAddress', async (req: Request, res: Response, next: NextFunction) => {
+userRouter.put('/:macAddress', authorize('Admin'), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const macAddress = req.params.macAddress;
     const updates = req.body; 
@@ -39,7 +40,7 @@ userRouter.put('/:macAddress', async (req: Request, res: Response, next: NextFun
   }
 });
 
-userRouter.delete('/:macAddress', async (req: Request, res: Response, next: NextFunction) => {
+userRouter.delete('/:macAddress', authorize('Admin'),async (req: Request, res: Response, next: NextFunction) => {
   try {
     const macAddress = req.params.macAddress;
     await UserService.deleteUser(macAddress);
@@ -49,7 +50,7 @@ userRouter.delete('/:macAddress', async (req: Request, res: Response, next: Next
   }
 })
 
-userRouter.post('/regen/:macAddress', async (req: Request, res: Response, next: NextFunction) => {
+userRouter.post('/regen/:macAddress', authorize('Admin'), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const macAddress = req.params.macAddress;
     await UserService.regenUserPw(macAddress);
@@ -59,7 +60,7 @@ userRouter.post('/regen/:macAddress', async (req: Request, res: Response, next: 
   }
 })
 
-userRouter.post('/addToGroup/:macAddress', async (req: Request, res: Response, next: NextFunction) => {
+userRouter.post('/addToGroup/:macAddress', authorize('Admin'), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const macAddress = req.params.macAddress;
     const groupName = req.body.groupName;
@@ -70,7 +71,7 @@ userRouter.post('/addToGroup/:macAddress', async (req: Request, res: Response, n
   }
 })
 
-userRouter.post('/removeFromGroup/:macAddress', async (req: Request, res: Response, next: NextFunction) => {
+userRouter.post('/removeFromGroup/:macAddress', authorize('Admin'), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const macAddress = req.params.macAddress;
     const groupName = req.body.groupName;

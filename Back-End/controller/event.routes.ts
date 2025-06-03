@@ -1,9 +1,10 @@
 import express, { Request, Response, NextFunction } from 'express';
 import EventService from '../service/event.service';
+import { authorize } from '../util/authorize';
 
 const eventRouter = express.Router();
 
-eventRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
+eventRouter.get('/', authorize('Admin', 'Personnel'), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const events = await EventService.getAllEvents(req.query.name as string);
     res.status(200).json(events);
@@ -12,7 +13,7 @@ eventRouter.get('/', async (req: Request, res: Response, next: NextFunction) => 
   }
 });
 
-eventRouter.post('/', async (req: Request, res: Response, next: NextFunction) => {
+eventRouter.post('/', authorize('Admin', 'Personnel'), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const event = req.body;
     await EventService.addEvent(event);
@@ -22,7 +23,7 @@ eventRouter.post('/', async (req: Request, res: Response, next: NextFunction) =>
   }
 });
 
-eventRouter.put('/:eventName', async (req: Request, res: Response, next: NextFunction) => {
+eventRouter.put('/:eventName', authorize('Admin', 'Personnel'), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const eventName = req.params.macAddress;
     const updates = req.body; 
@@ -35,7 +36,7 @@ eventRouter.put('/:eventName', async (req: Request, res: Response, next: NextFun
   }
 });
 
-eventRouter.delete('/:eventName', async (req: Request, res: Response, next: NextFunction) => {
+eventRouter.delete('/:eventName', authorize('Admin', 'Personnel'), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const eventName = req.params.groupName;
     await EventService.deleteEvent(eventName);

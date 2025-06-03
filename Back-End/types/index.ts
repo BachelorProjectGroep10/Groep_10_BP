@@ -22,3 +22,10 @@ export type Vlan = {
     readonly name: string;
     readonly isDefault: boolean;
 }
+
+export type Staff = {
+    readonly id?: number;
+    readonly username: string;
+    readonly email: string;
+    readonly role: string;
+}
