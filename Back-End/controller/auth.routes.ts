@@ -13,7 +13,7 @@ const clientId = process.env.AZURE_CLIENT_ID!;
 const clientSecret = process.env.AZURE_CLIENT_SECRET!;
 const jwtSecret = process.env.JWT_SECRET!;
 const redirectUri = process.env.REDIRECT_URI!;
-const dashboardRedirectUri = 'http://localhost:8080/dashboard/';
+const frontendRedirect = process.env.FRONTEND_REDIRECT_URL!;
 
 const AUTH_STATE_COOKIE = 'auth_state';
 const AUTH_NONCE_COOKIE = 'auth_nonce';
@@ -44,8 +44,8 @@ authRouter.get('/microsoft/login', (req:Request, res:Response) => {
     const state = generators.state();
     const nonce = generators.nonce();
 
-    res.cookie(AUTH_STATE_COOKIE, state, { httpOnly: true, sameSite: 'lax' });
-    res.cookie(AUTH_NONCE_COOKIE, nonce, { httpOnly: true, sameSite: 'lax' });
+    res.cookie(AUTH_STATE_COOKIE, state, { httpOnly: true, sameSite: 'lax', secure: true });
+    res.cookie(AUTH_NONCE_COOKIE, nonce, { httpOnly: true, sameSite: 'lax', secure: true });
 
     const url = client.authorizationUrl({
         scope: 'openid profile email',
@@ -77,7 +77,7 @@ authRouter.post('/login', async (req: Request, res: Response, next:NextFunction)
         }
 
         const token = jwt.sign(userPayload, jwtSecret, { expiresIn: '1h' });
-        res.cookie(AUTH_TOKEN_COOKIE, token, { httpOnly: true, sameSite: 'lax', secure: false });
+        res.cookie(AUTH_TOKEN_COOKIE, token, { httpOnly: true, sameSite: 'lax', secure: true });
 
         res.status(200).json({userPayload});
     } catch (error) {
@@ -105,7 +105,7 @@ authRouter.get('/callback', async (req: Request, res: Response, next: NextFuncti
 
         const existingUser = await authService.checkUser(userinfo.email as string);
         if (!existingUser) {
-            res.redirect('http://localhost:8080/');
+            res.redirect(`${frontendRedirect}/unauthorized`);
             return;
         }
 
@@ -123,9 +123,9 @@ authRouter.get('/callback', async (req: Request, res: Response, next: NextFuncti
         res.clearCookie(AUTH_STATE_COOKIE);
         res.clearCookie(AUTH_NONCE_COOKIE);
 
-        res.cookie(AUTH_TOKEN_COOKIE, token, { httpOnly: true, sameSite: 'lax', secure: false });
+        res.cookie(AUTH_TOKEN_COOKIE, token, { httpOnly: true, sameSite: 'lax', secure: true });
 
-        res.redirect(`${dashboardRedirectUri}`);
+        res.redirect(`${frontendRedirect}/dashboard`);
     } catch (error) {
         console.error('Authentication error:', error);
         next(error);
@@ -152,7 +152,7 @@ authRouter.get('/logout', (req: Request, res: Response) => {
     res.clearCookie(AUTH_TOKEN_COOKIE);
     res.clearCookie(AUTH_STATE_COOKIE);
     res.clearCookie(AUTH_NONCE_COOKIE);
-    res.redirect(`${dashboardRedirectUri}`);
+    res.redirect(`${frontendRedirect}`);
 });
 
 export default authRouter;
