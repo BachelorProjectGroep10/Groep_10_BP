@@ -1,11 +1,11 @@
 import jwt, { SignOptions } from 'jsonwebtoken';
-
+import { Request, Response, NextFunction } from 'express';
 interface JwtPayloadInput {
     userId: string;
     username: string;
 }
 
-const generateJwtToken = ({ userId, username }: JwtPayloadInput): string => {
+export const generateJwtToken = ({ userId, username }: JwtPayloadInput): string => {
     const expiresIn: SignOptions['expiresIn'] = '8h'; 
     const options: SignOptions = {
         expiresIn,
@@ -25,6 +25,26 @@ const generateJwtToken = ({ userId, username }: JwtPayloadInput): string => {
     }
 };
 
-export {
-    generateJwtToken
+
+const jwtSecret = process.env.JWT_SECRET!;
+const AUTH_TOKEN_COOKIE = 'auth_token';
+
+export const decodeToken = (req: Request, res: Response, next: NextFunction): void => {
+  const token = req.cookies[AUTH_TOKEN_COOKIE];
+
+  if (!token) {
+    res.status(401).json({ message: 'No token provided' });
+    return;
+  }
+
+  try {
+    const decoded = jwt.verify(token, jwtSecret);
+    (req as any).user = decoded; // Attach decoded user to req
+    next(); // Proceed to next middleware
+  } catch (err) {
+    res.status(401).json({ message: 'Invalid token' });
+    return;
+  }
 };
+
+

@@ -3,8 +3,6 @@ import { Issuer, generators, Client } from 'openid-client';
 import jwt from 'jsonwebtoken';
 import cookieParser from 'cookie-parser';
 import authService from '../service/auth.service';
-import { promises } from 'dns';
-import { error } from 'console';
 
 const authRouter = express.Router();
 authRouter.use(cookieParser());
@@ -64,20 +62,24 @@ authRouter.post('/login', async (req: Request, res: Response, next:NextFunction)
         const { username, password } = req.body;
         if (!username || !password) {
             res.status(400).json({ message: 'Username and password are required.' });
+            return;
         }
         const staff = await authService.simpleAuthenticate({username, password})
         if (!staff) {
-            res.status(401).json({ message: 'Invalid username or password.' });
-            return;
+            throw new Error('Invalid username or password');
         }
+
         const userPayload = {
             id: staff.id,
             email: staff.email,
             name: staff.username,
             role: staff.role,
         }
+
         const token = jwt.sign(userPayload, jwtSecret, { expiresIn: '1h' });
         res.cookie(AUTH_TOKEN_COOKIE, token, { httpOnly: true, sameSite: 'lax', secure: false });
+
+        res.status(200).json({userPayload});
     } catch (error) {
         console.error('Authentication error:', error);
         next(error);

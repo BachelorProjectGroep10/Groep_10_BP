@@ -1,11 +1,10 @@
 import { getStaff, getStaffByMail } from "../domain/data-access/staff.db";
-import { generateJwtToken } from "../util/jwt";
 
 
 const simpleAuthenticate = async ({username, password}: { username: string; password: string }) => {
     const staff = await getStaff(username);
     if (!staff) {
-        throw new Error('Admin not found');
+        throw new Error('Staff not found');
     }
     if (staff.password !== password) {
         throw new Error('Invalid password');
