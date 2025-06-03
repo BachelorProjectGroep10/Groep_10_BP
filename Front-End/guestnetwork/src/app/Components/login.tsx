@@ -58,7 +58,7 @@ export default function LoginComponent() {
           </div>
 
           <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="username" className="block text-sm font-semibold text-gray-700">
               {t('login.username')}
             </label>
             <input
@@ -67,13 +67,13 @@ export default function LoginComponent() {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder={t('login.username')}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-1 block w-full p-2 border bg-gray-100 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="password" className="block text-sm font-semibold text-gray-700">
               {t('login.password')}
             </label>
             <input
@@ -82,7 +82,7 @@ export default function LoginComponent() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder={t('login.password')}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-1 block w-full p-2 border bg-gray-100 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
