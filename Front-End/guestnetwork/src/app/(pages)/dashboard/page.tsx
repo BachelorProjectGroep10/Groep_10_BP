@@ -82,7 +82,7 @@ export default function Dashboard() {
       ) : (
         <div className="relative z-10 flex flex-col min-h-screen">
           <HeaderComponent />
-          <QRCodeComponent />
+          <QRCodeComponent loggedInUser={loggedInUser} />
         </div>
       )}
     </div>
