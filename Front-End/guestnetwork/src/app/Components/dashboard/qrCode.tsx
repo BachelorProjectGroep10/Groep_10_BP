@@ -22,9 +22,15 @@ import { MdEvent } from "react-icons/md";
 import { useTranslation } from "react-i18next";
 import '../../i18n'; 
 import EventApplyComponent from './eventApply';
+import { LoginResponse } from '@/app/Types';
 
+interface QrCodeProps {
+  loggedInUser: LoginResponse | null;
+}
 
-export function QRCodeComponent() {
+export function QRCodeComponent( { loggedInUser }: QrCodeProps ) {
+  const [role] = useState(loggedInUser?.role || '');
+
   const [showBackground, setShowBackground] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const pdfRef = React.useRef<HTMLDivElement | null>(null);
@@ -200,54 +206,70 @@ export function QRCodeComponent() {
                 </>
               )}
 
-              {activeView === 'single' && <SingleUserComponent isMobile={true} />}
-              {activeView === 'group' && <GroupSelectComponent isMobile={true} />}
-              {activeView === 'event' && <EventApplyComponent isMobile={true} />}
+              {activeView === 'single' && role === 'Admin' && <SingleUserComponent isMobile={true} />}
+              {activeView === 'group' && role === 'Admin' && <GroupSelectComponent isMobile={true} />}
+              {activeView === 'event' && (role === 'Admin' || role === 'Personnel') && <EventApplyComponent isMobile={true} />}
             </div>
           </div>
 
           {/* On md+ show the forms always next to QR code */}
           <div className="hidden md:flex flex-col items-center justify-center gap-4">
-            <SingleUserComponent isMobile={false} />
-            <GroupSelectComponent isMobile={false} />
-            <EventApplyComponent isMobile={false} />
+            {role === 'Admin' ? (
+              <>
+                <SingleUserComponent isMobile={false} />
+                <GroupSelectComponent isMobile={false} />
+              </>
+            ) : null}
+            {role === 'Admin' || role === 'Personnel' ? (
+              <>
+                <EventApplyComponent isMobile={false} />
+              </>
+            ) : null}
           </div>
         </div>
 
         {/* On md and smaller: buttons to toggle views */}
         <div className="md:hidden flex justify-center gap-4 mt-4">
-          <button
-            onClick={() => setActiveView('single')}
-            className={`bg-[#002757] text-white px-4 py-2 rounded-lg ${
-              activeView === 'single' ? 'ring-2 ring-white' : ''
-            }`}
-          >
-            <IoPersonAddSharp size={20} />
-          </button>
-          <button
-            onClick={() => setActiveView('group')}
-            className={`bg-[#002757] text-white px-4 py-2 rounded-lg ${
-              activeView === 'group' ? 'ring-2 ring-white' : ''
-            }`}
-          >
-            <MdGroups size={30} />
-          </button>
-          <button
-            onClick={() => setActiveView('event')}
-            className={`bg-[#002757] text-white px-4 py-2 rounded-lg ${
-              activeView === 'group' ? 'ring-2 ring-white' : ''
-            }`}
-          >
-            <MdEvent size={25} />
-          </button>
-          <button
-            onClick={() => setActiveView('qr')}
-            className={`bg-[#002757] text-white px-4 py-2 rounded-lg ${
-              activeView === 'qr' ? 'ring-2 ring-white' : ''
-            }`}
-          >
-            <IoQrCodeSharp size={20} />
-          </button>
+          {role === 'Admin' ? (
+            <>    
+              <button
+                onClick={() => setActiveView('single')}
+                className={`bg-[#002757] text-white px-4 py-2 rounded-lg ${
+                  activeView === 'single' ? 'ring-2 ring-white' : ''
+                }`}
+              >
+                <IoPersonAddSharp size={20} />
+              </button>
+              <button
+                onClick={() => setActiveView('group')}
+                className={`bg-[#002757] text-white px-4 py-2 rounded-lg ${
+                  activeView === 'group' ? 'ring-2 ring-white' : ''
+                }`}
+              >
+                <MdGroups size={30} />
+              </button> 
+            </>
+          ) : null}
+          {role === 'Admin' || role === 'Personnel' ? (
+            <>
+              <button
+                onClick={() => setActiveView('event')}
+                className={`bg-[#002757] text-white px-4 py-2 rounded-lg ${
+                  activeView === 'group' ? 'ring-2 ring-white' : ''
+                }`}
+              >
+                <MdEvent size={25} />
+              </button>
+              <button
+                onClick={() => setActiveView('qr')}
+                className={`bg-[#002757] text-white px-4 py-2 rounded-lg ${
+                  activeView === 'qr' ? 'ring-2 ring-white' : ''
+                }`}
+              >
+                <IoQrCodeSharp size={20} />
+              </button>
+            </>
+          ) : null}
         </div>
 
         <div className="text-center mt-4">
