@@ -14,7 +14,7 @@ export default function Dashboard() {
 
   const fetchUser = async () => {
     try {
-      const response = await AdminService.getUserData();
+      const response = await AdminService.verifyUserData();
       if (!response.ok) throw new Error("Unauthorized");
 
       const data = await response.json();

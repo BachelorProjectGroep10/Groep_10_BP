@@ -16,7 +16,7 @@ export default function Home() {
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
-        const res = await AdminService.getUserData(); // Make sure this hits /auth/me with credentials
+        const res = await AdminService.verifyUserData(); // Make sure this hits /auth/me with credentials
         if (res.ok) {
           router.push('/dashboard');
         }

@@ -22,7 +22,7 @@ const microsoftLogin = async () => {
     });
 }
 
-const getUserData = async () => {
+const verifyUserData = async () => {
     const url = `${basicUrl}/auth/me`;
     return fetch(url, {
         method: 'GET',
@@ -41,7 +41,7 @@ const logout = async () => {
 const AdminService = {
     simpleLogin,
     microsoftLogin,
-    getUserData,
+    verifyUserData,
     logout
 };
 

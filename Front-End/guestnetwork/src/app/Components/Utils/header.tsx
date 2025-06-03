@@ -23,7 +23,7 @@ export function HeaderComponent() {
     useEffect(() => {
         const checkLogin = async () => {
             try {
-                const res = await AdminService.getUserData();
+                const res = await AdminService.verifyUserData();
                 if (res.ok) {
                     const data = await res.json();
                     setIsLoggedIn(true);
