@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import GroupService from '../../Services/GroupService';
 import { useTranslation } from "react-i18next";
 import '../../i18n'; 
-import { Group, Vlan } from '../../Types';
+import { Group, LoginResponse, Vlan } from '../../Types';
 import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa';
 import { MdGroups } from 'react-icons/md';
 import VlanService from '../../Services/VlanService';
@@ -10,9 +10,12 @@ import { validateGroup } from '../../Utils/validation';
 
 interface GroupInterface {
   isMobile: boolean;
+  loggedInUser: LoginResponse | null;
 }
 
-export default function GroupSelectComponent( {isMobile}: GroupInterface) {
+export default function GroupSelectComponent( {isMobile, loggedInUser}: GroupInterface) {
+  const [role] = useState(loggedInUser?.role || '');
+  
   const [message, setMessage] = useState('');
   const [groupName, setGroupName] = useState('');
   const [description, setDescription] = useState('');
@@ -83,7 +86,11 @@ export default function GroupSelectComponent( {isMobile}: GroupInterface) {
     if(isMobile) {
       setIsGroupFormOpen(true);
     }
-    fetchVlans();
+
+    if(role === 'Admin') {
+      fetchVlans();
+    }
+
     const handleResize = () => {
       setRows(window.innerWidth <= 768 ? 3 : 4);
     };
