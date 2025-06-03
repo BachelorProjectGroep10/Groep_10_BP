@@ -20,9 +20,11 @@ const simpleAuthenticate = async ({username, password}: { username: string; pass
 
 const checkUser = async (email: string) => {
     const staff = await getStaffByMail(email);
+
     if (!staff) {
-        throw new Error('User not found');
+        return null;
     }
+
     return {
         id: staff.id,
         username: staff.username,

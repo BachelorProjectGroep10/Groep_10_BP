@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import cookieParser from 'cookie-parser';
 import authService from '../service/auth.service';
 import { promises } from 'dns';
+import { error } from 'console';
 
 const authRouter = express.Router();
 authRouter.use(cookieParser());
@@ -13,7 +14,7 @@ const tenantId = process.env.AZURE_TENANT_ID!;
 const clientId = process.env.AZURE_CLIENT_ID!;
 const clientSecret = process.env.AZURE_CLIENT_SECRET!;
 const jwtSecret = process.env.JWT_SECRET!;
-const redirectUri = 'http://localhost:3000/auth/callback';
+const redirectUri = process.env.REDIRECT_URI!;
 const dashboardRedirectUri = 'http://localhost:8080/dashboard/';
 
 const AUTH_STATE_COOKIE = 'auth_state';
@@ -102,7 +103,8 @@ authRouter.get('/callback', async (req: Request, res: Response, next: NextFuncti
 
         const existingUser = await authService.checkUser(userinfo.email as string);
         if (!existingUser) {
-             res.status(401).send('Unauthorized: User not found.');
+            res.redirect('http://localhost:8080/');
+            return;
         }
 
         const userPayload = {
