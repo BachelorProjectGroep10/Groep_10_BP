@@ -10,6 +10,7 @@ import { RiFileDownloadLine } from "react-icons/ri";
 import html2canvas from "html2canvas";
 import React from "react";
 import jsPDF from "jspdf";
+import QRCodePdfLayout from "../../dashboard/qrCodePdfLayout";
 
 interface EventsTableProps {
   events: Event[]
@@ -19,10 +20,16 @@ export default function EventsTable( { events }: EventsTableProps) {
   const {t} = useTranslation();
   const [showPopUp, setShowPopUp] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
-  const pdfRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+  const pdfRef = React.useRef<HTMLDivElement | null>(null);
 
-  const handleDownloadPdf = async (eventKey: string) => {
-    const element = pdfRefs.current[eventKey];
+  const ssid = 'BP Groep 10 - Gast Test';
+
+  const handleDownloadPdf = async (event: Event) => {
+    setSelectedEvent(event); 
+
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    const element = pdfRef.current;
     if (!element) return;
 
     const canvas = await html2canvas(element, {
@@ -36,7 +43,7 @@ export default function EventsTable( { events }: EventsTableProps) {
     const pdfHeight = pdf.internal.pageSize.getHeight();
 
     pdf.addImage(data, 'PNG', 0, 0, pdfWidth, pdfHeight);
-    pdf.save('qr_code.pdf');
+    pdf.save(`${event.eventName}_qr_code.pdf`);
   };
 
 
@@ -78,11 +85,7 @@ export default function EventsTable( { events }: EventsTableProps) {
                 className="hover:bg-[#e6f3ff] text-[#003366] border-b border-gray-100 transition duration-150 text-left"
               >
                 <td className="w-1/6 p-4 break-words">{event.eventName}</td>
-                <td className="w-1/6 p-4 break-words">
-                  <div ref={(el) => { pdfRefs.current[event.eventName] = el }}>
-                    {event.password}
-                  </div>
-                </td>
+                <td className="w-1/6 p-4 break-words">{event.password}</td>
                 <td className="w-1/6 p-4 break-words">{formatDate(event.startDate)}</td>
                 <td className="w-1/6 p-4 break-words">{formatDate(event.endDate)}</td>
                 <td className="w-1/6 p-4 text-center">
@@ -95,8 +98,9 @@ export default function EventsTable( { events }: EventsTableProps) {
                 </td>
                 <td className="w-1/6 p-4 text-center">
                   <button
-                    onClick={() => handleDownloadPdf(event.eventName)}
-                    className="bg-[#002757] text-white hover:bg-[#FA1651] flex items-center justify-center gap-2 text-sm rounded-lg p-2 transition duration-200 mb-2"                    >
+                    onClick={() => handleDownloadPdf(event)} 
+                    className="bg-[#002757] text-white hover:bg-[#FA1651] flex items-center justify-center gap-2 text-sm rounded-lg p-2 transition duration-200"
+                  >
                     <RiFileDownloadLine size={14} /> Download PDF
                   </button>
                 </td>
@@ -104,6 +108,26 @@ export default function EventsTable( { events }: EventsTableProps) {
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* Hidden PDF layout for download */}
+      <div style={{ position: 'absolute', top: '-10000px', left: '-10000px' }}>
+        <div
+          ref={pdfRef}
+          style={{ width: '794px', height: '1123px' }}
+          className="flex flex-col items-center justify-around"
+        >
+          {selectedEvent && (
+            <QRCodePdfLayout
+              name={selectedEvent.eventName}
+              ssid={ssid}
+              password={selectedEvent.password}
+              showBackground={true}
+              startDate={formatDate(selectedEvent.startDate)}
+              endDate={formatDate(selectedEvent.endDate)}
+            />
+          )}
+        </div>
       </div>
 
       {/* Pop Up */}

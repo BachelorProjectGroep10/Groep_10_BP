@@ -286,7 +286,7 @@ export function QRCodeComponent( { loggedInUser }: QrCodeProps ) {
           style={{ width: '794px', height: '1123px' }}
           className="flex flex-col items-center justify-around"
         >
-          <QRCodePdfLayout ssid={ssid} password={password} showBackground={showBackground} monday={monday ?? ''} sunday={sunday ?? ''} />
+          <QRCodePdfLayout name="" ssid={ssid} password={password} showBackground={showBackground} startDate={monday ?? ''} endDate={sunday ?? ''} />
         </div>
       </div>
 
