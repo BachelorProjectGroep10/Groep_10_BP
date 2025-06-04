@@ -5,19 +5,21 @@ import Background from '../Utils/background';
 import { QRCode } from 'react-qrcode-logo';
 
 interface QRCodePdfLayoutProps {
+  name: string;
   ssid?: string;
   password?: string;
   showBackground?: boolean;
-  monday: string;
-  sunday: string;
+  startDate: string;
+  endDate: string;
 }
 
 export function QRCodePdfLayout({
+  name, 
   ssid,
   password,
   showBackground = true, 
-  monday,
-  sunday
+  startDate,
+  endDate
 }: QRCodePdfLayoutProps) {
   return (
     <div
@@ -50,7 +52,10 @@ export function QRCodePdfLayout({
           </p>
         </div>
 
-        <div className="bg-[#9FDAF9] p-10 rounded-xl shadow mb-4 flex flex-col items-center justify-center">
+        <div className="bg-[#9FDAF9] p-10 rounded-xl shadow flex flex-col items-center justify-center">
+          {name && name.trim() !== "" && (
+            <h2 className="text-3xl pb-6 text-black">{name}</h2>
+          )}
           <QRCode
             value={`WIFI:S:${ssid};H:true;T:WPA;P:${password};;`}
             size={300}
@@ -64,7 +69,6 @@ export function QRCodePdfLayout({
             style={{ borderRadius: '0.75rem' }}
             qrStyle="dots"
             eyeRadius={10}
-            
           />
           <h3 className='font-semibold text-2xl'>Scan Me</h3>
           <div className='flex flex-col items-start justify-center bg-white p-4 rounded-lg mt-4'>
@@ -79,11 +83,11 @@ export function QRCodePdfLayout({
         <div className="flex items-start gap-1 mt-2 text-lg text-black">
           <p className="font-semibold">Valid</p>
           <p className="font-semibold">
-            From: <span className="font-normal">{monday}</span>
+            From: <span className="font-normal">{startDate}</span>
           </p>
           <span className="mx-1">-</span>
           <p className="font-semibold">
-            Till: <span className="font-normal">{sunday}</span>
+            Till: <span className="font-normal">{endDate}</span>
           </p>
         </div>
       </div>
