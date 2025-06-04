@@ -17,8 +17,9 @@ export default function Overview() {
   const fetchUser = async () => {
     try {
       const response = await AdminService.verifyUserData();
-      if (!response.ok) throw new Error("Unauthorized");
-
+      if (!response.ok){
+        return;
+      }
       const data = await response.json();
 
       const user: LoginResponse = {

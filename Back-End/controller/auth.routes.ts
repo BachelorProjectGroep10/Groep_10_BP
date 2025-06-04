@@ -136,10 +136,9 @@ authRouter.get('/callback', async (req: Request, res: Response, next: NextFuncti
 authRouter.get('/me', (req: Request, res: Response) => {
     const token = req.cookies[AUTH_TOKEN_COOKIE];
     if (!token) {
-        res.status(401).json({ message: 'Not authenticated' });
+        res.status(401)
         return;
     }
-
     try {
         const userData = jwt.verify(token, jwtSecret);
         res.json(userData); 
@@ -152,7 +151,7 @@ authRouter.get('/logout', (req: Request, res: Response) => {
     res.clearCookie(AUTH_TOKEN_COOKIE);
     res.clearCookie(AUTH_STATE_COOKIE);
     res.clearCookie(AUTH_NONCE_COOKIE);
-    res.redirect(`${frontendRedirect}`);
+    res.status(200).json({ message: "Logged out" });
 });
 
 export default authRouter;

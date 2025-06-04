@@ -43,7 +43,7 @@ app.use(expressjwt({
     algorithms: ['HS256'],
     getToken: req => req.cookies.auth_token,
     }).unless({ 
-        path: ['/password', '/auth/login','/auth/microsoft/login', '/auth/callback', '/auth/me']
+        path: ['/password', '/auth/login','/auth/microsoft/login', '/auth/callback']
     })
 );
 

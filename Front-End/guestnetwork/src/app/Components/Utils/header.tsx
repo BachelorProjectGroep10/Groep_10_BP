@@ -2,14 +2,16 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { LuLogOut, LuMenu } from "react-icons/lu";
+import { LuLogOut, LuMenu,  } from "react-icons/lu";
+import { IoMdClose } from "react-icons/io";
+import { IoHomeOutline } from "react-icons/io5";
+import { GrOverview } from "react-icons/gr";
 import { LanguageComponent } from "./Language";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import '../../i18n'; 
 import AdminService from "@/app/Services/StaffService";
-import { LoginResponse } from "@/app/Types";
-import { set } from "date-fns";
+
 
 export function HeaderComponent() {
     const [language, setLanguage] = useState("EN");
@@ -48,10 +50,10 @@ export function HeaderComponent() {
                 setIsLoggedIn(false);
                 setLoggedInUser(null);
                 setDropdownOpen(false);
+                router.push('/');
             } else {
                 console.error("Logout failed");
             }
-            router.push('/'); // Redirect to the home page after logout
         } catch (error) {
             console.error("Error during logout:", error);
         }
@@ -76,9 +78,9 @@ export function HeaderComponent() {
                 <div className="relative">
                     <button
                         onClick={() => setDropdownOpen(!dropdownOpen)}
-                        className="text-[#002757] hover:text-[#FA1651] text-2xl focus:outline-none"
+                        className="text-[#002757] hover:text-[#FA1651] text-2xl focus:outline-none cursor-pointer"
                     >
-                        <LuMenu />
+                        {dropdownOpen ? <IoMdClose /> : <LuMenu />}
                     </button>
 
                     {dropdownOpen && (
@@ -86,18 +88,20 @@ export function HeaderComponent() {
                             <ul className="flex flex-col space-y-2 p-4">
                                 <p className="font-semibold text-black">Hi, {loggedInUser}</p>
                                 <li>
-                                    <Link href="/dashboard" className="text-[#002757] hover:text-[#FA1651] font-medium">
+                                    <Link href="/dashboard" className="text-[#002757] hover:text-[#FA1651] font-medium flex items-center">
+                                        <IoHomeOutline className="mr-1" /> 
                                         Dashboard
                                     </Link>
                                 </li>
                                 <li>
-                                    <Link href="/overview" className="text-[#002757] hover:text-[#FA1651] font-medium">
+                                    <Link href="/overview" className="text-[#002757] hover:text-[#FA1651] font-medium flex items-center">
+                                        <GrOverview className="mr-1" />
                                         {t("header.overview")}
                                     </Link>
                                 </li>
                                 <li>
-                                    <button onClick={handleLogout} className="flex items-center text-[#002757] hover:text-[#FA1651] font-medium">
-                                        <LuLogOut className="mr-2" />
+                                    <button onClick={handleLogout} className="flex items-center text-center justify-center text-[#002757] hover:text-[#FA1651] font-medium cursor-pointer ">
+                                        <LuLogOut className="mr-1" />
                                         {t("header.logout")}
                                     </button>
                                 </li>

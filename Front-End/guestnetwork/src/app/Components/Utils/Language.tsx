@@ -15,7 +15,7 @@ export function LanguageComponent({language, setLanguage}: LanguageComponentProp
   };
 
   const getButtonClass = (lang: string) =>
-    `hover:text-[#9FDAF9] ${
+    `hover:text-[#9FDAF9] cursor-pointer ${
       language === lang ? "text-[#E30147] font-bold" : "text-gray-700"
     }`;
 
