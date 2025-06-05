@@ -47,45 +47,28 @@ const insertEvent = async (event: Event): Promise<Event> => {
       throw new Error('Event already exists');
     }
 
+    const startDateFormatted = new Date(event.startDate).toISOString().slice(0, 19).replace('T', ' ');
+    const endDateFormatted = new Date(event.endDate).toISOString().slice(0, 19).replace('T', ' ');
+
+
     await trx('event').insert({
       name: event.eventName,
-      startDate: event.startDate,
-      endDate: event.endDate,
+      startDate: startDateFormatted,
+      endDate: endDateFormatted,
       description: event.description
     });
 
-    insertIntoEvent(event);
-
     await trx.commit();
-    console.log('User inserted successfully');
+    console.log('Event inserted successfully');
 
-    return event 
+    return event;
   } catch (err) {
     await trx.rollback();
-    console.error('DB error inserting user:', err);
+    console.error('DB error inserting event:', err);
     throw new Error('Insert failed');
   }
 };
 
-const insertIntoEvent = async (event: Event): Promise<void> => {
-  const trx = await knex.transaction();
-
-  try {
-    await trx('event').insert({
-      name: event.eventName,
-      startDate: event.startDate,
-      endDate: event.endDate,
-      description: event.description
-    });
-
-    await trx.commit();
-    console.log('Event inserted into event table successfully');
-  } catch (err) {
-    await trx.rollback();
-    console.error('DB error inserting event into event table:', err);
-    throw new Error('Insert failed');
-  }
-}
 
 // // Update event fields
 // const updateEventFields = async (eventName: string, updates: Partial<Event>): Promise<void> => {

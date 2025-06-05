@@ -31,13 +31,13 @@ export default function EventApplyComponent({ isMobile }: EventInterface) {
       return;
     }
 
-    // Convert startDate string to Date and set time to end of day
+    // Convert startDate string to Date and set time to start of day
     const startDateObj = new Date(startDate);
-    startDateObj.setHours(23, 59, 59);
+    startDateObj.setHours(2, 0, 0);  
 
     // Convert endDate string to Date and set time to end of day
     const endDateObj = new Date(endDate);
-    endDateObj.setHours(23, 59, 59);
+    endDateObj.setHours(23, 59, 59); 
 
     const newEvent: Event = {
       eventName: eventName.trim(),

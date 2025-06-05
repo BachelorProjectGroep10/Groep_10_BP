@@ -6,7 +6,6 @@ const getAllEvents = async (name: string): Promise<Event[]> => {
     return events.map(event => {
         return new Event({
             eventName: event.eventName,
-            password: event.password,
             startDate: event.startDate,
             endDate: event.endDate,
             description: event.description
@@ -17,7 +16,6 @@ const getAllEvents = async (name: string): Promise<Event[]> => {
 const addEvent = async (event: Event): Promise<void> => {
     const newEvent = new Event({
         eventName: event.eventName,
-        password: event.password,
         startDate: event.startDate,
         endDate: event.endDate,
         description: event.description

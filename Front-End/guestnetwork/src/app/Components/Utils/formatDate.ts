@@ -20,3 +20,14 @@ export const formatDateInput = (date?: Date | string | null): string => {
   }
 };
 
+export const formatMySQLDatetime = (date?: Date | string | null): string => {
+  if (!date) return "";
+  try {
+    const parsedDate = typeof date === "string" ? parseISO(date) : date;
+    return format(parsedDate, "yyyy-MM-dd HH:mm:ss");
+  } catch (e) {
+    return "";
+  }
+};
+
+
