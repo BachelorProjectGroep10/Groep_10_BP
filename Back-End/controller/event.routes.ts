@@ -28,7 +28,7 @@ eventRouter.put('/:eventName', authorize('Admin', 'Personnel'), async (req: Requ
     const eventName = req.params.macAddress;
     const updates = req.body; 
     
-    await EventService.updateEventByName(eventName, updates);
+    // await EventService.updateEventByName(eventName, updates);
 
     res.status(200).json({ message: 'Event updated successfully' });
   } catch (error) {
@@ -39,7 +39,7 @@ eventRouter.put('/:eventName', authorize('Admin', 'Personnel'), async (req: Requ
 eventRouter.delete('/:eventName', authorize('Admin', 'Personnel'), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const eventName = req.params.groupName;
-    await EventService.deleteEvent(eventName);
+    // await EventService.deleteEvent(eventName);
     res.status(200).json({ message: 'Event deleted successfully' });
   } catch (error) {
     next(error);

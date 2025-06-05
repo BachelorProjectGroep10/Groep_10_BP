@@ -20,12 +20,14 @@ export default function EventDetailsPopup({ event, onClose, onDelete }: Props) {
 
   const [startDate, setStartDate] = useState(event.startDate ? new Date(event.startDate).toISOString().slice(0, 10) : '');
   const [endDate, setEndDate] = useState(event.endDate ? new Date(event.endDate).toISOString().slice(0, 10) : '');
+  const [description, setDescription] = useState(event.description);
 
   const handleSaveChanges = async () => {
     try {
       const updatedEvent = {
         startDate: startDate ? new Date(startDate) : undefined,
         endDate: endDate ? new Date(endDate) : undefined,
+        description: description
       };
 
       await EventService.updateEvent(event.eventName, updatedEvent);
@@ -68,6 +70,7 @@ export default function EventDetailsPopup({ event, onClose, onDelete }: Props) {
             <>
               <p><strong>{t('pop-up.startDate')}:</strong> {formatDate(event.startDate)}</p>
               <p><strong>{t('pop-up.endDate')}:</strong> {formatDate(event.endDate)}</p>
+              <p><strong>{t('pop-up.description')}:</strong> {event.description}</p>
             </>
           ) : (
             <>
@@ -86,6 +89,15 @@ export default function EventDetailsPopup({ event, onClose, onDelete }: Props) {
                   type="date"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
+                  className="w-full border border-gray-300 rounded-md p-2"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold">{t('pop-up.description')}:</label>
+                <input
+                  type="text"
+                  value={event.description}
+                  onChange={(e) => setDescription(e.target.value)}
                   className="w-full border border-gray-300 rounded-md p-2"
                 />
               </div>

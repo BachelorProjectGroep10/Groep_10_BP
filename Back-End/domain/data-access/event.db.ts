@@ -1,54 +1,33 @@
+import knex from '../../util/database';
 import { Event } from '../model/Event';
-
-// In-memory test data
-let testEvents: Event[] = [
-  new Event({
-    id: 1,
-    eventName: 'Sample Event',
-    password: 'abc123',
-    startDate: new Date('2025-06-01'),
-    endDate: new Date('2025-06-02'),
-    description: 'A sample test event',
-  }),
-  new Event({
-    id: 2,
-    eventName: 'Hackathon 2025',
-    password: 'secure456',
-    startDate: new Date('2025-07-10'),
-    endDate: new Date('2025-07-12'),
-    description: 'Annual tech hackathon for students and professionals.',
-  }),
-];
 
 // Get all events
 const getEvents = async (name?: string): Promise<Event[]> => {
   try {
-    // Return filtered in-memory test data
-    if (name) {
-      return testEvents.filter(e =>
-        e.eventName.toLowerCase().includes(name.toLowerCase())
-      );
-    }
-    return testEvents;
-
-    // Once DB is ready, structure will look like this:
-    /*
-    let query = knex('events').select('*');
+    let query = knex('event')
+      .select(
+        'event.*'
+      )
 
     if (name) {
-      query = query.where('eventName', 'like', `%${name}%`);
+      query = query.andWhere('event.name', 'like', `%${name}%`);
     }
 
     const rows = await query;
-    return rows.map(row => new Event({
-      id: row.id,
-      eventName: row.eventName,
-      password: row.password,
-      startDate: new Date(row.startDate),
-      endDate: new Date(row.endDate),
-      description: row.description,
-    }));
-    */
+
+    return rows.map((row) => {
+          // Make the password logic here          
+          const passwords: string[] = [];
+    
+          return new Event({
+            id: row.id,
+            eventName: row.name, 
+            password: passwords,
+            startDate: row.startDate,
+            endDate: row.endDate,
+            description: row.description
+          });
+        });
   } catch (err) {
     console.error('DB error fetching events:', err);
     throw new Error('Fetch failed');
@@ -57,139 +36,154 @@ const getEvents = async (name?: string): Promise<Event[]> => {
 
 // Insert an event
 const insertEvent = async (event: Event): Promise<Event> => {
+  const trx = await knex.transaction();
+
   try {
-    // Simulate uniqueness check
-    const exists = testEvents.some(e => e.eventName === event.eventName);
-    if (exists) throw new Error('Event already exists');
-
-    testEvents.push(event);
-    console.log('Inserted test event:', event);
-
-    return event;
-
-    // If DB were set up, you'd use something like:
-    /*
-    const trx = await knex.transaction();
-
-    const existingEvent = await trx('events').where('eventName', event.eventName).first();
-    if (existingEvent) {
+    const checkEvent = await trx('event').where('name', event.eventName).first();
+    
+    if (checkEvent) {
+      console.error('Event already exists');
       await trx.rollback();
       throw new Error('Event already exists');
     }
 
-    await trx('events').insert({
-      eventName: event.eventName,
-      password: event.password,
+    await trx('event').insert({
+      name: event.eventName,
       startDate: event.startDate,
       endDate: event.endDate,
-      description: event.description,
+      description: event.description
     });
 
+    insertIntoEvent(event);
+
     await trx.commit();
-    */
+    console.log('User inserted successfully');
+
+    return event 
   } catch (err) {
-    console.error('Simulated insert failed:', err);
+    await trx.rollback();
+    console.error('DB error inserting user:', err);
     throw new Error('Insert failed');
   }
 };
 
-// Update event fields
-const updateEventFields = async (eventName: string, updates: Partial<Event>): Promise<void> => {
+const insertIntoEvent = async (event: Event): Promise<void> => {
+  const trx = await knex.transaction();
+
   try {
-    const index = testEvents.findIndex(e => e.eventName === eventName);
-    if (index === -1) throw new Error('Event does not exist');
-
-    const existing = testEvents[index];
-
-    // Validate date fields
-    if (updates.startDate && isNaN(new Date(updates.startDate).getTime())) {
-      throw new Error("Invalid 'startDate'");
-    }
-    if (updates.endDate && isNaN(new Date(updates.endDate).getTime())) {
-      throw new Error("Invalid 'endDate'");
-    }
-
-    testEvents[index] = new Event({
-      ...existing,
-      ...updates,
+    await trx('event').insert({
+      name: event.eventName,
+      startDate: event.startDate,
+      endDate: event.endDate,
+      description: event.description
     });
 
-    console.log(`Updated test event '${eventName}' with:`, updates);
-
-    // If DB were set up, you'd do something like:
-    /*
-    const trx = await knex.transaction();
-
-    const existingEvent = await trx('events').where('eventName', eventName).first();
-    if (!existingEvent) {
-      await trx.rollback();
-      throw new Error('Event does not exist');
-    }
-
-    const updatePayload: Partial<Event> = {};
-    if (updates.eventName && updates.eventName !== eventName) {
-      updatePayload.eventName = updates.eventName;
-    }
-    if (updates.password !== undefined) {
-      updatePayload.password = updates.password;
-    }
-    if (updates.startDate !== undefined) {
-      updatePayload.startDate = updates.startDate;
-    }
-    if (updates.endDate !== undefined) {
-      updatePayload.endDate = updates.endDate;
-    }
-    if (updates.description !== undefined) {
-      updatePayload.description = updates.description;
-    }
-
-    if (Object.keys(updatePayload).length > 0) {
-      await trx('events')
-        .where('eventName', eventName)
-        .update(updatePayload);
-    }
-
     await trx.commit();
-    */
+    console.log('Event inserted into event table successfully');
   } catch (err) {
-    console.error('Simulated error updating event:', err);
-    throw new Error('Update failed');
+    await trx.rollback();
+    console.error('DB error inserting event into event table:', err);
+    throw new Error('Insert failed');
   }
-};
+}
 
-// Delete event by eventName
-const deleteEventFromDB = async (eventName: string): Promise<void> => {
-  try {
-    const index = testEvents.findIndex(e => e.eventName === eventName);
-    if (index === -1) {
-      throw new Error('Event does not exist');
-    }
+// // Update event fields
+// const updateEventFields = async (eventName: string, updates: Partial<Event>): Promise<void> => {
+//   try {
+//     const index = testEvents.findIndex(e => e.eventName === eventName);
+//     if (index === -1) throw new Error('Event does not exist');
+
+//     const existing = testEvents[index];
+
+//     // Validate date fields
+//     if (updates.startDate && isNaN(new Date(updates.startDate).getTime())) {
+//       throw new Error("Invalid 'startDate'");
+//     }
+//     if (updates.endDate && isNaN(new Date(updates.endDate).getTime())) {
+//       throw new Error("Invalid 'endDate'");
+//     }
+
+//     testEvents[index] = new Event({
+//       ...existing,
+//       ...updates,
+//     });
+
+//     console.log(`Updated test event '${eventName}' with:`, updates);
+
+//     // If DB were set up, you'd do something like:
+//     /*
+//     const trx = await knex.transaction();
+
+//     const existingEvent = await trx('events').where('eventName', eventName).first();
+//     if (!existingEvent) {
+//       await trx.rollback();
+//       throw new Error('Event does not exist');
+//     }
+
+//     const updatePayload: Partial<Event> = {};
+//     if (updates.eventName && updates.eventName !== eventName) {
+//       updatePayload.eventName = updates.eventName;
+//     }
+//     if (updates.password !== undefined) {
+//       updatePayload.password = updates.password;
+//     }
+//     if (updates.startDate !== undefined) {
+//       updatePayload.startDate = updates.startDate;
+//     }
+//     if (updates.endDate !== undefined) {
+//       updatePayload.endDate = updates.endDate;
+//     }
+//     if (updates.description !== undefined) {
+//       updatePayload.description = updates.description;
+//     }
+
+//     if (Object.keys(updatePayload).length > 0) {
+//       await trx('events')
+//         .where('eventName', eventName)
+//         .update(updatePayload);
+//     }
+
+//     await trx.commit();
+//     */
+//   } catch (err) {
+//     console.error('Simulated error updating event:', err);
+//     throw new Error('Update failed');
+//   }
+// };
+
+// // Delete event by eventName
+// const deleteEventFromDB = async (eventName: string): Promise<void> => {
+//   try {
+//     const index = testEvents.findIndex(e => e.eventName === eventName);
+//     if (index === -1) {
+//       throw new Error('Event does not exist');
+//     }
     
-    // Remove the event from the in-memory array
-    testEvents.splice(index, 1);
+//     // Remove the event from the in-memory array
+//     testEvents.splice(index, 1);
     
-    console.log(`Deleted event '${eventName}' successfully`);
+//     console.log(`Deleted event '${eventName}' successfully`);
 
-    // When DB is ready, use something like this:
-    /*
-    const trx = await knex.transaction();
+//     // When DB is ready, use something like this:
+//     /*
+//     const trx = await knex.transaction();
 
-    const existingEvent = await trx('events').where('eventName', eventName).first();
-    if (!existingEvent) {
-      await trx.rollback();
-      throw new Error('Event does not exist');
-    }
+//     const existingEvent = await trx('events').where('eventName', eventName).first();
+//     if (!existingEvent) {
+//       await trx.rollback();
+//       throw new Error('Event does not exist');
+//     }
 
-    await trx('events').where('eventName', eventName).del();
+//     await trx('events').where('eventName', eventName).del();
 
-    await trx.commit();
-    console.log(`Deleted event '${eventName}' from DB successfully`);
-    */
-  } catch (err) {
-    console.error('Simulated error deleting event:', err);
-    throw new Error('Delete failed');
-  }
-};
+//     await trx.commit();
+//     console.log(`Deleted event '${eventName}' from DB successfully`);
+//     */
+//   } catch (err) {
+//     console.error('Simulated error deleting event:', err);
+//     throw new Error('Delete failed');
+//   }
+// };
 
 
-export { getEvents, insertEvent, updateEventFields, deleteEventFromDB };
+export { getEvents, insertEvent /*, updateEventFields, deleteEventFromDB */};

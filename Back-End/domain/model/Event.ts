@@ -1,7 +1,7 @@
 export class Event {
     readonly id?: number;          
     readonly eventName: string;
-    readonly password?: string;
+    readonly password?: string[];
     readonly startDate: Date;
     readonly endDate: Date;
     readonly description?: string;
@@ -9,7 +9,7 @@ export class Event {
     constructor(data: {
         id?: number;
         eventName: string;
-        password?: string;
+        password?: string[];
         startDate: Date;
         endDate: Date;
         description?: string;
