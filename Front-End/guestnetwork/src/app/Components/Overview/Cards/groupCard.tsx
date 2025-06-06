@@ -4,7 +4,7 @@ import { Group, Vlan } from "@/app/Types";
 import GroupService from "@/app/Services/GroupService";
 import { mutate } from "swr";
 import { MdEdit } from "react-icons/md";
-import { FaTrash } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaTrash } from "react-icons/fa";
 import { IoMdRefresh } from "react-icons/io";
 
 interface GroupCardProps {
@@ -16,6 +16,7 @@ export default function GroupCard({ group, vlans }: GroupCardProps) {
   const { t } = useTranslation();
 
   const [isEditing, setIsEditing] = useState(false);
+  const [visiblePasswords, setVisiblePasswords] = useState<{ [groupName: string]: boolean }>({});
 
   const [vlanId, setVlanId] = useState<number | null>(group.vlan ?? null);
   const [description, setDescription] = useState(group.description ?? "");
@@ -65,6 +66,13 @@ export default function GroupCard({ group, vlans }: GroupCardProps) {
     setIsEditing(false);
   };
 
+  const togglePasswordVisibility = (groupName: string) => {
+    setVisiblePasswords(prev => ({
+      ...prev,
+      [groupName]: !prev[groupName]
+    }));
+  };
+
   return (
     <div className="w-full max-w-md mx-auto bg-white text-left shadow-lg rounded-xl p-4 space-y-3 border border-gray-200">
       <div className="flex justify-between items-center">
@@ -93,9 +101,19 @@ export default function GroupCard({ group, vlans }: GroupCardProps) {
 
       {/* Always show password + regenerate button */}
       <div className="flex items-center gap-2 text-sm">
-        <p className="text-[#003366]">
-          <strong>{t('overview.password')}:</strong> {group.password}
-        </p>
+        <div className="text-[#003366] flex items-center gap-2">
+          <p>
+            <strong>{t('overview.password')}:</strong>{" "}
+            {visiblePasswords[group.groupName] ? group.password : '***********'}
+          </p>
+          <button
+            onClick={() => togglePasswordVisibility(group.groupName)}
+            className="text-[#003366] hover:text-[#00509e] focus:outline-none mr-2"
+            title={visiblePasswords[group.groupName] ? t('overview.hidePassword') : t('overview.showPassword')}
+          >
+            {visiblePasswords[group.groupName] ? <FaEyeSlash /> : <FaEye />}
+          </button>
+        </div>
         <button
           onClick={handleRegeneratePassword}
           title="Regenerate password"

@@ -1,12 +1,10 @@
 import { Group, Vlan } from "@/app/Types";
-import { formatDate } from "../../Utils/formatDate";
 import { useTranslation } from "react-i18next";
 import '../../../i18n';
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import GroupService from "@/app/Services/GroupService";
-import { IoMdRefresh } from "react-icons/io";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import GroupDetailsPopup from "../popups/GroupDetailsPopUp";
-import { mutate } from "swr";
 
 interface GroupsTableProps {
   groups: Group[]
@@ -18,6 +16,7 @@ export default function GroupsTable( { groups, vlans }: GroupsTableProps) {
   const [showPopUp, setShowPopUp] = useState(false);
   const [selectedGroupName, setSelectedGroupName] = useState<string | null>(null);
   const selectedGroup = groups.find(u => u.groupName === selectedGroupName) ?? null;
+  const [visiblePasswords, setVisiblePasswords] = useState<{ [groupName: string]: boolean }>({});
 
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
@@ -34,6 +33,13 @@ export default function GroupsTable( { groups, vlans }: GroupsTableProps) {
     } catch (error: any) {
       setDeleteError(error.message || "Failed to delete group.");
     }
+  };
+
+  const togglePasswordVisibility = (groupName: string) => {
+    setVisiblePasswords(prev => ({
+      ...prev,
+      [groupName]: !prev[groupName]
+    }));
   };
 
   return (
@@ -55,7 +61,15 @@ export default function GroupsTable( { groups, vlans }: GroupsTableProps) {
                 className="hover:bg-[#e6f3ff] text-[#003366] border-b border-gray-100 transition duration-150 text-left"
               >
                 <td className="w-1/5 p-4 break-words">{group.groupName}</td>
-                <td className="w-1/5 p-4 break-words">{group.password}</td>
+                <td className="w-1/5 p-4 break-words flex items-center gap-2">
+                  {visiblePasswords[group.groupName] ? group.password : '***********'}
+                  <button
+                    onClick={() => togglePasswordVisibility(group.groupName)}
+                    className="text-[#003366] hover:text-[#00509e] focus:outline-none"
+                  >
+                    {visiblePasswords[group.groupName] ? <FaEyeSlash /> : <FaEye />}
+                  </button>
+                </td>
                 <td className="w-1/5 p-4 break-words">{group.vlan}</td>
                 <td className="w-1/5 p-4 break-words">{group.description}</td>
                 <td className="w-1/5 p-4 text-center">

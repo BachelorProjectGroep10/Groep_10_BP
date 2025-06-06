@@ -2,15 +2,15 @@ import { Event } from "@/app/Types";
 import { formatDate } from "../../Utils/formatDate";
 import { useTranslation } from "react-i18next";
 import '../../../i18n';
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import EventService from "@/app/Services/EventService";
-import { IoMdRefresh } from "react-icons/io";
 import EventDetailsPopup from "../popups/EventDetailsPopUp";
 import { RiFileDownloadLine } from "react-icons/ri";
 import html2canvas from "html2canvas";
 import React from "react";
 import jsPDF from "jspdf";
 import QRCodePdfLayout from "../../dashboard/qrCodePdfLayout";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 interface EventsTableProps {
   events: Event[]
@@ -20,6 +20,7 @@ export default function EventsTable( { events }: EventsTableProps) {
   const {t} = useTranslation();
   const [showPopUp, setShowPopUp] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<Event>();
+  const [visiblePasswords, setVisiblePasswords] = useState<{ [eventName: string]: boolean }>({});
   const pdfRef = React.useRef<HTMLDivElement | null>(null);
 
   const ssid = 'BP Groep 10 - Gast Test';
@@ -61,6 +62,13 @@ export default function EventsTable( { events }: EventsTableProps) {
       alert("Failed to delete event.");
     }
   };
+
+  const togglePasswordVisibility = (eventName: string) => {
+    setVisiblePasswords(prev => ({
+      ...prev,
+      [eventName]: !prev[eventName]
+    }));
+  };
   
   return (
     <div className="overflow-x-auto bg-white rounded-lg shadow border border-gray-200">
@@ -85,7 +93,17 @@ export default function EventsTable( { events }: EventsTableProps) {
                 className="hover:bg-[#e6f3ff] text-[#003366] border-b border-gray-100 transition duration-150 text-left"
               >
                 <td className="w-1/6 p-4 break-words">{event.eventName}</td>
-                <td className="w-1/6 p-4 break-words">{event.password?.map(pwd => pwd.value).join(', ')}</td>
+                <td className="w-1/6 p-4 break-words flex items-center gap-2">
+                  {visiblePasswords[event.eventName]
+                    ? event.password?.map(pwd => pwd.value).join(', ')
+                    : '***********'}
+                  <button
+                    onClick={() => togglePasswordVisibility(event.eventName)}
+                    className="text-[#003366] hover:text-[#00509e] focus:outline-none"
+                  >
+                    {visiblePasswords[event.eventName] ? <FaEyeSlash /> : <FaEye />}
+                  </button>
+                </td>
                 <td className="w-1/6 p-4 break-words">{formatDate(event.startDate)}</td>
                 <td className="w-1/6 p-4 break-words">{formatDate(event.endDate)}</td>
                 <td className="w-1/6 p-4 text-center">

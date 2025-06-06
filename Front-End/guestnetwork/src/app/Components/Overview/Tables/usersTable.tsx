@@ -1,12 +1,9 @@
 import { Group, User, Vlan } from "@/app/Types";
 import { formatDate } from "../../Utils/formatDate";
-import { IoMdRefresh } from "react-icons/io";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import '../../../i18n';
-import { useEffect, useState } from "react";
-import GroupService from "@/app/Services/GroupService";
-import useInterval from "use-interval";
-import useSWR, { mutate } from "swr";
+import { useState } from "react";
 import UserDetailsPopup from "../popups/userDetailsPopUp"
 
 interface UserTableProps {
@@ -19,6 +16,7 @@ export default function UsersTable({ users, groups, vlans }: UserTableProps) {
   const [showPopUp, setShowPopUp] = useState(false);
   const [selectedMac, setSelectedMac] = useState<string | null>(null);
   const selectedUser = users.find(u => u.macAddress === selectedMac) ?? null;
+  const [visiblePasswords, setVisiblePasswords] = useState<{ [macAddress: string]: boolean }>({});
 
   const { t } = useTranslation();
 
@@ -31,6 +29,13 @@ export default function UsersTable({ users, groups, vlans }: UserTableProps) {
     setShowPopUp(false);
     setSelectedMac(null);
   }
+
+  const togglePasswordVisibility = (macAddress: string) => {
+    setVisiblePasswords(prev => ({
+      ...prev,
+      [macAddress]: !prev[macAddress]
+    }));
+  };
 
   return (
     <div className="overflow-x-auto bg-white rounded-lg shadow border border-gray-200">
@@ -58,7 +63,15 @@ export default function UsersTable({ users, groups, vlans }: UserTableProps) {
                   className="hover:bg-[#e6f3ff] text-[#003366] border-b border-gray-100 transition duration-150 text-left"
                 >
                   <td className="w-1/5 p-4 break-words">{user.macAddress}</td>
-                  <td className="w-1/5 p-4 break-words">{user.password}</td>
+                  <td className="w-1/5 p-4 break-words flex items-center gap-2">
+                    {visiblePasswords[user.macAddress] ? user.password : '***********'}
+                    <button
+                      onClick={() => togglePasswordVisibility(user.macAddress)}
+                      className="text-[#003366] hover:text-[#00509e] focus:outline-none"
+                    >
+                      {visiblePasswords[user.macAddress] ? <FaEyeSlash /> : <FaEye />}
+                    </button>
+                  </td>
                   <td className="w-1/5 p-4">{formatDate(user?.expiredAt)}</td>
                   <td className="w-1/5 p-4 text-center">
                     {isExpired ? (

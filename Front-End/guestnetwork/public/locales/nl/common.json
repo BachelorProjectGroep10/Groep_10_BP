@@ -102,7 +102,9 @@
         "searchVlan": "Zoek op VLAN",
         "searchEventName": "Zoek op evenementnaam",
         "editUser": "Gebruiker bewerken",
-        "deleteUser": "Gebruiker verwijderen"
+        "deleteUser": "Gebruiker verwijderen",
+        "hidePassword": "Verberg Wachtwoord",
+        "showPassword": "Toon Wachtwoord"
     },
     "pop-up": {
         "userDetails": "Gebruikersgegevens",

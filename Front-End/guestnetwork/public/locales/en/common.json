@@ -98,7 +98,9 @@
         "searchVlan": "Search by VLAN",
         "searchEventName": "Search on Event Name",
         "editUser": "Edit User",
-        "deleteUser": "Delete User"
+        "deleteUser": "Delete User",
+        "hidePassword": "Hide Password",
+        "showPassword": "Show Password"
     },
     "pop-up": {
         "userDetails": "User Details",

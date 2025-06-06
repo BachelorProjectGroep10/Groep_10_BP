@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import EventService from "@/app/Services/EventService";
 import { mutate } from "swr";
-import { FaTrash } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaTrash } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
 
 interface EventCardProps {
@@ -15,6 +15,7 @@ export default function EventCard({ event }: EventCardProps) {
   const { t } = useTranslation();
 
   const [isEditing, setIsEditing] = useState(false);
+  const [visiblePasswords, setVisiblePasswords] = useState<{ [eventName: string]: boolean }>({});
 
   const [startDate, setStartDate] = useState(event.startDate ? new Date(event.startDate).toLocaleDateString('en-CA') : '')
   const [endDate, setEndDate] = useState(event.endDate ? new Date(event.endDate).toLocaleDateString('en-CA') : '')
@@ -54,6 +55,13 @@ export default function EventCard({ event }: EventCardProps) {
     setIsEditing(false);
   };
 
+  const togglePasswordVisibility = (eventName: string) => {
+    setVisiblePasswords(prev => ({
+      ...prev,
+      [eventName]: !prev[eventName]
+    }));
+  };
+
   return (
     <div className="w-full max-w-md mx-auto bg-white text-left shadow-lg rounded-xl p-4 space-y-3 border border-gray-200">
       <div className="flex justify-between items-center">
@@ -81,9 +89,19 @@ export default function EventCard({ event }: EventCardProps) {
       </div>
 
       {/* Password always visible */}
-      <p className="text-sm text-[#003366]">
-        <strong>{t('overview.password')}:</strong> {event.password?.map(pwd => pwd.value).join(', ')}
-      </p>
+      <div className="text-[#003366] flex items-center gap-2">
+        <p>
+          <strong>{t('overview.password')}:</strong>{" "}
+          {visiblePasswords[event.eventName] ? event.password?.map(pwd => pwd.value).join(', '): '***********'}        
+        </p>
+        <button
+          onClick={() => togglePasswordVisibility(event.eventName)}
+          className="text-[#003366] hover:text-[#00509e] focus:outline-none mr-2"
+          title={visiblePasswords[event.eventName] ? t('overview.hidePassword') : t('overview.showPassword')}
+        >
+          {visiblePasswords[event.eventName] ? <FaEyeSlash /> : <FaEye />}
+        </button>
+      </div>
 
       {/* Start Date toggle */}
       <p className="text-sm text-[#003366]">

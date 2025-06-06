@@ -3,7 +3,7 @@ import { User, Vlan } from "@/app/Types";
 import { formatDate } from "../../Utils/formatDate";
 import { useTranslation } from "react-i18next";
 import { IoMdRefresh } from "react-icons/io";
-import { FaTrash } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaTrash } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
 import UserService from "@/app/Services/UserService";
 import { mutate } from "swr";
@@ -25,6 +25,7 @@ export default function UserCard({ user, groups, vlans, isGroupsLoading }: UserC
   const isExpired = user.expiredAt ? new Date(user.expiredAt) < new Date() : false;
 
   const [isEditing, setIsEditing] = useState(false);
+  const [visiblePasswords, setVisiblePasswords] = useState<{ [eventName: string]: boolean }>({});
 
   const [email, setEmail] = useState(user.email ?? '');
   const [uid, setUID] = useState(user.uid ?? '');
@@ -94,6 +95,13 @@ export default function UserCard({ user, groups, vlans, isGroupsLoading }: UserC
     setIsEditing(false);
   };
 
+  const togglePasswordVisibility = (macAddress: string) => {
+    setVisiblePasswords(prev => ({
+      ...prev,
+      [macAddress]: !prev[macAddress]
+    }));
+  };
+
   return (
     <div className="w-full max-w-md mx-auto bg-white text-left shadow-lg rounded-xl p-4 space-y-3 border border-gray-200">
       <div className="flex justify-between items-center">
@@ -133,16 +141,28 @@ export default function UserCard({ user, groups, vlans, isGroupsLoading }: UserC
       </div>
 
       <div className="flex items-center gap-2 text-sm">
-        <p className="text-[#003366]">
-          <strong>{t('overview.password')}:</strong> {user.password}
-        </p>
-        <button
-          onClick={handleRegeneratePassword}
-          title="Regenerate password"
-          className="bg-[#003366] text-white px-2 py-1 rounded hover:bg-blue-700 text-sm"
-        >
-          <IoMdRefresh />
-        </button>
+        <div className="text-[#003366] flex items-center gap-2">
+          <p>
+            <strong>{t('overview.password')}:</strong>{" "}
+            {visiblePasswords[user.macAddress] ? user.password : '***********'}
+          </p>
+          <button
+            onClick={() => togglePasswordVisibility(user.macAddress)}
+            className="text-[#003366] hover:text-[#00509e] focus:outline-none mr-2"
+            title={visiblePasswords[user.macAddress] ? t('overview.hidePassword') : t('overview.showPassword')}
+          >
+            {visiblePasswords[user.macAddress] ? <FaEyeSlash /> : <FaEye />}
+          </button>
+        </div>
+        {!user.groupName && (
+          <button
+            onClick={handleRegeneratePassword}
+            title="Regenerate password"
+            className="bg-[#003366] text-white px-2 py-1 rounded hover:bg-blue-700 text-sm"
+          >
+            <IoMdRefresh />
+          </button>
+        )}
       </div>
 
       {isEditing ? (
