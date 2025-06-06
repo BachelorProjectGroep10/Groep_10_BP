@@ -33,6 +33,7 @@ export default function EventDetailsPopup({ event, onClose, onDelete }: Props) {
       await EventService.updateEvent(event.eventName, updatedEvent);
 
       setIsEditingDetails(false);
+      onClose()
       mutate("events");
     } catch (err) {
       console.error("Failed to update event:", err);

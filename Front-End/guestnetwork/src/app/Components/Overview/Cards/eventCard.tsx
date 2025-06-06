@@ -16,8 +16,8 @@ export default function EventCard({ event }: EventCardProps) {
 
   const [isEditing, setIsEditing] = useState(false);
 
-  const [startDate, setStartDate] = useState(event.startDate ? new Date(event.startDate).toISOString().slice(0, 10) : '')
-  const [endDate, setEndDate] = useState(event.endDate ? new Date(event.endDate).toISOString().slice(0, 10) : '')
+  const [startDate, setStartDate] = useState(event.startDate ? new Date(event.startDate).toLocaleDateString('en-CA') : '')
+  const [endDate, setEndDate] = useState(event.endDate ? new Date(event.endDate).toLocaleDateString('en-CA') : '')
   const [description, setDescription] = useState(event.description ?? "");
 
   const handleDelete = async () => {
@@ -33,8 +33,8 @@ export default function EventCard({ event }: EventCardProps) {
   const handleSaveChanges = async () => {
     try {
       const updatedEvent = {
-        startDate: startDate ? new Date(startDate) : undefined,
-        endDate: endDate ? new Date(endDate) : undefined,
+        startDate: new Date(`${startDate}T00:00:00`),
+        endDate: new Date(`${endDate}T23:59:59`),  
         description: description
       };
 
@@ -49,8 +49,8 @@ export default function EventCard({ event }: EventCardProps) {
   };
 
   const handleCancel = () => {
-    setStartDate(event.startDate ? new Date(event.startDate).toISOString().slice(0, 10) : '')
-    setEndDate(event.endDate ? new Date(event.endDate).toISOString().slice(0, 10) : '')
+    setStartDate(event.startDate ? new Date(event.startDate).toLocaleDateString('en-CA') : '');
+    setEndDate(event.endDate ? new Date(event.endDate).toLocaleDateString('en-CA') : '');
     setIsEditing(false);
   };
 
