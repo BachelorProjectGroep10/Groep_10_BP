@@ -1,4 +1,4 @@
-import { /*deleteEventFromDB, updateEventFields*/ getEvents, insertEvent } from "../domain/data-access/event.db";
+import { /*deleteEventFromDB, updateEventFields*/ deleteEventFromDB, getEvents, insertEvent, updateEventFields } from "../domain/data-access/event.db";
 import { Event } from "../domain/model/Event";
 
 const getAllEvents = async (name: string): Promise<Event[]> => {
@@ -8,7 +8,8 @@ const getAllEvents = async (name: string): Promise<Event[]> => {
             eventName: event.eventName,
             startDate: event.startDate,
             endDate: event.endDate,
-            description: event.description
+            description: event.description,
+            password: event.password
         });
     });
 };
@@ -23,25 +24,25 @@ const addEvent = async (event: Event): Promise<void> => {
     await insertEvent(newEvent);
 }
 
-// const updateEventByName = async (eventName: string, updates: Partial<Event>): Promise<void> => {
-//   if (updates.eventName) {
-//     throw new Error('Group name cannot be changed');
-//   }
+const updateEventByName = async (eventName: string, updates: Partial<Event>): Promise<void> => {
+  if (updates.eventName) {
+    throw new Error('Event name cannot be changed');
+  }
 
-//   if (updates.startDate && isNaN(new Date(updates.startDate).getTime())) {
-//     throw new Error("Invalid startDate");
-//   }
+  if (updates.startDate && isNaN(new Date(updates.startDate).getTime())) {
+    throw new Error("Invalid startDate");
+  }
 
-//   if (updates.endDate && isNaN(new Date(updates.endDate).getTime())) {
-//     throw new Error("Invalid endDate");
-//   }
+  if (updates.endDate && isNaN(new Date(updates.endDate).getTime())) {
+    throw new Error("Invalid endDate");
+  }
 
-//   await updateEventFields(eventName, updates);
-// };
+  await updateEventFields(eventName, updates);
+};
 
-// const deleteEvent = async (eventName: string): Promise<void> => {
-//     await deleteEventFromDB(eventName);
-// }
+const deleteEvent = async (eventName: string): Promise<void> => {
+    await deleteEventFromDB(eventName);
+}
 
 
-export default { getAllEvents, addEvent/*, updateEventByName, deleteEvent*/ };
+export default { getAllEvents, addEvent, updateEventByName, deleteEvent };

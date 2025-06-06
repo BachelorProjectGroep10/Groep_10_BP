@@ -42,8 +42,7 @@ export default function SingleUserComponent( {isMobile}: SingleUserProps) {
     e.preventDefault();
 
     // Parse expiredAt string to Date and set time to end of day
-    const expiredDate = new Date(expiredAt);
-    expiredDate.setHours(23, 59, 59);
+    const expiredDate = new Date(`${expiredAt}T23:59:59`);
 
     const newUser: User = {
       macAddress,

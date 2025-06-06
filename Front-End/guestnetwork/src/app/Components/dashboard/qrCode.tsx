@@ -4,7 +4,7 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { QRCodeSVG } from 'qrcode.react';
 import { MdDashboardCustomize } from "react-icons/md";
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useEffect, useState } from "react";
 import { FaWifi } from 'react-icons/fa';
 import QRCodePdfLayout from './qrCodePdfLayout'
@@ -22,7 +22,8 @@ import { MdEvent } from "react-icons/md";
 import { useTranslation } from "react-i18next";
 import '../../i18n'; 
 import EventApplyComponent from './eventApply';
-import { LoginResponse } from '@/app/Types';
+import { LoginResponse, WeeklyPassword } from '@/app/Types';
+import { getCurrentWeekNumber } from '@/app/Utils/currentWeek';
 
 interface QrCodeProps {
   loggedInUser: LoginResponse | null;
@@ -73,8 +74,33 @@ export function QRCodeComponent( { loggedInUser }: QrCodeProps ) {
     mutate('password', fetchPassword);
   }, 2000);
 
+  // Convert raw password to WeeklyPassword[]
+  const weeklyPasswords: WeeklyPassword[] = useMemo(() => {
+    if (!password) return [];
+
+    if (typeof password === 'string') {
+      return [{
+        value: password,
+        week: getCurrentWeekNumber(),
+        year: new Date().getFullYear(),
+        validNow: true,
+      }];
+    }
+
+    if (Array.isArray(password) && password.length > 0 && 'value' in password[0]) {
+      return password.map((pwd: { value: string }) => ({
+        value: pwd.value,
+        week: getCurrentWeekNumber(),
+        year: new Date().getFullYear(),
+        validNow: true,
+      }));
+    }
+
+    return [];
+  }, [password]);
+
   const qrValue = password
-    ? `WIFI:S:${ssid};H:true;T:WPA;P:${password};;`
+    ? `WIFI:S:${ssid};H:true;T:WPA;P:${typeof password === 'string' ? password : (password[0]?.value ?? '')};;`
     : '';
 
   const handleDownloadPdf = async () => {
@@ -107,7 +133,7 @@ export function QRCodeComponent( { loggedInUser }: QrCodeProps ) {
               <h2 className="font-semibold my-2 text-sm text-accent">{t('qrcode.smallMessage')}</h2>
               {password ? (
                 <QRCode
-                  value={`WIFI:S:${ssid};H:false;T:WPA;P:${password};;`}
+                  value={`WIFI:S:${ssid};T:WPA;P:${weeklyPasswords[0]?.value ?? ''};;`}
                   size={200}
                   logoImage='/Images/Logo_UCLL_ROUND.png'
                   logoWidth={40}
@@ -128,7 +154,7 @@ export function QRCodeComponent( { loggedInUser }: QrCodeProps ) {
                   {t('qrcode.network')}: <span className="font-normal">{ssid}</span>
                 </p>
                 <p className="text-sm font-semibold mb-2">
-                  {t('qrcode.password')}: <span className="font-normal">{password ?? t('qrcode.loading')}</span>
+                  {t('qrcode.password')}: <span className="font-normal"> {weeklyPasswords.length > 0 ? weeklyPasswords[0].value : t('qrcode.loading')}</span>
                 </p>
                 <div className="flex flex-col items-start gap-1 text-sm text-black">
                   <p className="font-semibold">{t('qrcode.valid')}</p>
@@ -165,7 +191,7 @@ export function QRCodeComponent( { loggedInUser }: QrCodeProps ) {
                 <h2 className="font-semibold my-4 text-sm text-accent text-center">{t('qrcode.smallMessage')}</h2>
                   {password ? (
                     <QRCode
-                      value={`WIFI:S:${ssid};T:WPA;P:${password};;`}
+                      value={`WIFI:S:${ssid};T:WPA;P:${weeklyPasswords[0]?.value ?? ''};;`}
                       size={200}
                       logoImage='/Images/Logo_UCLL_ROUND.png'
                       logoWidth={40}
@@ -186,7 +212,7 @@ export function QRCodeComponent( { loggedInUser }: QrCodeProps ) {
                       SSID: <span className="font-normal">{ssid}</span>
                     </p>
                     <p className="text-sm font-semibold mb-4">
-                      {t('qrcode.password')}: <span className="font-normal">{password ?? t('qrcode.loading')}</span>
+                      {t('qrcode.password')}: <span className="font-normal"> {weeklyPasswords.length > 0 ? weeklyPasswords[0].value : t('qrcode.loading')}</span>
                     </p>
                     <div className="mt-4 mx-left w-full max-w-[200px] flex flex-col gap-2">
                       <div className="flex gap-2">
@@ -286,7 +312,7 @@ export function QRCodeComponent( { loggedInUser }: QrCodeProps ) {
           style={{ width: '794px', height: '1123px' }}
           className="flex flex-col items-center justify-around"
         >
-          <QRCodePdfLayout name="" ssid={ssid} password={password} showBackground={showBackground} startDate={monday ?? ''} endDate={sunday ?? ''} />
+          <QRCodePdfLayout name="" ssid={ssid} password={weeklyPasswords} showBackground={showBackground} startDate={monday ?? ''} endDate={sunday ?? ''} />
         </div>
       </div>
 

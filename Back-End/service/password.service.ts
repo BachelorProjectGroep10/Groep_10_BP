@@ -3,7 +3,7 @@ import { getCurrentPassword } from '../domain/data-access/password.db';
 
 const getLatestWifiPassword = async (): Promise<Password> => {
   const password = await getCurrentPassword();
-  return password ?? new Password({ password: '' });
+  return password ?? new Password({ password: [{ value: '' }] });
 };
 
 export default { getLatestWifiPassword };

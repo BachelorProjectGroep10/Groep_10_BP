@@ -25,3 +25,18 @@ export function generateWeeklyPassword(seed: string, year: number, isoWeekNumber
 
   return password;
 }
+
+// Weeknummer volgens ISO (maandag = eerste dag)
+export function getISOWeekNumber(date: Date): number {
+  const target = new Date(date.valueOf());
+  const dayNr = (date.getDay() + 6) % 7;
+
+  target.setDate(target.getDate() - dayNr + 3);
+  const firstThursday = target.valueOf();
+
+  const jan1 = new Date(target.getFullYear(), 0, 1);
+  const jan1Day = (jan1.getDay() + 6) % 7;
+  const jan1Thursday = jan1.valueOf() + (3 - jan1Day) * 24 * 60 * 60 * 1000;
+
+  return 1 + Math.round((firstThursday - jan1Thursday) / (7 * 24 * 60 * 60 * 1000));
+}

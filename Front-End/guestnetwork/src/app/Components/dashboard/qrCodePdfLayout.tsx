@@ -3,11 +3,12 @@
 import React, { useState } from 'react';
 import Background from '../Utils/background';
 import { QRCode } from 'react-qrcode-logo';
+import { WeeklyPassword } from '@/app/Types';
 
 interface QRCodePdfLayoutProps {
   name: string;
   ssid?: string;
-  password?: string;
+  password?: WeeklyPassword[];
   showBackground?: boolean;
   startDate: string;
   endDate: string;
@@ -57,7 +58,7 @@ export function QRCodePdfLayout({
             <h2 className="text-3xl pb-6 text-black">{name}</h2>
           )}
           <QRCode
-            value={`WIFI:S:${ssid};H:true;T:WPA;P:${password};;`}
+            value={`WIFI:S:${ssid};H:true;T:WPA;P:${password?.find(pwd => pwd.validNow)?.value || password?.[0]?.value || ''};;`}
             size={300}
             logoImage="/Images/Logo_UCLL_ROUND.png"
             logoWidth={45}
@@ -76,7 +77,7 @@ export function QRCodePdfLayout({
               <span className="font-semibold">NETWERK / NETWORK:</span> {ssid}
             </p>
             <p className="text-md mt-2">
-              <span className="font-semibold">WACHTWOORD / PASSWORD:</span> {password}
+              <span className="font-semibold">WACHTWOORD / PASSWORD:</span> {password?.map(pwd => pwd.value).join(', ') || '-'}
             </p>
           </div>
         </div>

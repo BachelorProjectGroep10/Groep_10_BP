@@ -1,9 +1,9 @@
 export class Password {
-  readonly id?: number;          
-  readonly password: string;
+  readonly id?: number;
+  readonly password: { value: string }[];
 
   constructor(data: {
-    password: string;
+    password: { value: string }[];
     id?: number;
   }) {
     this.id = data.id;

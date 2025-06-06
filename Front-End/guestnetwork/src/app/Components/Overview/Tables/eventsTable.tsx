@@ -19,7 +19,7 @@ interface EventsTableProps {
 export default function EventsTable( { events }: EventsTableProps) {
   const {t} = useTranslation();
   const [showPopUp, setShowPopUp] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<Event>();
   const pdfRef = React.useRef<HTMLDivElement | null>(null);
 
   const ssid = 'BP Groep 10 - Gast Test';
@@ -85,7 +85,7 @@ export default function EventsTable( { events }: EventsTableProps) {
                 className="hover:bg-[#e6f3ff] text-[#003366] border-b border-gray-100 transition duration-150 text-left"
               >
                 <td className="w-1/6 p-4 break-words">{event.eventName}</td>
-                <td className="w-1/6 p-4 break-words">{event.password}</td>
+                <td className="w-1/6 p-4 break-words">{event.password?.map(pwd => pwd.value).join(', ')}</td>
                 <td className="w-1/6 p-4 break-words">{formatDate(event.startDate)}</td>
                 <td className="w-1/6 p-4 break-words">{formatDate(event.endDate)}</td>
                 <td className="w-1/6 p-4 text-center">

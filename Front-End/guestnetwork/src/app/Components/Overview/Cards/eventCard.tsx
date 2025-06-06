@@ -16,8 +16,9 @@ export default function EventCard({ event }: EventCardProps) {
 
   const [isEditing, setIsEditing] = useState(false);
 
-  const [startDate, setStartDate] = useState(event.startDate ? new Date(event.startDate).toISOString().slice(0, 10) : '');
-  const [endDate, setEndDate] = useState(event.endDate ? new Date(event.endDate).toISOString().slice(0, 10) : '');
+  const [startDate, setStartDate] = useState(event.startDate ? new Date(event.startDate).toISOString().slice(0, 10) : '')
+  const [endDate, setEndDate] = useState(event.endDate ? new Date(event.endDate).toISOString().slice(0, 10) : '')
+  const [description, setDescription] = useState(event.description ?? "");
 
   const handleDelete = async () => {
     try {
@@ -34,6 +35,7 @@ export default function EventCard({ event }: EventCardProps) {
       const updatedEvent = {
         startDate: startDate ? new Date(startDate) : undefined,
         endDate: endDate ? new Date(endDate) : undefined,
+        description: description
       };
 
       await EventService.updateEvent(event.eventName, updatedEvent);
@@ -80,7 +82,7 @@ export default function EventCard({ event }: EventCardProps) {
 
       {/* Password always visible */}
       <p className="text-sm text-[#003366]">
-        <strong>{t('overview.password')}:</strong> {event.password}
+        <strong>{t('overview.password')}:</strong> {event.password?.map(pwd => pwd.value).join(', ')}
       </p>
 
       {/* Start Date toggle */}
@@ -113,6 +115,21 @@ export default function EventCard({ event }: EventCardProps) {
         )}
       </p>
 
+      {/* Description toggle */}
+      <p className="text-sm text-[#003366]">
+        <strong>{t('overview.description')}:</strong>{" "}
+        {isEditing ? (
+          <input
+            type="text"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="mt-1 w-full border border-gray-300 rounded px-2 py-1 text-sm"
+          />
+        ) : (
+          event.description
+        )}
+      </p>
+
       {/* Edit mode buttons */}
       {isEditing && (
         <div className="flex gap-2 mt-4">
@@ -133,3 +150,4 @@ export default function EventCard({ event }: EventCardProps) {
     </div>
   );
 }
+

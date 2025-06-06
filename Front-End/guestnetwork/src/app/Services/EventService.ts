@@ -35,6 +35,7 @@ const updateEvent = async (eventName: string, updates: Partial<Event>) => {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`
     },
+    credentials: 'include',
     body: JSON.stringify(updates)
   });
 
@@ -53,7 +54,8 @@ const deleteEvent = async (eventName: string) => {
         headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
-        }
+        },
+        credentials: 'include'
     });
 }
 

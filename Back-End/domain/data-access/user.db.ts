@@ -3,6 +3,7 @@ import { User } from '../model/User';
 import { generateRandomPassword } from '../../util/autoPassword';
 import { getGroup } from './group.db';
 import { validateUser } from '../../util/validation';
+import { formatDateLocal } from '../../util/dateFormatter';
 
 // This file contains the data access layer for user-related operations.
 // It includes functions to get users, insert users with or without groups, and delete users.
@@ -82,11 +83,7 @@ const updateUserFields = async (macAddress: string, updates: Partial<User>): Pro
     const updatePayload: Record<string, any> = {};
     if (updates.email) updatePayload.email = updates.email;
     if (updates.uid) updatePayload.uid = updates.uid;
-    if (updates.expiredAt)
-      updatePayload.validUntil = new Date(updates.expiredAt)
-        .toISOString()
-        .slice(0, 19)
-        .replace('T', ' ');
+    if (updates.expiredAt) updatePayload.validUntil = formatDateLocal(updates.expiredAt);
     if (updates.description) updatePayload.description = updates.description;
     if (updates.active !== undefined) updatePayload.isDisabled = updates.active === 1 ? 0 : 1;
 
@@ -236,7 +233,7 @@ const wrapWithTransaction = async <T>(operation: (trx: any) => Promise<T>): Prom
 };
 
 const insertIntoRadcheck = async (trx: any, user: User) => {
-  const validUntil = new Date(user.expiredAt).toISOString().slice(0, 19).replace('T', ' ');
+  const validUntil = formatDateLocal(user.expiredAt)
 
   await trx('radcheck').insert({
     uid: user.uid,

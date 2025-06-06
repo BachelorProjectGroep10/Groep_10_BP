@@ -18,15 +18,15 @@ export default function EventDetailsPopup({ event, onClose, onDelete }: Props) {
 
   const [isEditingDetails, setIsEditingDetails] = useState(false);
 
-  const [startDate, setStartDate] = useState(event.startDate ? new Date(event.startDate).toISOString().slice(0, 10) : '');
-  const [endDate, setEndDate] = useState(event.endDate ? new Date(event.endDate).toISOString().slice(0, 10) : '');
-  const [description, setDescription] = useState(event.description);
+  const [startDate, setStartDate] = useState(event.startDate ? new Date(event.startDate).toLocaleDateString('en-CA') : '')
+  const [endDate, setEndDate] = useState(event.endDate ? new Date(event.endDate).toLocaleDateString('en-CA') : '')
+  const [description, setDescription] = useState(event.description ?? "");
 
   const handleSaveChanges = async () => {
     try {
       const updatedEvent = {
-        startDate: startDate ? new Date(startDate) : undefined,
-        endDate: endDate ? new Date(endDate) : undefined,
+        startDate: new Date(`${startDate}T00:00:00`),
+        endDate: new Date(`${endDate}T23:59:59`),     
         description: description
       };
 
@@ -41,8 +41,8 @@ export default function EventDetailsPopup({ event, onClose, onDelete }: Props) {
   };
 
   const handleCancel = () => {
-    setStartDate(event.startDate ? new Date(event.startDate).toISOString().slice(0, 10) : '');
-    setEndDate(event.endDate ? new Date(event.endDate).toISOString().slice(0, 10) : '');
+    setStartDate(event.startDate ? new Date(event.startDate).toLocaleDateString('en-CA') : '');
+    setEndDate(event.endDate ? new Date(event.endDate).toLocaleDateString('en-CA') : '');
     setIsEditingDetails(false);
   };
 
@@ -64,7 +64,7 @@ export default function EventDetailsPopup({ event, onClose, onDelete }: Props) {
 
         <div className="text-sm text-gray-700 space-y-2">
           <p><strong>{t('pop-up.eventName')}:</strong> {event.eventName}</p>
-          <p><strong>{t('pop-up.password')}:</strong> {event.password}</p>
+          <p><strong>{t('pop-up.password')}:</strong> {event.password?.map(pwd => pwd.value).join(', ')}</p>
 
           {!isEditingDetails ? (
             <>
@@ -96,7 +96,7 @@ export default function EventDetailsPopup({ event, onClose, onDelete }: Props) {
                 <label className="block text-sm font-semibold">{t('pop-up.description')}:</label>
                 <input
                   type="text"
-                  value={event.description}
+                  value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   className="w-full border border-gray-300 rounded-md p-2"
                 />

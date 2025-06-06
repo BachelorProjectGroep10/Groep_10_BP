@@ -16,7 +16,7 @@ export const getCurrentPassword = async (): Promise<Password | null> => {
   const cleanedPassword = row.value.replace('psk=', '');
   return new Password({
     id: row.id,
-    password: cleanedPassword,
+    password: [{ value: cleanedPassword }],
   });
 };
 

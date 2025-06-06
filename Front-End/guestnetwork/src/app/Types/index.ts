@@ -1,5 +1,5 @@
 export type Password = {
-    readonly password: string;
+    readonly password: {value: string}[];
 };
 
 export type User = {
@@ -24,12 +24,24 @@ export type Group = {
 };
 
 export type Event = {
-    readonly id?: number;
-    readonly eventName: string;
-    readonly startDate: Date;
-    readonly endDate: Date;
-    readonly password?: string;
-    readonly description?: string;
+  readonly id?: number;
+  readonly eventName: string;
+  readonly startDate: Date;
+  readonly endDate: Date;
+  readonly description?: string;
+  readonly password?: {
+    value: string;
+    week: number;
+    year: number;
+    validNow: boolean;
+  }[];
+};
+
+export type WeeklyPassword = {
+  value: string;
+  week: number;
+  year: number;
+  validNow: boolean;
 }
 
 export type Vlan = {

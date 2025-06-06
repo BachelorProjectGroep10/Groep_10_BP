@@ -1,33 +1,69 @@
+import { generateWeeklyPassword, getISOWeekNumber } from '../../util/autoPassword';
 import knex from '../../util/database';
+import { formatDateLocal, parseDateLocal } from '../../util/dateFormatter';
 import { Event } from '../model/Event';
+
+const SEED = process.env.SEED_PASSWORD!;
+if (!SEED) {
+  throw new Error('SEED_PASSWORD environment variable is required');
+}
 
 // Get all events
 const getEvents = async (name?: string): Promise<Event[]> => {
   try {
-    let query = knex('event')
-      .select(
-        'event.*'
-      )
+    let query = knex('event').select('event.*');
 
     if (name) {
       query = query.andWhere('event.name', 'like', `%${name}%`);
     }
 
     const rows = await query;
+    const today = new Date();
+    const currentWeek = getISOWeekNumber(today);
+    const currentYear = today.getFullYear();
 
     return rows.map((row) => {
-          // Make the password logic here          
-          const passwords: string[] = [];
-    
-          return new Event({
-            id: row.id,
-            eventName: row.name, 
-            password: passwords,
-            startDate: row.startDate,
-            endDate: row.endDate,
-            description: row.description
-          });
-        });
+      const passwords: {
+        value: string;
+        week: number;
+        year: number;
+        validNow: boolean;
+      }[] = [];
+
+      const start = parseDateLocal(row.startDate);
+      const end = parseDateLocal(row.endDate);
+
+      let cursor = start
+
+      // Normalize cursor to start of the ISO week (Monday)
+      cursor.setDate(cursor.getDate() - ((cursor.getDay() + 6) % 7));
+
+      while (
+        cursor <= end
+      ) {
+        const year = cursor.getFullYear();
+        const week = getISOWeekNumber(cursor);
+        const value = generateWeeklyPassword(SEED, year, week);
+        const validNow = year === currentYear && week === currentWeek;
+
+        // Avoid duplicates in case of overlap
+        if (!passwords.some(p => p.week === week && p.year === year)) {
+          passwords.push({ value, week, year, validNow });
+        }
+
+        // Advance to next ISO week
+        cursor.setDate(cursor.getDate() + 7);
+      }
+
+      return new Event({
+        id: row.id,
+        eventName: row.name,
+        password: passwords,
+        startDate: row.startDate,
+        endDate: row.endDate,
+        description: row.description
+      });
+    });
   } catch (err) {
     console.error('DB error fetching events:', err);
     throw new Error('Fetch failed');
@@ -47,9 +83,8 @@ const insertEvent = async (event: Event): Promise<Event> => {
       throw new Error('Event already exists');
     }
 
-    const startDateFormatted = new Date(event.startDate).toISOString().slice(0, 19).replace('T', ' ');
-    const endDateFormatted = new Date(event.endDate).toISOString().slice(0, 19).replace('T', ' ');
-
+    const startDateFormatted = formatDateLocal(event.startDate);
+    const endDateFormatted = formatDateLocal(event.endDate);
 
     await trx('event').insert({
       name: event.eventName,
@@ -70,103 +105,67 @@ const insertEvent = async (event: Event): Promise<Event> => {
 };
 
 
-// // Update event fields
-// const updateEventFields = async (eventName: string, updates: Partial<Event>): Promise<void> => {
-//   try {
-//     const index = testEvents.findIndex(e => e.eventName === eventName);
-//     if (index === -1) throw new Error('Event does not exist');
+// Update event fields
+const updateEventFields = async (eventName: string, updates: Partial<Event>): Promise<void> => {
+  const trx = await knex.transaction();
 
-//     const existing = testEvents[index];
+  try {
+    const existingEvent = await trx('event').where('name', eventName).first();
+    if (!existingEvent) {
+      await trx.rollback();
+      throw new Error('Event does not exist');
+    }
 
-//     // Validate date fields
-//     if (updates.startDate && isNaN(new Date(updates.startDate).getTime())) {
-//       throw new Error("Invalid 'startDate'");
-//     }
-//     if (updates.endDate && isNaN(new Date(updates.endDate).getTime())) {
-//       throw new Error("Invalid 'endDate'");
-//     }
+    const updatePayload: Record<string, any> = {};
 
-//     testEvents[index] = new Event({
-//       ...existing,
-//       ...updates,
-//     });
+    if (updates.eventName && updates.eventName !== eventName) {
+      updatePayload.name = updates.eventName;
+    }
+    if (updates.startDate !== undefined) {
+      updatePayload.startDate = formatDateLocal(updates.startDate);
+    }
+    if (updates.endDate !== undefined) {
+      updatePayload.endDate = formatDateLocal(updates.endDate);
+    }
+    if (updates.description !== undefined) {
+      updatePayload.description = updates.description;
+    }
 
-//     console.log(`Updated test event '${eventName}' with:`, updates);
+    if (Object.keys(updatePayload).length > 0) {
+      await trx('event')
+        .where('name', eventName)
+        .update(updatePayload);
+    }
 
-//     // If DB were set up, you'd do something like:
-//     /*
-//     const trx = await knex.transaction();
+    await trx.commit();
+  } catch (err) {
+    await trx.rollback();
+    console.error('DB error updating event:', err);
+    throw new Error('Update failed');
+  }
+};
 
-//     const existingEvent = await trx('events').where('eventName', eventName).first();
-//     if (!existingEvent) {
-//       await trx.rollback();
-//       throw new Error('Event does not exist');
-//     }
+// Delete event by eventName
+const deleteEventFromDB = async (eventName: string): Promise<void> => {
+  const trx = await knex.transaction();
 
-//     const updatePayload: Partial<Event> = {};
-//     if (updates.eventName && updates.eventName !== eventName) {
-//       updatePayload.eventName = updates.eventName;
-//     }
-//     if (updates.password !== undefined) {
-//       updatePayload.password = updates.password;
-//     }
-//     if (updates.startDate !== undefined) {
-//       updatePayload.startDate = updates.startDate;
-//     }
-//     if (updates.endDate !== undefined) {
-//       updatePayload.endDate = updates.endDate;
-//     }
-//     if (updates.description !== undefined) {
-//       updatePayload.description = updates.description;
-//     }
+  try {
+    const existingEvent = await trx('event').where('name', eventName).first();
+    if (!existingEvent) {
+      await trx.rollback();
+      throw new Error('Event does not exist');
+    }
 
-//     if (Object.keys(updatePayload).length > 0) {
-//       await trx('events')
-//         .where('eventName', eventName)
-//         .update(updatePayload);
-//     }
+    await trx('event').where('name', eventName).del();
 
-//     await trx.commit();
-//     */
-//   } catch (err) {
-//     console.error('Simulated error updating event:', err);
-//     throw new Error('Update failed');
-//   }
-// };
-
-// // Delete event by eventName
-// const deleteEventFromDB = async (eventName: string): Promise<void> => {
-//   try {
-//     const index = testEvents.findIndex(e => e.eventName === eventName);
-//     if (index === -1) {
-//       throw new Error('Event does not exist');
-//     }
-    
-//     // Remove the event from the in-memory array
-//     testEvents.splice(index, 1);
-    
-//     console.log(`Deleted event '${eventName}' successfully`);
-
-//     // When DB is ready, use something like this:
-//     /*
-//     const trx = await knex.transaction();
-
-//     const existingEvent = await trx('events').where('eventName', eventName).first();
-//     if (!existingEvent) {
-//       await trx.rollback();
-//       throw new Error('Event does not exist');
-//     }
-
-//     await trx('events').where('eventName', eventName).del();
-
-//     await trx.commit();
-//     console.log(`Deleted event '${eventName}' from DB successfully`);
-//     */
-//   } catch (err) {
-//     console.error('Simulated error deleting event:', err);
-//     throw new Error('Delete failed');
-//   }
-// };
+    await trx.commit();
+    console.log(`Deleted event '${eventName}' from DB successfully`);
+  } catch (err) {
+    await trx.rollback();
+    console.error('DB error deleting event:', err);
+    throw new Error('Delete failed');
+  }
+};
 
 
-export { getEvents, insertEvent /*, updateEventFields, deleteEventFromDB */};
+export { getEvents, insertEvent, updateEventFields, deleteEventFromDB };
